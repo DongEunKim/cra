@@ -20,6 +20,19 @@
 | DOC-20 | PKI·UDS 0x29 진단 보안 | `docs/20-PKI-UDS진단보안/` |
 | DOC-30 | CRA 대응 매핑 | `docs/30-CRA대응/` |
 
+## 프로젝트 도구 (스킬·에이전트)
+
+문서 작업의 일관성·품질을 위해 프로젝트 로컬 도구를 둔다 (`.claude/`).
+
+**스킬** (편집 시 인라인 적용):
+- `term-guard` — 용어를 DOC-00 기준으로 강제. PKI/FOTA/UDS 용어를 쓸 때 발동.
+- `doc-house-style` — 메타블록·개정이력·상호참조·마커 등 문서 규약.
+- `security-diagram` — SVG 다이어그램 하우스 스타일(자기완결·색/레인 규격).
+
+**서브에이전트** (사용자 요청 시에만 스폰, read-only):
+- `pki-security-reviewer` — 암호·PKI 정확성 심층 심사.
+- `cra-compliance-analyst` — CRA 조문 ↔ 문서 매핑·갭 분석 (web 접근).
+
 ## 정제 시 주의 (원본에서 확인된 결함)
 
 - 오탈자: "패키"(→패키지) 등. SVG 다이어그램 내 텍스트 잘림 다수.
