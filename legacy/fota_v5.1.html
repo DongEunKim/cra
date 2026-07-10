@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>차세대 제어기 업데이트(FOTA) 보안 아키텍처 명세서</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; background-color: #f1f5f9; color: #334155; line-height: 1.6; }
+    
+    /* 강조된 헤딩 스타일 */
+    h1 { color: #0f172a; font-weight: 800; font-size: 2.25rem; letter-spacing: -0.025em; line-height: 1.2; }
+    
+    h2 { 
+      font-size: 1.5rem; 
+      font-weight: 700; 
+      margin-top: 3.5rem; 
+      margin-bottom: 1.5rem; 
+      padding: 0.75rem 1.25rem; 
+      border-left: 6px solid #2563eb; 
+      background: linear-gradient(90deg, #eff6ff 0%, #ffffff 100%);
+      border-radius: 0 0.5rem 0.5rem 0; 
+      color: #1e3a8a; 
+      box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); 
+    }
+    
+    h3 { 
+      font-size: 1.2rem; 
+      font-weight: 700; 
+      margin-top: 2.5rem; 
+      margin-bottom: 1rem; 
+      color: #0f172a; 
+      border-bottom: 2px dashed #cbd5e1; 
+      padding-bottom: 0.5rem; 
+      display: flex; 
+      align-items: center; 
+    }
+    h3::before { content: '■'; color: #3b82f6; font-size: 0.8rem; margin-right: 0.5rem; transform: translateY(-1px); }
+    
+    h4 { 
+      font-size: 1.05rem; 
+      font-weight: 600; 
+      margin-top: 1.5rem; 
+      margin-bottom: 0.75rem; 
+      color: #334155; 
+      display: flex; 
+      align-items: center; 
+    }
+    h4::before { content: '▸'; color: #64748b; font-size: 1.2rem; margin-right: 0.4rem; }
+
+    /* 본문 스타일 */
+    p { margin-bottom: 1rem; color: #475569; }
+    ul { list-style-type: disc; padding-left: 1.5rem; margin-bottom: 1.25rem; color: #475569; }
+    ol { list-style-type: decimal; padding-left: 1.5rem; margin-bottom: 1.25rem; color: #475569; }
+    li { margin-bottom: 0.5rem; }
+    code { background-color: #f1f5f9; color: #db2777; padding: 0.2rem 0.4rem; border-radius: 0.25rem; font-family: monospace; font-size: 0.9em; font-weight: 500; }
+    
+    /* 테이블 스타일 */
+    table { width: 100%; border-collapse: separate; border-spacing: 0; margin-bottom: 2rem; font-size: 0.9rem; border-radius: 8px; overflow: hidden; border: 1px solid #cbd5e1; }
+    th, td { border-bottom: 1px solid #cbd5e1; border-right: 1px solid #cbd5e1; padding: 0.875rem; text-align: left; }
+    th:last-child, td:last-child { border-right: none; }
+    tr:last-child td { border-bottom: none; }
+    th { background-color: #f8fafc; font-weight: 600; color: #1e293b; }
+    tr:nth-child(even) { background-color: #f8fafc; }
+    
+    /* 트리 블록 및 컨테이너 */
+    .tree-block { background-color: #0f172a; color: #34d399; padding: 1.5rem; border-radius: 0.75rem; font-family: monospace; font-size: 0.875rem; line-height: 1.6; overflow-x: auto; margin-bottom: 2rem; white-space: pre; box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06); }
+    .doc-container { max-w: 60rem; margin: 2rem auto; background-color: white; padding: 3rem 4rem; border-radius: 1rem; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); border: 1px solid #e2e8f0; }
+    .meta-box { background-color: #f8fafc; border: 1px solid #e2e8f0; padding: 1.25rem; border-radius: 0.5rem; margin-bottom: 2.5rem; font-size: 0.9rem; display: flex; flex-wrap: wrap; gap: 2rem; }
+    
+    /* SVG 컨테이너 */
+    .svg-container { margin: 2.5rem 0; padding: 2rem; background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); overflow-x: auto; }
+    .svg-title { text-align: center; margin-top: 0; margin-bottom: 1.5rem; color: #1e293b; font-weight: 700; font-size: 1.1rem; }
+    .info-box { background-color: #eff6ff; border-left: 4px solid #3b82f6; padding: 1rem; margin-bottom: 1.5rem; border-radius: 0 0.5rem 0.5rem 0; font-size: 0.95rem; color: #1e3a8a; }
+  </style>
+</head>
+<body>
+
+  <div class="doc-container">
+    <h1 class="mb-6">차세대 제어기 소프트웨어 업데이트 보안 아키텍처 명세서</h1>
+    
+    <div class="meta-box text-slate-600">
+      <div><strong class="text-slate-800">문서 버전:</strong> v5.1</div>
+      <div><strong class="text-slate-800">문서 분류:</strong> 보안 아키텍처 / 기술 명세서</div>
+      <div><strong class="text-slate-800">적용 대상:</strong> 배포 서버(eSync 등 연동), 인스톨러(TGU 중심), 타겟 제어기(EPOS 등)</div>
+    </div>
+
+    <div class="bg-slate-50 p-6 rounded-xl border border-slate-200 mb-10">
+      <h3 class="mt-0 mb-4 text-lg border-none before:content-none text-slate-800">목차</h3>
+      <ol class="list-decimal pl-5 space-y-2 mb-0 font-medium text-blue-700">
+        <li><a href="#section-1" class="hover:underline">FW 업데이트 패키지 전자서명 PKI</a></li>
+        <li><a href="#section-2" class="hover:underline">FW 업데이트 패키지 구성트리 (평문 vs 암호화)</a></li>
+        <li><a href="#section-3" class="hover:underline">패키지 검증 주체 및 검증 절차</a></li>
+        <li><a href="#section-4" class="hover:underline">대칭키(Group-Key) 기반 FW 암호화 (Secure Flash)</a></li>
+        <li><a href="#section-5" class="hover:underline">Secure Boot 및 공정 초기 주입(Factory Flashing)</a></li>
+      </ol>
+    </div>
+
+    <!-- ================= Section 1 ================= -->
+    <h2 id="section-1">1. FW 업데이트 패키지 전자서명 PKI</h2>
+    <p>본 장은 펌웨어(FW) 패키지의 출처 보증(Authenticity)과 무결성(Integrity)을 확보하기 위한 공개키 기반 구조(PKI) 및 전자서명 정책을 정의한다.</p>
+
+    <h3>1.1 PKI 계층 구조 및 인증기관(CA) 분리</h3>
+    <p>단일 Root CA 산하에 목적별로 중간 인증기관(Intermediate CA)을 분리하여, 권한 탈취 시 피해 범위를 격리한다.</p>
+    <ul>
+      <li><strong>OEM Root CA:</strong> 최상위 인증기관. 오프라인에 보관되며, 하위 Intermediate CA 발급 시에만 사용된다.</li>
+      <li><strong>Dev-IC (Device CA):</strong> 기기 인증망. 제어기(SGW, TGU, EPOS)의 신분 증명용 고유 인증서를 발급한다.</li>
+      <li><strong>CS-IC (Code Signing CA):</strong> 코드 서명망. <code>SW 개발자 인증서</code>를 서명 발급하며, 배포 서버를 통해 유통되는 패키지의 <code>배포 서명</code>을 직접 담당한다.</li>
+    </ul>
+
+    <h3>1.2 이중 전자서명 (Dual Signature) 아키텍처</h3>
+    <p>FW 업데이트 패키지는 배포와 설치 과정의 주체별 역할에 맞추어 <strong>배포 계층(Distribution)</strong>과 <strong>설치 계층(Installation)</strong>으로 분리된 이중 전자서명 구조를 갖는다.</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th class="w-1/6">구분</th>
+          <th class="w-2/5">배포 서명 (Distribution Signature)</th>
+          <th class="w-2/5">펌웨어 서명 (Firmware Signature)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>서명 주체</strong></td>
+          <td>배포 서버 (<code>CS-IC</code> 개인키)</td>
+          <td>제어기 S/W 개발 주체 (<code>SW 개발자/벤더</code> 개인키)</td>
+        </tr>
+        <tr>
+          <td><strong>보증 내용</strong></td>
+          <td>공인된 배포 서버를 통한 배포 승인 및 <strong>설치 패키지의 신뢰성/무결성 보증</strong></td>
+          <td>이 펌웨어가 인가된 S/W 개발자가 작성한 원본 정품임 (개발자 출처 보증)</td>
+        </tr>
+        <tr>
+          <td><strong>검증 주체</strong></td>
+          <td><strong>인스톨러 (TGU)</strong></td>
+          <td><strong>타겟 제어기 (HSM 보유 시)</strong></td>
+        </tr>
+        <tr>
+          <td><strong>검증 효과</strong></td>
+          <td>비정상/변조된 패키지의 네트워크 진입 차단 및 타겟 장비(HW ID) 오설치 방지</td>
+          <td>가짜 펌웨어의 ROM 기록 방지 및 Secure Boot 인가</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- ================= Section 2 ================= -->
+    <h2 id="section-2">2. FW 업데이트 패키지 구성트리</h2>
+    <p>
+      * <strong>배포 서버와 OTA 서버의 관계:</strong> 배포 서버는 <strong>eSync OTA 서버를 포함하거나 이와 긴밀히 연동</strong>되어 구성된다. eSync 서버가 배포 캠페인(타겟팅, 릴리즈)을 총괄 관리하며, 펌웨어 패키징 시 배포 서명을 부착하여 인스톨러(TGU 등)로 전달하는 역할을 수행한다.
+    </p>
+
+    <h3>2.1 [Type A] 일반 평문 배포 트리 (암호화 미적용)</h3>
+    <p>레거시 제어기나 암호화가 불필요한 제어기를 위한 표준 패키지 트리이다.</p>
+
+<div class="tree-block">📦 FW 업데이트 패키지 (배포 서버 배포본)
+│
+├── 📂 [1] 배포 패키지 (Distribution Package)
+│   │   * 목적: 인스톨러(TGU)의 타겟 라우팅 및 설치 패키 신뢰성 검증
+│   │
+│   ├── 📜 CS-IC 인증서 (.der)
+│   │
+│   ├── 📄 배포 매니페스트 (Distribution Manifest)
+│   │   ├── 🎯 타겟팅 메타데이터 (Target HW ID, 연식 조건, 강제 설치 플래그)
+│   │   ├── ⚙️ 암호화 명세 (Encryption Mode: 'NONE')
+│   │   └── 🔗 설치 패키지 해시 ([2]번 '설치 패키지' 덩어리에 대한 SHA-256)
+│   │
+│   └── 🔐 배포 서명 (Distribution Signature) 
+│
+└── 📂 [2] 설치 패키지 (Installation Package)
+    │   * 목적: 타겟 제어기의 최종 무결성 검증 및 설치
+    │
+    ├── 📜 SW 개발자 인증서 (.der) 
+    │    * 목적: 펌웨어 서명을 검증할 수 있는 공개키 제공 (CS-IC 개인키로 서명됨)
+    │    * 예외: 타겟 제어기 ROM에 개발자 공개키가 이미 내장된 경우 생략 가능
+    │
+    ├── 📄 설치 매니페스트 (Installation Manifest)
+    │   ├── 🔢 버전 메타데이터 (SW Version, Anti-Rollback Counter)
+    │   └── 🔗 원본 펌웨어 해시 (아래 '순수 펌웨어'에 대한 SHA-256)
+    │
+    ├── 🔐 펌웨어 서명 (Firmware Signature)
+    │
+    └── 📦 펌웨어 바이너리 페이로드
+        └── 📄 순수 펌웨어 원본 파일 (.bin) (평문 상태)</div>
+
+    <h3>2.2 [Type B] Secure Flash 암호화 배포 트리</h3>
+    <p>고도화된 하드웨어(HSM)를 보유하여 지적재산권(기밀성) 보호가 필요한 제어기용 트리이다.</p>
+
+<div class="tree-block">📦 FW 업데이트 패키지 (Secure Flash 2.0 적용 배포본)
+│
+├── 📂 [1] 배포 패키지 (Distribution Package)
+│   ├── 📜 CS-IC 인증서 (.der)
+│   ├── 📄 배포 매니페스트 (Distribution Manifest)
+│   │   ├── 🎯 타겟팅 메타데이터 (Target HW ID 등)
+│   │   ├── ⚙️ 암호화 명세 (Encryption Mode: 'AES-256-GCM')
+│   │   ├── 🔒 암호화된 임시 세션 키 (Encrypted TSK)
+│   │   │    * FW를 암호화한 대칭키(AES-TSK)를 대칭키인 **'SW-Group-Key'**로 랩핑함
+│   │   └── 🔗 설치 패키지 해시
+│   └── 🔐 배포 서명 (Distribution Signature) 
+│
+└── 📂 [2] 설치 패키지 (Installation Package)
+    ├── 📜 SW 개발자 인증서 (.der) (생략 가능)
+    ├── 📄 설치 매니페스트 (버전 및 평문 원본 해시)
+    ├── 🔐 펌웨어 서명 (Firmware Signature)
+    │
+    └── 📦 암호화된 펌웨어 바이너리 페이로드
+        └── 📄 순수 펌웨어 원본 파일 (.bin)
+             * 보안: 임시 세션 키(AES-TSK)로 고속 암호화 처리됨</div>
+
+    <!-- ================= Section 3 ================= -->
+    <h2 id="section-3">3. 패키지 검증 주체 및 검증 절차</h2>
+    <p>본 장은 인스톨러(TGU 중심)가 패키지를 수신하여 타겟 제어기에 플래싱하기까지의 2단계 검증 시퀀스를 정의한다.</p>
+
+    <!-- [SVG 삽입] 패키지 검증 시퀀스 -->
+    <div class="svg-container">
+      <div class="svg-title">[그림 1] 배포 패키지 및 펌웨어 검증 시퀀스 다이어그램</div>
+      <svg viewBox="0 0 800 480" width="100%" xmlns="http://www.w3.org/2000/svg">
+        <rect x="50" y="20" width="140" height="40" rx="6" fill="#1e3a8a" />
+        <text x="120" y="45" fill="white" font-weight="bold" text-anchor="middle">배포 서버</text>
+        <line x1="120" y1="60" x2="120" y2="460" stroke="#cbd5e1" stroke-width="2" stroke-dasharray="5,5"/>
+
+        <rect x="330" y="20" width="140" height="40" rx="6" fill="#0ea5e9" />
+        <text x="400" y="45" fill="white" font-weight="bold" text-anchor="middle">인스톨러 (TGU)</text>
+        <line x1="400" y1="60" x2="400" y2="460" stroke="#cbd5e1" stroke-width="2" stroke-dasharray="5,5"/>
+
+        <rect x="610" y="20" width="140" height="40" rx="6" fill="#f59e0b" />
+        <text x="680" y="45" fill="white" font-weight="bold" text-anchor="middle">타겟 제어기 (HSM)</text>
+        <line x1="680" y1="60" x2="680" y2="460" stroke="#cbd5e1" stroke-width="2" stroke-dasharray="5,5"/>
+
+        <!-- Phase 1 -->
+        <rect x="30" y="80" width="740" height="150" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1" rx="4"/>
+        <text x="40" y="100" fill="#475569" font-size="12" font-weight="bold">1단계: 배포 패키지 검증 (Outer)</text>
+        <path d="M 120 120 L 390 120" stroke="#1e3a8a" stroke-width="2" marker-end="url(#arrow-blue)"/>
+        <text x="260" y="110" fill="#1e3a8a" font-size="11" font-weight="bold" text-anchor="middle">FW 업데이트 패키 전송</text>
+
+        <rect x="420" y="130" width="220" height="80" rx="4" fill="#e0f2fe" stroke="#38bdf8"/>
+        <text x="430" y="145" fill="#0369a1" font-size="11" font-weight="bold">TGU 로컬 검증</text>
+        <text x="430" y="160" fill="#0369a1" font-size="10">1. 내장 Root CA로 CS-IC 인증서 검증</text>
+        <text x="430" y="175" fill="#0369a1" font-size="10">2. CS-IC 공개키로 배포 서명 검증</text>
+        <text x="430" y="190" fill="#0369a1" font-size="10">3. Target HW ID 호환성 확인</text>
+        <text x="430" y="205" fill="#0369a1" font-size="10">4. Outer 봉투 제거</text>
+
+        <!-- Phase 2 -->
+        <rect x="30" y="250" width="740" height="200" fill="#fffbeb" stroke="#fde68a" stroke-width="1" rx="4"/>
+        <text x="40" y="270" fill="#92400e" font-size="12" font-weight="bold">2단계: 설치 패키지 (펌웨어) 검증 (Inner)</text>
+        <path d="M 400 290 L 670 290" stroke="#f59e0b" stroke-width="2" marker-end="url(#arrow-orange)"/>
+        <text x="535" y="280" fill="#d97706" font-size="11" font-weight="bold" text-anchor="middle">설치 패키지 (알맹이) 전송</text>
+
+        <rect x="450" y="310" width="240" height="110" rx="4" fill="#fef3c7" stroke="#fbbf24"/>
+        <text x="460" y="325" fill="#92400e" font-size="11" font-weight="bold">제어기 로컬 검증 (HSM)</text>
+        <text x="460" y="340" fill="#92400e" font-size="10">1. TSK 획득 및 펌웨어 복호화 (Type B)</text>
+        <text x="460" y="355" fill="#92400e" font-size="10">2. Root CA 또는 CS-IC 공개키로</text>
+        <text x="460" y="370" fill="#92400e" font-size="10">   SW 개발자 인증서 체인 검증</text>
+        <text x="460" y="385" fill="#92400e" font-size="10">3. SW 개발자 공개키로 펌웨어 서명 검증</text>
+        <text x="460" y="400" fill="#92400e" font-size="10">4. 롤백 방지 확인 후 플래시에 기록</text>
+
+        <path d="M 680 430 L 400 430" stroke="#22c55e" stroke-width="2" marker-end="url(#arrow-green)"/>
+        <text x="540" y="420" fill="#15803d" font-size="11" font-weight="bold" text-anchor="middle">설치 완료 및 리부팅 응답</text>
+
+        <defs>
+          <marker id="arrow-blue" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L8,3 z" fill="#1e3a8a" /></marker>
+          <marker id="arrow-orange" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L8,3 z" fill="#f59e0b" /></marker>
+          <marker id="arrow-green" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L8,3 z" fill="#22c55e" /></marker>
+        </defs>
+      </svg>
+    </div>
+
+    <h3>3.1 1단계: 배포 패키지 검증 (인스톨러 역할)</h3>
+    <ul>
+      <li><strong>검증 주체:</strong> 인스톨러 (TGU)</li>
+      <li><strong>검증 수단:</strong> TGU 내부에 사전 주입된 <code>OEM Root CA 공개키</code></li>
+      <li><strong>검증 절차:</strong>
+        <ol class="list-decimal pl-5 mt-2">
+          <li>패키지에 동봉된 <code>CS-IC 인증서</code>를 Root CA 공개키로 검증하여 배포 서버의 신원을 확인한다.</li>
+          <li>확인된 CS-IC 공개키를 사용하여 <code>배포 서명</code>을 검증하고, 매니페스트의 무결성을 확인한다.</li>
+          <li><code>배포 매니페스트</code> 내의 설치 패키지 해시값을 직접 계산하여 알맹이(설치 패키지)가 변조되지 않았음을 확인한다.</li>
+          <li>매니페스트의 <code>Target HW ID</code>가 연결된 장비와 일치하는지 확인한다.</li>
+          <li>검증 완료 후 <code>[1] 배포 패키지</code> 껍질을 폐기하고, <code>[2] 설치 패키지</code>를 타겟 제어기로 전송한다.</li>
+        </ol>
+      </li>
+    </ul>
+
+    <h3>3.2 2단계: 설치 패키지 (펌웨어) 검증</h3>
+    <ul>
+      <li><strong>검증 주체:</strong> 타겟 제어기 (HSM)</li>
+      <li><strong>검증 수단:</strong> 타겟 제어기 롬에 내장된 <code>OEM Root CA 공개키</code> (또는 사전 주입된 CS-IC 공개키)</li>
+      <li><strong>검증 절차:</strong>
+        <ol class="list-decimal pl-5 mt-2">
+          <li>인스톨러로부터 <code>설치 패키지</code>를 수신하고, 암호화된 경우 내장된 대칭키(SW-Group-Key)로 TSK를 풀어 펌웨어를 복호화한다.</li>
+          <li>동봉된 <code>SW 개발자 인증서</code>를 내장된 Root CA(또는 CS-IC) 공개키로 검증한다. (인증서가 생략된 경우 내장된 키를 바로 사용)</li>
+          <li>추출한 SW 개발자 공개키로 <code>펌웨어 서명</code>을 검증한다.</li>
+          <li>매니페스트의 버전을 확인해 롤백 시도를 차단하고, 펌웨어를 플래시 메모리(비활성 뱅크)에 기록한다.</li>
+        </ol>
+      </li>
+    </ul>
+
+    <!-- ================= Section 4 ================= -->
+    <h2 id="section-4">4. 대칭키(Group-Key) 기반 FW 암호화 (Secure Flash)</h2>
+    <p>펌웨어의 기밀성을 보호하면서도, 복잡한 비대칭 연산을 줄이고 대규모 배포 스케일링을 만족하기 위해 <strong>대칭키 기반의 'SW-Group-Key'</strong> 구조를 도입한다.</p>
+
+    <!-- [SVG 삽입] EOL 키 주입 절차 -->
+    <div class="svg-container">
+      <div class="svg-title">[그림 2] CSR 기반 대칭키(SW-Group-Key) 인증서 매립 주입 시퀀스</div>
+      <svg viewBox="0 0 800 440" width="100%" xmlns="http://www.w3.org/2000/svg">
+        <rect x="20" y="20" width="360" height="400" rx="8" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1"/>
+        <text x="200" y="40" fill="#64748b" font-weight="bold" font-size="12" text-anchor="middle">부품사 (Tier 1) 영역</text>
+        <rect x="400" y="20" width="380" height="400" rx="8" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1"/>
+        <text x="590" y="40" fill="#3b82f6" font-weight="bold" font-size="12" text-anchor="middle">OEM 클라우드 영역</text>
+
+        <rect x="40" y="60" width="120" height="40" rx="6" fill="#f59e0b" />
+        <text x="100" y="85" fill="white" font-weight="bold" text-anchor="middle">제어기 (HSM)</text>
+        <line x1="100" y1="100" x2="100" y2="400" stroke="#cbd5e1" stroke-width="2" stroke-dasharray="5,5"/>
+
+        <rect x="220" y="60" width="120" height="40" rx="6" fill="#64748b" />
+        <text x="280" y="85" fill="white" font-weight="bold" text-anchor="middle">Tier-1 테스터</text>
+        <line x1="280" y1="100" x2="280" y2="400" stroke="#cbd5e1" stroke-width="2" stroke-dasharray="5,5"/>
+
+        <rect x="440" y="60" width="120" height="40" rx="6" fill="#3b82f6" />
+        <text x="500" y="85" fill="white" font-weight="bold" text-anchor="middle">Dev-IC (인증기관)</text>
+        <line x1="500" y1="100" x2="500" y2="400" stroke="#cbd5e1" stroke-width="2" stroke-dasharray="5,5"/>
+
+        <rect x="630" y="60" width="120" height="40" rx="6" fill="#0f766e" />
+        <text x="690" y="85" fill="white" font-weight="bold" text-anchor="middle">OEM KMS</text>
+        <line x1="690" y1="100" x2="690" y2="400" stroke="#cbd5e1" stroke-width="2" stroke-dasharray="5,5"/>
+
+        <!-- Steps -->
+        <rect x="30" y="110" width="140" height="40" rx="4" fill="#fef3c7" stroke="#fbbf24"/>
+        <text x="100" y="126" fill="#92400e" font-size="11" font-weight="bold" text-anchor="middle">고유 키쌍(Dev) 생성</text>
+        <text x="100" y="140" fill="#92400e" font-size="10" text-anchor="middle">CSR(인증서 서명 요청) 생성</text>
+
+        <path d="M 160 160 L 270 160" stroke="#475569" stroke-width="2" marker-end="url(#arrow-gray)"/>
+        <text x="215" y="150" fill="#475569" font-size="11" font-weight="bold" text-anchor="middle">1. CSR 전달</text>
+
+        <path d="M 290 180 L 490 180" stroke="#3b82f6" stroke-width="2" marker-end="url(#arrow-blue2)"/>
+        <text x="390" y="170" fill="#3b82f6" font-size="11" font-weight="bold" text-anchor="middle">2. CSR 전송 (인터넷/VPN)</text>
+
+        <path d="M 510 200 L 680 200" stroke="#0f766e" stroke-width="2" marker-end="url(#arrow-teal)"/>
+        <text x="595" y="190" fill="#0f766e" font-size="11" font-weight="bold" text-anchor="middle">3. SW-Group-Key 발급 요청</text>
+
+        <rect x="580" y="215" width="220" height="45" rx="4" fill="#ccfbf1" stroke="#2dd4bf"/>
+        <text x="690" y="232" fill="#115e59" font-size="11" font-weight="bold" text-anchor="middle">KMS 랩핑 연산 (비대칭 $\rightarrow$ 대칭)</text>
+        <text x="690" y="247" fill="#115e59" font-size="10" text-anchor="middle">대칭키를 CSR 안의 Dev-Pub으로 암호화</text>
+
+        <path d="M 680 280 L 510 280" stroke="#0f766e" stroke-width="2" marker-end="url(#arrow-teal-rev)"/>
+        <text x="595" y="270" fill="#0f766e" font-size="11" font-weight="bold" text-anchor="middle">4. 랩핑된 대칭키 반환</text>
+
+        <rect x="410" y="295" width="180" height="45" rx="4" fill="#dbeafe" stroke="#93c5fd"/>
+        <text x="500" y="312" fill="#1e40af" font-size="11" font-weight="bold" text-anchor="middle">인증서 내 확장 필드(Ext) 삽입</text>
+        <text x="500" y="327" fill="#1e40af" font-size="10" text-anchor="middle">랩핑된 대칭키를 인증서에 묻어서 서명</text>
+
+        <path d="M 490 355 L 290 355" stroke="#3b82f6" stroke-width="2" marker-end="url(#arrow-blue-rev)"/>
+        <text x="390" y="345" fill="#3b82f6" font-size="11" font-weight="bold" text-anchor="middle">5. 디바이스 인증서(.der) 발급</text>
+
+        <path d="M 270 375 L 110 375" stroke="#475569" stroke-width="2" marker-end="url(#arrow-gray-rev)"/>
+        <text x="190" y="365" fill="#475569" font-size="11" font-weight="bold" text-anchor="middle">6. 인증서 주입</text>
+
+        <rect x="30" y="390" width="140" height="40" rx="4" fill="#fef3c7" stroke="#fbbf24"/>
+        <text x="100" y="406" fill="#92400e" font-size="11" font-weight="bold" text-anchor="middle">자체 파싱 및 복호화</text>
+        <text x="100" y="420" fill="#92400e" font-size="10" text-anchor="middle">인증서 Ext에서 대칭키 추출/저장</text>
+
+        <defs>
+          <marker id="arrow-gray" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L8,3 z" fill="#475569" /></marker>
+          <marker id="arrow-gray-rev" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L8,3 z" fill="#475569" /></marker>
+          <marker id="arrow-blue2" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L8,3 z" fill="#3b82f6" /></marker>
+          <marker id="arrow-blue-rev" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L8,3 z" fill="#3b82f6" /></marker>
+          <marker id="arrow-teal" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L8,3 z" fill="#0f766e" /></marker>
+          <marker id="arrow-teal-rev" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L8,3 z" fill="#0f766e" /></marker>
+        </defs>
+      </svg>
+    </div>
+
+    <h3>4.1 인증서 확장 필드(Extension) 기반의 대칭키 주입 절차</h3>
+    <ol class="list-decimal pl-5">
+      <li><strong>[부품사 영역] 고유 키쌍 생성 및 CSR 발급:</strong> 제어기(HSM) 최초 전원 인가 시 난수를 발생하여 <strong><code>디바이스 고유 키쌍(Dev-Pub/Priv)</code></strong>을 스스로 생성한다. 공개키(Dev-Pub)를 포함한 CSR 규격을 만들어 Tier-1 테스터로 전달한다.</li>
+      <li><strong>[OEM 영역] CSR 전송 및 KMS 연동:</strong> 테스터는 VPN을 통해 CSR을 OEM의 <strong><code>Dev-IC</code></strong>로 전송한다. Dev-IC는 내부망에 격리된 <strong>KMS</strong>에 대칭키 <strong><code>SW-Group-Key</code></strong>를 요청하고, 이를 CSR 내의 <code>Dev-Pub</code>으로 비대칭 암호화 받는다.</li>
+      <li><strong>[OEM 영역] X.509 확장 필드 매립:</strong> Dev-IC는 디바이스 인증서를 발급할 때, 암호문을 <strong>X.509 v3 Custom Extension</strong> 영역에 매립하여 서명한 뒤 테스터로 반환한다.</li>
+      <li><strong>[부품사 영역] 로컬 인증서 파싱 및 복호화:</strong> 테스터가 인증서를 제어기에 주입하면, 제어기는 확장 필드 안의 암호문을 자신의 <code>Dev-Priv</code>로 풀고 최종 대칭키인 <code>SW-Group-Key</code>를 HSM에 영구 저장한다.</li>
+    </ol>
+
+    <h3>4.2 FOTA 배포 서버의 암호화 프로세스</h3>
+    <ol class="list-decimal pl-5">
+      <li class="mb-2"><strong>[펌웨어 암호화]:</strong> 배포 서버는 일회용 임시 세션 키(<code>AES-TSK</code>)를 생성하여 펌웨어를 고속 암호화한다.</li>
+      <li class="mb-2"><strong>[TSK 랩핑]:</strong> 배포 서버는 펌웨어를 풀 수 있는 열쇠인 <code>AES-TSK</code>를 대칭키인 <strong><code>SW-Group-Key</code></strong>로 암호화(Wrapping)하여 배포 매니페스트에 동봉한다.</li>
+      <li><strong>[로컬 복호화]:</strong> 타겟 제어기는 자신의 HSM에 내장된 <code>SW-Group-Key</code>로 <code>AES-TSK</code>를 복호화하고, 이를 이용해 최종 펌웨어를 복호화한다.</li>
+    </ol>
+
+    <!-- ================= Section 5 ================= -->
+    <h2 id="section-5">5. Secure Boot 및 공정 초기 주입(Factory Flashing)</h2>
+    <p>부품사 양산 단계에서의 물리적 펌웨어 굽기(Factory Flashing)와, 플래싱 완료 후 기기가 부팅될 때 동작하는 로컬 무결성 검증(Secure Boot) 프로세스이다.</p>
+
+    <div class="info-box mb-6">
+      <strong>[참고] 활성 뱅크(Active Bank)와 HSM의 역할 분리</strong><br>
+      OTA를 지원하는 제어기는 플래시 메모리가 A/B 두 개의 뱅크(구역)로 나뉩니다. <strong>'활성 뱅크'는 수십 MB의 펌웨어 본체가 저장되어 현재 실행되고 있는 거대한 저장 창고</strong>입니다. 반면 <strong>HSM</strong>은 내부 메모리가 수 KB에 불과한 <strong>초고속 보안 계산기</strong>입니다. 부트로더는 활성 뱅크의 펌웨어를 통째로 HSM에 넣는 것이 아니라, 빠른 해시 알고리즘(SHA-256)으로 요약본(Hash)을 만든 뒤 그 작은 요약본과 서명값만 HSM으로 보내어 검증(Verify)을 위임합니다.
+    </div>
+
+    <h3>5.1 양산 라인의 초기 펌웨어 주입 (Factory Flashing)</h3>
+    <p>부품사(Tier-1)의 양산 조립 공정에서는 FOTA 배포 패키지 구조(매니페스트, 암호화 봉투 등)를 사용하지 않으며, 물리적 케이블을 통한 다이렉트 플래싱을 수행한다.</p>
+    <ul>
+      <li><strong>양산용 롬 이미지(Production Image):</strong> OEM은 FOTA 포장 전 단계인 <code>[순수 펌웨어 + 펌웨어 서명(헤더) + Root CA 공개키]</code>가 하나로 결합된 통짜 바이너리 파일(.hex/.bin)을 부품사에 제공한다.</li>
+      <li><strong>고속 굽기:</strong> 부품사 라인의 플래셔(Flasher) 장비는 JTAG, SWD 등의 하드웨어 인터페이스를 통해 롬 이미지를 플래시 메모리(활성 뱅크)에 다이렉트로 기록한다. </li>
+      <li><strong>초기 검증 앵커 확립:</strong> 이 과정을 통해 제어기는 첫 시동 전부터 내부에 'Root CA 공개키(검증 잣대)'와 헤더의 '펌웨어 서명'을 보유하게 되어, 별도의 FOTA 통신 없이도 즉각적인 Secure Boot가 가능해진다.</li>
+    </ul>
+
+    <h3>5.2 안티 롤백 (Anti-Rollback)</h3>
+    <p>매니페스트 및 펌웨어 헤더에 기재된 보안 버전 번호(ARVN)를 하드웨어(HSM 비휘발성 카운터)와 대조하여, 취약점이 존재하는 구버전으로의 다운그레이드 공격을 하드웨어 레벨에서 원천 차단한다.</p>
+
+    <h3>5.3 Secure Boot (안전한 부팅)</h3>
+    <p>초기 양산 주입 또는 FOTA 업데이트가 완료된 후, 제어기에 전원이 인가(Ignition On)될 때마다 부트로더가 수행하는 프로세스이다.</p>
+    <ol class="list-decimal pl-5">
+      <li>제어기 하드웨어 부트로더가 제어권을 갖는다.</li>
+      <li>부트로더가 <strong>활성 뱅크(Active Bank)</strong> 전체를 스캔하여 펌웨어의 해시(Hash)값을 계산한다.</li>
+      <li>부트로더는 계산된 해시값과 펌웨어 헤더에 부착된 <code>펌웨어 서명</code>을 <strong>HSM</strong>으로 전달한다.</li>
+      <li>HSM은 롬에 저장된 <strong><code>SW 개발자 공개키</code></strong>(또는 Root CA 기반 체인)를 사용하여 해당 서명을 수 밀리초(ms) 이내에 초고속 재검증한다.</li>
+      <li>무결성이 확인된 경우에만 어플리케이션 영역으로 점프하여 제어 코드를 실행하며, 검증 실패 시 정상 뱅크로의 복구(Fallback) 또는 안전 모드(Safe Mode)로 진입한다.</li>
+    </ol>
+
+  </div>
+
+</body>
+</html>

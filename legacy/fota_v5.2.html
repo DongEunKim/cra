@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>차세대 FOTA 보안 아키텍처 명세서 v5.2</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #1e293b; line-height: 1.7; }
+    .container { max-width: 900px; margin: 0 auto; padding: 40px; background: white; border-radius: 16px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
+    h2 { color: #0f172a; border-left: 4px solid #3b82f6; padding-left: 1rem; margin-top: 3rem; margin-bottom: 1.5rem; font-size: 1.5rem; font-weight: 700; }
+    h3 { color: #334155; font-size: 1.25rem; font-weight: 600; margin-top: 2rem; margin-bottom: 1rem; }
+    .box { background: #eff6ff; border-radius: 8px; padding: 1.5rem; border: 1px solid #bfdbfe; margin-bottom: 1.5rem; }
+    code { color: #db2777; font-weight: bold; background: #fff1f2; padding: 2px 4px; border-radius: 4px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1 class="text-3xl font-extrabold text-slate-900 mb-8">차세대 FOTA 보안 아키텍처 명세서 v5.2</h1>
+
+    <h2 id="section-chain">1. 신뢰의 연쇄 (Chain of Trust) 검증 메커니즘</h2>
+    <div class="box">
+      <p><strong>질문: Root CA 공개키만 있는데 어떻게 개발자의 서명을 검증하는가?</strong></p>
+      <p>제어기는 <code>Root CA 공개키</code>를 활용하여 <code>개발자 인증서(Cert)</code>에 찍힌 OEM의 서명을 먼저 검증합니다. 인증서의 무결성이 확인되면, 그 안에 들어있던 <code>SW 개발자 공개키</code>를 신뢰할 수 있게 됩니다. 이 공개키를 꺼내서 비로소 <code>펌웨어 서명</code>을 검증하는 2단계 검증 구조입니다.</p>
+    </div>
+    <ul class="list-decimal pl-6 space-y-2">
+      <li><strong>Step 1:</strong> 제어기 내부의 <code>Root CA 공개키</code>로 <code>개발자 인증서</code>의 서명을 검증한다. (인증서가 진짜임을 보증)</li>
+      <li><strong>Step 2:</strong> 검증된 인증서에서 <code>SW 개발자 공개키</code>를 안전하게 추출한다.</li>
+      <li><strong>Step 3:</strong> 추출된 <code>SW 개발자 공개키</code>로 <code>펌웨어 데이터</code>의 서명을 최종 검증한다.</li>
+    </ul>
+
+    <h2 id="section-integrity">2. 펌웨어와 서명의 통합 무결성 보증</h2>
+    <p>펌웨어와 서명은 별개로 보호되는 것이 아니라, <strong>'검증의 대상(Input)'</strong>으로서 완벽하게 결합되어야 합니다.</p>
+    <div class="box">
+      <p><strong>왜곡 판단 기준:</strong> 펌웨어 혹은 서명 중 하나라도 변경되면, 서명 검증 알고리즘은 <strong>'일치하지 않음(Mismatch)'</strong>을 반환합니다.</p>
+      <ul class="list-disc pl-5 mt-2">
+        <li><strong>펌웨어 수정 시:</strong> 해시값 자체가 변하므로 서명값이 일치할 수 없음.</li>
+        <li><strong>서명 수정 시:</strong> 공개키로 복호화한 값이 원본 해시와 일치하지 않음.</li>
+      </ul>
+      <p>즉, <strong>[펌웨어 + 서명]</strong> 이 두 가지는 하나의 <strong>Immutable(불변) 패키지</strong>로 간주하여 처리됩니다.</p>
+    </div>
+
+    <h2 id="section-secure-boot">3. 고도화된 Secure Boot 프로세스</h2>
+    <p>부팅 시 HSM의 역할을 다시 정리합니다:</p>
+    <ol class="list-decimal pl-6 space-y-2">
+      <li><strong>Hashing:</strong> 부트로더가 활성 뱅크의 펌웨어 전체를 읽어 <code>SHA-256 해시값</code>을 계산.</li>
+      <li><strong>Signing:</strong> 헤더에 있는 <code>펌웨어 서명값</code>을 확인.</li>
+      <li><strong>Verification:</strong> HSM이 <code>SW 개발자 공개키</code>를 사용하여, <code>계산된 해시값</code>과 <code>서명값의 복호화 결과</code>를 비교.</li>
+      <li><strong>Action:</strong> 결과가 동일하면 부팅 승인, 다르면 즉시 <strong>'변조 감지 모드(Security Alert)'</strong>로 전환하여 부팅 차단 및 리커버리 수행.</li>
+    </ol>
+  </div>
+</body>
+</html>

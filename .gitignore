@@ -1,0 +1,17 @@
+# 빌드 산출물
+/build/
+/dist/
+*.pdf
+
+# OS / 에디터
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*~
+
+# 임시
+/tmp/
+*.tmp
+*.log

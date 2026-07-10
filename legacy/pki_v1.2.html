@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>건설기계 통합 PKI 및 보안 명세 포털</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; background-color: #f8fafc; margin: 0; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+    
+    /* Tabs */
+    .tab-btn { position: relative; transition: all 0.2s ease; }
+    .tab-btn.active { color: #2563eb; font-weight: 700; }
+    .tab-btn.active::after { content: ''; position: absolute; bottom: -1px; left: 0; width: 100%; height: 3px; background-color: #2563eb; border-radius: 3px 3px 0 0; }
+    
+    /* Simulator Styles */
+    .node-card { transition: all 0.3s ease; position: relative; }
+    .node-card:hover { transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+    .step-btn.active-step { background-color: #0f172a; color: white; border-color: #0f172a; }
+    
+    .bg-factory { background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%); }
+    .bg-cloud { background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); }
+    .bg-field { background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); }
+    .bg-dms { background: linear-gradient(135deg, #fdf4ff 0%, #f3e8ff 100%); }
+    
+    .tier-badge { position: absolute; top: -10px; right: -10px; font-size: 0.65rem; font-weight: bold; padding: 2px 8px; border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); z-index: 10; }
+    .tier-online { background-color: #3b82f6; color: white; }
+    .tier-offline { background-color: #14b8a6; color: white; }
+    .tier-nohsm { background-color: #64748b; color: white; }
+    
+    .inactive-mode { filter: grayscale(100%) opacity(0.4); pointer-events: none; }
+    
+    /* Document Styles */
+    .doc-content h2 { font-size: 1.5rem; font-weight: 700; color: #1e293b; margin-top: 2.5rem; margin-bottom: 1rem; border-bottom: 2px solid #e2e8f0; padding-bottom: 0.5rem; }
+    .doc-content h3 { font-size: 1.25rem; font-weight: 600; color: #334155; margin-top: 1.75rem; margin-bottom: 0.75rem; }
+    .doc-content h4 { font-size: 1.1rem; font-weight: 600; color: #475569; margin-top: 1.25rem; margin-bottom: 0.5rem; }
+    .doc-content p { color: #475569; line-height: 1.7; margin-bottom: 1rem; }
+    .doc-content ul { list-style-type: disc; padding-left: 1.5rem; margin-bottom: 1.25rem; color: #475569; }
+    .doc-content ol { list-style-type: decimal; padding-left: 1.5rem; margin-bottom: 1.25rem; color: #475569; }
+    .doc-content li { margin-bottom: 0.5rem; line-height: 1.6; }
+    .doc-content strong { color: #0f172a; }
+    .doc-content code { background-color: #f1f5f9; color: #db2777; padding: 0.2rem 0.4rem; border-radius: 0.25rem; font-family: monospace; font-size: 0.9em; }
+    .doc-content table { width: 100%; border-collapse: collapse; margin-bottom: 1.5rem; font-size: 0.9rem; }
+    .doc-content th, .doc-content td { border: 1px solid #cbd5e1; padding: 0.75rem; text-align: left; }
+    .doc-content th { background-color: #f8fafc; font-weight: 600; color: #334155; }
+    .doc-content tr:nth-child(even) { background-color: #f8fafc; }
+    .doc-content .note-box { background-color: #eff6ff; border-left: 4px solid #3b82f6; padding: 1rem; margin-bottom: 1.5rem; border-radius: 0 0.5rem 0.5rem 0; }
+    .doc-content .svg-container { margin: 2rem 0; padding: 1.5rem; background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; }
+  </style>
+</head>
+<body>
+
+  <!-- Top Header & Tabs -->
+  <header class="bg-white px-6 pt-4 border-b border-slate-200 shrink-0 z-20 shadow-sm flex flex-col gap-4">
+    <div class="flex items-center gap-2">
+      <span class="material-icons text-blue-600 text-3xl">shield</span>
+      <div>
+        <h1 class="text-xl font-bold text-slate-800 leading-tight">차세대 건설기계 PKI & UDS 0x29 통합 포털</h1>
+        <p class="text-xs text-slate-500">통합 디바이스 CA 중심의 보안 아키텍처 및 상세 명세 (v1.2)</p>
+      </div>
+    </div>
+    
+    <div class="flex gap-6 mt-2">
+      <button onclick="switchTab('simulator')" id="tab-simulator" class="tab-btn active pb-3 text-sm font-medium text-slate-500 flex items-center gap-1">
+        <span class="material-icons text-[18px]">account_tree</span> 인터랙티브 시뮬레이터
+      </button>
+      <button onclick="switchTab('document')" id="tab-document" class="tab-btn pb-3 text-sm font-medium text-slate-500 flex items-center gap-1">
+        <span class="material-icons text-[18px]">article</span> 공식 보안 명세서 (텍스트)
+      </button>
+    </div>
+  </header>
+
+  <!-- Content Area -->
+  <div class="flex-1 overflow-hidden relative">
+    
+    <!-- ==========================================
+         TAB 1: INTERACTIVE SIMULATOR 
+         ========================================== -->
+    <div id="view-simulator" class="h-full flex flex-col bg-slate-100">
+      
+      <!-- Simulator Controls -->
+      <div class="bg-white px-6 py-3 border-b border-slate-200 flex gap-2 overflow-x-auto shrink-0 shadow-sm">
+        <button onclick="setStep(1)" id="btn-step-1" class="step-btn active-step px-4 py-2 border border-slate-300 rounded-md text-xs font-semibold transition-colors text-slate-700 whitespace-nowrap">1. 단일 CA 발급</button>
+        <button onclick="setStep(2)" id="btn-step-2" class="step-btn px-4 py-2 border border-slate-300 rounded-md text-xs font-semibold transition-colors text-slate-700 whitespace-nowrap">2. EOL 보안 주입</button>
+        <button onclick="setStep(3)" id="btn-step-3" class="step-btn px-4 py-2 border border-slate-300 rounded-md text-xs font-semibold transition-colors text-slate-700 whitespace-nowrap">3. 클라우드 연동 (JITP)</button>
+        <button onclick="setStep(4)" id="btn-step-4" class="step-btn px-4 py-2 border border-slate-300 rounded-md text-xs font-semibold transition-colors text-slate-700 whitespace-nowrap">4. 오프라인 UDS 진단</button>
+        <button onclick="setStep(5)" id="btn-step-5" class="step-btn px-4 py-2 border border-slate-300 rounded-md text-xs font-semibold transition-colors text-slate-700 whitespace-nowrap">5. 부품 교체 (P&P)</button>
+      </div>
+
+      <div class="flex-1 flex flex-col lg:flex-row overflow-hidden">
+        <!-- Diagram Area -->
+        <div class="flex-1 p-4 lg:p-6 overflow-y-auto relative" id="diagram-container">
+          <div class="max-w-[1200px] mx-auto space-y-4 lg:space-y-6">
+            
+            <!-- TOP: Cloud Zone -->
+            <div id="zone-cloud" class="bg-cloud rounded-xl border border-blue-200 p-4 relative shadow-sm transition-all duration-300">
+              <div class="absolute -top-3 left-4 bg-blue-100 text-blue-800 text-xs font-bold px-2 py-1 rounded border border-blue-200 flex items-center gap-1">
+                <span class="material-icons text-[14px]">cloud</span> OEM 클라우드 & IT 인프라
+              </div>
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-3">
+                <div id="node-ca" class="node-card bg-white rounded-lg p-3 border-2 border-blue-400 shadow-sm text-center relative flex flex-col h-full">
+                  <div class="absolute top-0 left-0 w-full h-1 bg-blue-500"></div>
+                  <span class="material-icons text-2xl text-blue-600 mb-1">vpn_key</span>
+                  <h3 class="font-bold text-sm text-slate-800">통합 디바이스 CA</h3>
+                  <div id="data-ca" class="mt-auto text-left bg-slate-50 p-2 rounded text-[11px] border border-slate-100 min-h-[3.5rem] flex flex-col justify-center"></div>
+                </div>
+                <div id="node-vlm" class="node-card bg-white rounded-lg p-3 border-2 border-slate-300 shadow-sm text-center flex flex-col h-full">
+                  <span class="material-icons text-2xl text-indigo-500 mb-1">storage</span>
+                  <h3 class="font-bold text-sm text-slate-800">VLM (차량 레지스트리)</h3>
+                  <div id="data-vlm" class="mt-auto text-left bg-slate-50 p-2 rounded text-[11px] border border-slate-100 min-h-[3.5rem] flex flex-col justify-center"></div>
+                </div>
+                <div id="node-aws" class="node-card bg-white rounded-lg p-3 border-2 border-slate-300 shadow-sm text-center flex flex-col h-full">
+                  <span class="material-icons text-2xl text-orange-500 mb-1">api</span>
+                  <h3 class="font-bold text-sm text-slate-800">AWS IoT Core</h3>
+                  <div id="data-aws" class="mt-auto text-left bg-slate-50 p-2 rounded text-[11px] border border-slate-100 min-h-[3.5rem] flex flex-col justify-center"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- BOTTOM: Vehicle & External Zones -->
+            <div class="flex flex-col xl:flex-row gap-4 lg:gap-6">
+              
+              <!-- Vehicle Zone -->
+              <div id="zone-vehicle" class="bg-field rounded-xl border border-teal-200 p-4 flex-[2] shadow-sm relative transition-all duration-300">
+                <div class="absolute -top-3 left-4 bg-teal-100 text-teal-800 text-xs font-bold px-2 py-1 rounded border border-teal-200 flex items-center gap-1">
+                  <span class="material-icons text-[14px]">directions_car</span> 건설기계 (물리적 제어기)
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-3 h-full">
+                  <div id="node-tgu" class="node-card bg-white rounded-lg p-3 border-2 border-blue-300 shadow-sm flex flex-col relative h-full">
+                    <div class="tier-badge tier-online">Tier 1</div>
+                    <div class="text-center mb-2 mt-2">
+                      <span class="material-icons text-2xl text-blue-600">router</span>
+                      <h3 class="font-bold text-sm text-slate-800">TGU</h3>
+                    </div>
+                    <div id="data-tgu" class="mt-auto text-left bg-slate-50 p-2 rounded text-[11px] border border-slate-100 min-h-[4.5rem] flex flex-col justify-center"></div>
+                  </div>
+                  <div id="node-sgw" class="node-card bg-white rounded-lg p-3 border-2 border-teal-400 shadow-sm flex flex-col relative h-full">
+                    <div class="absolute top-0 left-0 w-full h-1 bg-teal-500"></div>
+                    <div class="tier-badge tier-offline">Tier 2 (앵커)</div>
+                    <div class="text-center mb-2 mt-2">
+                      <span class="material-icons text-2xl text-teal-600">gpp_good</span>
+                      <h3 class="font-bold text-sm text-slate-800">SGW (방화벽)</h3>
+                    </div>
+                    <div id="data-sgw" class="mt-auto text-left bg-slate-50 p-2 rounded text-[11px] border border-slate-100 min-h-[4.5rem] flex flex-col justify-center shadow-inner"></div>
+                  </div>
+                  <div id="node-ecu" class="node-card bg-white rounded-lg p-3 border-2 border-slate-300 shadow-sm flex flex-col relative h-full">
+                    <div class="tier-badge tier-nohsm">Tier 3 (No HSM)</div>
+                    <div class="text-center mb-2 mt-2">
+                      <span class="material-icons text-2xl text-slate-600">memory</span>
+                      <h3 class="font-bold text-sm text-slate-800">ECU (제어기)</h3>
+                    </div>
+                    <div id="data-ecu" class="mt-auto text-left bg-slate-50 p-2 rounded text-[11px] border border-slate-100 min-h-[4.5rem] flex flex-col justify-center"></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- External Zone -->
+              <div class="flex-1 flex flex-col md:flex-row xl:flex-col gap-4">
+                <div id="zone-eol" class="bg-factory rounded-xl border border-slate-300 p-3 shadow-sm relative flex flex-col flex-1 transition-all duration-300">
+                  <div class="absolute -top-3 right-4 bg-slate-200 text-slate-800 text-[10px] font-bold px-2 py-0.5 rounded border border-slate-300">생산 라인</div>
+                  <div id="node-eol" class="node-card bg-white rounded-lg p-2 border-2 border-slate-200 shadow-sm text-center h-full flex flex-col mt-1">
+                    <h3 class="font-bold text-xs text-slate-800 mb-1">MES & 테스터</h3>
+                    <div id="data-eol" class="mt-auto text-left bg-slate-50 p-1.5 rounded text-[10px] border border-slate-100 min-h-[3rem] flex flex-col justify-center"></div>
+                  </div>
+                </div>
+                <div id="zone-dms" class="bg-dms rounded-xl border border-purple-200 p-3 shadow-sm relative flex flex-col flex-1 transition-all duration-300">
+                  <div class="absolute -top-3 right-4 bg-purple-100 text-purple-800 text-[10px] font-bold px-2 py-0.5 rounded border border-purple-200">정비사 디바이스</div>
+                  <div id="node-dms" class="node-card bg-white rounded-lg p-2 border-2 border-purple-300 shadow-sm text-center h-full flex flex-col mt-1">
+                    <h3 class="font-bold text-xs text-slate-800 mb-1">진단툴 (DMS SW)</h3>
+                    <div id="data-dms" class="mt-auto text-left bg-slate-50 p-1.5 rounded text-[10px] border border-purple-100 min-h-[3rem] flex flex-col justify-center"></div>
+                  </div>
+                </div>
+              </div>
+              
+            </div>
+          </div>
+        </div>
+
+        <!-- Description Panel -->
+        <div class="w-full lg:w-[320px] xl:w-[380px] bg-white border-l border-slate-200 flex flex-col shadow-[-4px_0px_10px_0px_rgba(0,0,0,0.05)] shrink-0 z-10">
+          <div class="p-4 border-b border-slate-100 bg-slate-50">
+            <h2 id="panel-title" class="text-base font-bold text-slate-800 mb-1">제목</h2>
+            <p id="panel-subtitle" class="text-xs text-blue-600 font-medium">부제목</p>
+          </div>
+          <div class="p-4 flex-1 overflow-y-auto">
+            <div class="mb-5">
+              <h4 class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">상세 프로세스</h4>
+              <ul id="action-list" class="space-y-2.5 text-xs text-slate-700"></ul>
+            </div>
+            <div class="bg-indigo-50 border border-indigo-100 rounded-lg p-3">
+              <h4 class="text-[11px] font-bold text-indigo-800 uppercase tracking-wider mb-1.5 flex items-center gap-1">
+                <span class="material-icons text-[14px]">architecture</span> 보안 포인트
+              </h4>
+              <p id="insight-text" class="text-xs text-slate-700 leading-relaxed"></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==========================================
+         TAB 2: DOCUMENT SPECIFICATION 
+         ========================================== -->
+    <div id="view-document" class="hidden h-full overflow-y-auto bg-white">
+      <div class="max-w-4xl mx-auto p-8 pb-20 doc-content">
+        <!-- Rendered Markdown Content -->
+        
+        <h1 class="text-3xl font-bold text-slate-900 mb-2">차세대 건설기계 PKI 및 UDS 0x29 보안 명세서 (v1.2)</h1>
+        <p class="text-slate-500 mb-8 pb-4 border-b">본 문서는 건설기계 장비의 오프라인 진단 보안(UDS 0x29) 및 클라우드 연동(mTLS)을 위한 '단일 디바이스 CA 중심의 통합 PKI 아키텍처' 명세서입니다.</p>
+
+        <h2>1. 아키텍처 기본 원칙 (Design Principles)</h2>
+        <ol>
+          <li><strong>단일 CA 체계:</strong> 복잡한 장비/사용자 CA 구분을 없애고, OEM 산하의 단일 <code>통합 디바이스 CA</code>가 하드웨어 제어기(TGU, SGW)와 진단 툴(DMS PC)의 인증서를 일괄 발급한다.</li>
+          <li><strong>논리적 바인딩:</strong> 하드웨어 인증서에 장비 번호(VIN)를 포함하지 않으며, 클라우드(VLM) 레벨에서의 데이터베이스 매핑과 SGW의 로컬 텍스트(VIN) 주입으로 대체한다.</li>
+          <li><strong>오프라인 중심 보안:</strong> SGW는 인터넷(VLM) 통신 없이 내장된 Root/CA 공개키를 활용하여 오프라인 상태에서 DMS의 접근 권한을 수학적으로 검증한다.</li>
+          <li><strong>내부망 암호화 유예:</strong> 기존 J1939 (Classic CAN) 통신 환경의 대역폭 한계를 고려하여, 하위 ECU 노드 간의 SecOC(대칭키 암호화)는 본 스펙에서 제외한다.</li>
+        </ol>
+
+        <!-- SVG 1: CA Architecture -->
+        <div class="svg-container">
+          <h4 style="text-align: center; margin-top: 0; color: #334155;">[그림 1] 통합 디바이스 CA 기반 PKI 발급 아키텍처</h4>
+          <svg viewBox="0 0 800 280" width="100%" xmlns="http://www.w3.org/2000/svg">
+            <rect x="300" y="20" width="200" height="60" rx="8" fill="#1e3a8a" />
+            <text x="400" y="55" fill="white" font-size="16" font-weight="bold" text-anchor="middle">통합 디바이스 CA</text>
+            <path d="M 400 80 L 200 150" stroke="#3b82f6" stroke-width="2" marker-end="url(#arrow1)" fill="none" stroke-dasharray="5,5"/>
+            <path d="M 400 80 L 400 150" stroke="#3b82f6" stroke-width="2" marker-end="url(#arrow1)" fill="none" stroke-dasharray="5,5"/>
+            <path d="M 400 80 L 600 150" stroke="#3b82f6" stroke-width="2" marker-end="url(#arrow1)" fill="none" stroke-dasharray="5,5"/>
+            
+            <rect x="100" y="150" width="200" height="90" rx="8" fill="#ffffff" stroke="#3b82f6" stroke-width="2"/>
+            <text x="200" y="180" fill="#1e293b" font-size="15" font-weight="bold" text-anchor="middle">TGU (텔레매틱스)</text>
+            <text x="200" y="205" fill="#64748b" font-size="12" text-anchor="middle">부품 정품 인증서 (.pem)</text>
+            <text x="200" y="225" fill="#3b82f6" font-size="12" font-weight="bold" text-anchor="middle">AWS mTLS 접속용</text>
+        
+            <rect x="320" y="150" width="160" height="90" rx="8" fill="#ffffff" stroke="#0d9488" stroke-width="2"/>
+            <text x="400" y="180" fill="#1e293b" font-size="15" font-weight="bold" text-anchor="middle">SGW (방화벽)</text>
+            <text x="400" y="205" fill="#64748b" font-size="12" text-anchor="middle">부품 정품 인증서 (.der)</text>
+            <text x="400" y="225" fill="#0d9488" font-size="12" font-weight="bold" text-anchor="middle">오프라인 신분 증명</text>
+        
+            <rect x="500" y="150" width="200" height="90" rx="8" fill="#ffffff" stroke="#9333ea" stroke-width="2"/>
+            <text x="600" y="180" fill="#1e293b" font-size="15" font-weight="bold" text-anchor="middle">DMS PC (진단툴)</text>
+            <text x="600" y="205" fill="#64748b" font-size="12" text-anchor="middle">디바이스 라이선스 (.der)</text>
+            <text x="600" y="225" fill="#9333ea" font-size="12" font-weight="bold" text-anchor="middle">정비 권한(Role) 포함</text>
+            <defs>
+              <marker id="arrow1" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+                <path d="M0,0 L0,6 L9,3 z" fill="#3b82f6" />
+              </marker>
+            </defs>
+          </svg>
+        </div>
+
+        <h2>2. 암호 알고리즘 규격 (Cryptographic Suites)</h2>
+        <p>차량용 제어기(MCU)의 연산 한계와 UDS 통신의 속도 요구사항(밀리초 단위)을 충족하며, 시스템 전체의 암호 연산 구조를 단순화하기 위해 <strong>전 구간 단일 알고리즘(P-256)</strong>을 적용한다.</p>
+        
+        <h3>2.1 PKI 계층별 알고리즘</h3>
+        <ul>
+          <li><strong>OEM Root CA / 디바이스 CA:</strong> <code>ECC secp256r1 (NIST P-256)</code> + <code>SHA-256</code>
+            <br><span class="text-sm text-slate-500">사유: 디바이스와 동일한 알고리즘을 사용하여 하드웨어(SGW)의 서명 검증 시 이기종 알고리즘 처리에 따른 부하를 제거하고 호환성을 극대화.</span>
+          </li>
+          <li><strong>디바이스 기기 (SGW, TGU, DMS):</strong> <code>ECC secp256r1 (NIST P-256)</code> + <code>SHA-256</code>
+            <br><span class="text-sm text-slate-500">사유: 글로벌 자동차 보안 표준 규격. 32 Bytes의 작은 키 크기로 UDS 전송에 최적화.</span>
+          </li>
+        </ul>
+
+        <h3>2.2 UDS 0x29 데이터 규격</h3>
+        <ul>
+          <li><strong>Challenge (난수):</strong> <code>16 Bytes</code> (TRNG 기반 생성)</li>
+          <li><strong>Signature (서명값):</strong> <code>64 Bytes</code> (ECDSA P-256 서명값: R 32 Bytes + S 32 Bytes, Raw 포맷 기준)</li>
+        </ul>
+
+        <h2>3. 인증서 및 키 파일 포맷 명세 (File Formats)</h2>
+        <p>네트워크 특성(IT 클라우드망 vs OT 내부망)에 따라 인증서 포맷을 이원화하여 관리한다. UDS 0x29 통신에는 트래픽 최적화를 위해 바이너리(<code>der</code>)를 사용하고, AWS IoT 접속에는 호환성을 위해 텍스트(<code>pem</code>)를 사용한다.</p>
+        
+        <table>
+          <thead>
+            <tr>
+              <th>데이터 유형</th>
+              <th>권장 확장자</th>
+              <th>포맷 설명</th>
+              <th>주체 및 용도</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>로컬 디바이스 인증서</strong></td>
+              <td><code>.der</code></td>
+              <td><strong>X.509 v3 바이너리 구조:</strong> 서명, 유효기간, 식별자 등이 포함된 온전한 인증서의 DER 인코딩 형태</td>
+              <td>SGW, DMS 내부 보관 및 제한된 CAN 통신망(UDS 0x29) 전송용</td>
+            </tr>
+            <tr>
+              <td><strong>클라우드 디바이스 인증서</strong></td>
+              <td><code>.pem</code> / <code>.crt</code></td>
+              <td>Base64 인코딩된 텍스트 X.509</td>
+              <td>TGU의 AWS IoT Core mTLS 연결 및 디바이스 SDK 활용용</td>
+            </tr>
+            <tr>
+              <td><strong>CA 공개키</strong></td>
+              <td><code>.der</code> 또는 <code>.key</code></td>
+              <td><strong>SPKI 바이너리 구조:</strong> X.509 포맷이 아닌, CA의 순수 공개키 값만 추출한 DER 인코딩 형태</td>
+              <td>EOL 공정에서 SGW에 주입 (UDS 서명 검증용 잣대 역할)</td>
+            </tr>
+            <tr>
+              <td><strong>서버용 인증서</strong></td>
+              <td><code>.pem</code> / <code>.crt</code></td>
+              <td>Base64 인코딩된 텍스트 X.509</td>
+              <td>AWS IoT Core 및 VLM 서버 등록/관리용</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2>4. X.509 인증서 프로파일 (Certificate Profiles)</h2>
+        <p>통합 디바이스 CA에서 발급되는 인증서는 '확장 필드(Extensions)'를 통해 하드웨어와 라이선스를 구분한다.</p>
+
+        <h3>4.1 부품 정품 인증서 (SGW, TGU)</h3>
+        <ul>
+          <li><strong>용도:</strong> 부품 위변조 방지 및 TGU의 AWS 클라우드 mTLS 인증</li>
+          <li><strong>유효기간 (Validity):</strong> <code>20년</code> (장비 생애주기와 동일)</li>
+          <li><strong>Subject DN:</strong> <code>CN={부품 Serial}, O={OEM Name}, OU=Hardware</code></li>
+          <li><strong>Key Usage (KU):</strong> <code>Digital Signature</code> (필수)</li>
+          <li><strong>Extended Key Usage (EKU):</strong> <code>Client Authentication (1.3.6.1.5.5.7.3.2)</code><br>
+            <span class="text-sm text-slate-500">* 참고: EKU는 인증서 내 속성값일 뿐이며, AWS IoT 접속을 위해 필수적으로 포함되어야 함.</span>
+          </li>
+        </ul>
+
+        <h3>4.2 진단툴(DMS) 라이선스 인증서</h3>
+        <ul>
+          <li><strong>용도:</strong> DMS PC의 정당성 증명 및 UDS 권한 제어 (오프라인)</li>
+          <li><strong>유효기간 (Validity):</strong> <code>3개월 ~ 1년</code> (만료 시 갱신 유도를 통한 지속적 권한 통제)</li>
+          <li><strong>Subject DN:</strong> <code>CN={DMS-UUID}, O={OEM Name}, OU=Service</code></li>
+          <li><strong>Key Usage (KU):</strong> <code>Digital Signature</code></li>
+          <li><strong>Custom OID (Role 정의):</strong> <code>1.3.6.1.4.1.{OEM_ID}.1.1</code><br>
+            <span class="text-sm text-slate-500">SGW는 인증서 파싱 시 이 OID의 값을 확인하여 통신을 개방함.<br>
+            값 정의: <code>0x01 (Internal/Factory)</code>, <code>0x02 (Dealer)</code>, <code>0x03 (Read-Only)</code></span>
+          </li>
+        </ul>
+
+        <h2>5. EOL 데이터 주입 명세 (EOL Provisioning)</h2>
+        <p>장비 조립의 마지막 EOL 공정에서 테스터 장비가 <strong>SGW에 주입해야 하는 필수 데이터</strong>는 다음과 같다.</p>
+        <ol>
+          <li><strong>CA 공개키 (.der):</strong> 타 디바이스(DMS)의 인증서 유효성을 수학적으로 검증하기 위한 잣대. (순수 공개키 데이터)</li>
+          <li><strong>장비 식별자 (String):</strong> 자기 자신이 어떤 장비인지 자각하기 위한 <code>텍스트 포맷의 VIN</code> (예: "VIN-KOREA-0001")</li>
+        </ol>
+
+        <h2>6. 오프라인 UDS 0x29 인증 흐름 (Authentication Flow)</h2>
+        <p>인터넷이 차단된 현장에서 진단툴(DMS)이 보안 게이트웨이(SGW)에 접근하여 권한을 획득하는 통신 절차이다.</p>
+        
+        <!-- SVG 2: UDS 0x29 Flow -->
+        <div class="svg-container">
+          <h4 style="text-align: center; margin-top: 0; color: #334155;">[그림 2] UDS 0x29 (Authentication) 상호 인증 시퀀스</h4>
+          <svg viewBox="0 0 800 320" width="100%" xmlns="http://www.w3.org/2000/svg">
+            <rect x="100" y="20" width="120" height="40" rx="4" fill="#9333ea" />
+            <text x="160" y="45" fill="white" font-weight="bold" text-anchor="middle">DMS (진단툴)</text>
+            <line x1="160" y1="60" x2="160" y2="300" stroke="#94a3b8" stroke-dasharray="5,5" stroke-width="2"/>
+            
+            <rect x="580" y="20" width="120" height="40" rx="4" fill="#0d9488" />
+            <text x="640" y="45" fill="white" font-weight="bold" text-anchor="middle">SGW (게이트웨이)</text>
+            <line x1="640" y1="60" x2="640" y2="300" stroke="#94a3b8" stroke-dasharray="5,5" stroke-width="2"/>
+        
+            <text x="400" y="90" fill="#334155" font-size="12" font-weight="bold" text-anchor="middle">1. UDS 0x29 01 (인증 요청)</text>
+            <path d="M 170 95 L 630 95" stroke="#334155" stroke-width="2" marker-end="url(#arrow2)"/>
+        
+            <text x="400" y="130" fill="#334155" font-size="12" font-weight="bold" text-anchor="middle">2. UDS 0x69 01 + Challenge (16B 난수)</text>
+            <path d="M 630 135 L 170 135" stroke="#334155" stroke-width="2" marker-end="url(#arrow2)"/>
+        
+            <rect x="40" y="150" width="240" height="40" rx="4" fill="#f3e8ff" stroke="#d8b4fe"/>
+            <text x="160" y="166" fill="#6b21a8" font-size="11" font-weight="bold" text-anchor="middle">3. DMS 내부 연산</text>
+            <text x="160" y="182" fill="#6b21a8" font-size="11" text-anchor="middle">개인키로 Challenge 서명 (64B)</text>
+        
+            <text x="400" y="215" fill="#334155" font-size="12" font-weight="bold" text-anchor="middle">4. UDS 0x29 02 + 인증서(.der) + 서명값(64B)</text>
+            <path d="M 170 220 L 630 220" stroke="#334155" stroke-width="2" marker-end="url(#arrow2)"/>
+        
+            <rect x="520" y="235" width="240" height="50" rx="4" fill="#ccfbf1" stroke="#5eead4"/>
+            <text x="640" y="250" fill="#0f766e" font-size="11" font-weight="bold" text-anchor="middle">5. SGW 로컬 보안 검증</text>
+            <text x="640" y="266" fill="#0f766e" font-size="11" text-anchor="middle">Root키로 인증서 검증 및 서명 확인</text>
+            <text x="640" y="280" fill="#0f766e" font-size="11" text-anchor="middle">Role OID 파싱하여 권한 판단</text>
+        
+            <text x="400" y="305" fill="#059669" font-size="12" font-weight="bold" text-anchor="middle">6. UDS 0x69 02 (세션 개방 및 권한 부여)</text>
+            <path d="M 630 310 L 170 310" stroke="#059669" stroke-width="2" marker-end="url(#arrow-green)"/>
+        
+            <defs>
+              <marker id="arrow2" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto" markerUnits="strokeWidth">
+                <path d="M0,0 L0,6 L8,3 z" fill="#334155" />
+              </marker>
+              <marker id="arrow-green" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto" markerUnits="strokeWidth">
+                <path d="M0,0 L0,6 L8,3 z" fill="#059669" />
+              </marker>
+            </defs>
+          </svg>
+        </div>
+
+        <table>
+          <thead>
+            <tr>
+              <th class="w-12 text-center">단계</th>
+              <th class="w-1/4">주체</th>
+              <th class="w-1/4">UDS Payload (참고)</th>
+              <th>설명</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="text-center font-bold">1</td>
+              <td>DMS → SGW</td>
+              <td><code>0x29 01</code></td>
+              <td><strong>[인증 요청]</strong> DMS가 SGW에 Challenge 생성을 요청함.</td>
+            </tr>
+            <tr>
+              <td class="text-center font-bold">2</td>
+              <td>SGW → DMS</td>
+              <td><code>0x69 01 [16B Challenge]</code></td>
+              <td><strong>[난수 제공]</strong> SGW가 16 Bytes 난수를 생성하여 응답함.</td>
+            </tr>
+            <tr>
+              <td class="text-center font-bold">3</td>
+              <td>DMS (내부)</td>
+              <td>-</td>
+              <td><strong>[서명 생성]</strong> 수신한 난수를 DMS 개인키(P-256)로 서명하여 64 Bytes 서명값 생성.</td>
+            </tr>
+            <tr>
+              <td class="text-center font-bold">4</td>
+              <td>DMS → SGW</td>
+              <td><code>0x29 02 [인증서.der]<br>[64B 서명]</code></td>
+              <td><strong>[증명 제출]</strong> 자신의 딜러 인증서(DER)와 생성된 서명값을 SGW로 전송함. (필요 시 분할 전송)</td>
+            </tr>
+            <tr>
+              <td class="text-center font-bold">5</td>
+              <td>SGW (내부)</td>
+              <td>-</td>
+              <td><strong>[로컬 검증]</strong><br>
+                1. 내장된 CA 공개키로 DMS 인증서 위변조 및 만료일 확인.<br>
+                2. DMS 공개키를 추출하여 난수 서명값 일치 확인.<br>
+                3. 인증서 내 Custom OID(Role) 확인.
+              </td>
+            </tr>
+            <tr>
+              <td class="text-center font-bold">6</td>
+              <td>SGW → DMS</td>
+              <td><code>0x69 02</code></td>
+              <td><strong>[권한 부여]</strong> 검증 성공 시 해당 Role에 맞는 UDS 세션(예: Programming Session) 개방.</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2>7. 3rd Party (외자품) 제어기 연동 예외 처리</h2>
+        <p>자체적인 강력한 보안 정책을 고수하여 OEM PKI(디바이스 인증서) 수용이 불가한 글로벌 3rd Party ECU (예: Bosch, Cummins 등 엔진 제어기)에 대한 시스템 연동 및 예외 처리 정책을 정의한다.</p>
+
+        <h3>7.1 식별 및 바인딩 (EOL 단계)</h3>
+        <ul>
+          <li><strong>OEM 인증서 주입 불가:</strong> 해당 ECU에는 OEM의 디바이스 CA가 서명한 인증서를 발급하거나 강제로 주입하지 않는다.</li>
+          <li><strong>식별자 DB 매핑:</strong> 완성차 EOL 공정에서 테스터 장비를 통해 해당 ECU에 하드코딩된 '공급사 자체 인증서 정보' 또는 '하드웨어 고유 식별자(Serial)'를 읽어 들인다. 이후 MES를 통해 VLM 서버에 해당 식별자와 대상 장비(VIN)를 논리적으로 매핑(DB 바인딩)하여 보안 생애주기 관리에 편입시킨다.</li>
+        </ul>
+
+        <h3>7.2 진단 및 텔레매틱스 보안 연동</h3>
+        <p>OEM의 통합 디바이스 CA 체계에 속하지 않는 외자품 ECU와 상호작용하기 위해 주체별로 역할을 분리한다.</p>
+        <ul>
+          <li><strong>DMS (정비사 진단툴) 연동:</strong>
+            <ul class="mt-2">
+              <li>DMS는 해당 외자품 ECU를 직접 진단하거나 OEM 스펙의 보안 해제를 시도하지 않는다.</li>
+              <li>공급사(Bosch 등)가 제공하는 <strong>벤더 전용 진단 프로세스(라이브러리, DLL, 자체 툴킷 등)</strong>를 DMS 애플리케이션 내부에서 호출(위임)하여 엔진 진단 및 보안 세션 진입을 처리한다.</li>
+            </ul>
+          </li>
+          <li class="mt-4"><strong>TGU (텔레매틱스 단말기) 원격 데이터 수집 연동 (TBD):</strong>
+            <ul class="mt-2">
+              <li>TGU가 클라우드(AWS)로 엔진 데이터를 전송하기 위해 외자품 ECU로부터 주기적인 진단 데이터(UDS PID 등)를 읽어야 하는 요구사항이 존재한다.</li>
+              <li>그러나 TGU가 외자품 ECU의 독자적인 진단 보안 세션(자체 UDS 0x27 또는 0x29)을 자동으로 개방하고 유지하는 데에는 인증서 호환성 및 키 교환의 기술적 제약이 따른다.</li>
+              <li><strong>[결론]</strong> TGU와 3rd Party ECU 간의 상시 텔레매틱스 진단 세션 연동 구조 및 보안 해제 방안은 추후 공급사와의 상세 협의를 통해 구체화한다. <strong>(TBD - To Be Determined)</strong></li>
+            </ul>
+          </li>
+        </ul>
+
+        <div class="note-box mt-10">
+          <strong>※ 문서 이력 안내:</strong> 아래 8장(통합 보안 생애주기 프로세스)은 시각화 툴에서 도출된 보안 아키텍처의 시간 흐름에 따른 시나리오를 명문화한 것으로, 시스템 구현 시 각 주체의 동작 사양으로 활용됩니다.
+        </div>
+
+        <!-- NEW SECTION: Merged Simulator Steps into Document -->
+        <h2>8. 통합 보안 생애주기 프로세스 (Security Lifecycle Process)</h2>
+        <p>본 장은 장비의 제조부터 유지보수에 이르는 전 과정(생애주기)에서 앞서 정의된 보안 정책과 PKI 체계가 어떻게 적용되고 작동하는지를 5단계로 규정한다.</p>
+
+        <h3>8.1. 단계 1: 단일 CA PKI 발급 (부품 제조 및 SW 배포)</h3>
+        <p>장비 및 서비스 운영에 개입하는 모든 행위자를 장비/사용자 구분 없이 <strong>단일 '디바이스 CA'</strong> 관할 하에 통합 인증한다.</p>
+        <ul>
+          <li><strong>부품사 생산 공정:</strong> HSM을 탑재한 Tier 1(TGU), Tier 2(SGW) 제어기는 제조 시점에 자체적으로 키쌍을 생성하고, OEM 디바이스 CA로부터 빈(VIN) 정보가 배제된 순수 <strong>'부품 정품 인증서'</strong>를 발급받아 내장한다.</li>
+          <li><strong>진단툴(DMS) 배포:</strong> 딜러나 정비사가 윈도우 PC에 DMS를 설치할 때, 디바이스 CA로부터 정비 권한(Role)과 유효기간이 명시된 <strong>'라이선스 인증서'</strong>를 발급받는다.</li>
+          <li><em>결과:</em> 장비 내부 OT 환경과 정비용 IT 환경이 동일한 Root CA를 바라보는 단일 신뢰 체계(Trust Chain)로 통합된다.</li>
+        </ul>
+
+        <h3>8.2. 단계 2: EOL 보안 주입 및 식별자 매핑 (완성차 조립 라인)</h3>
+        <p>물리적 부품들이 하나의 장비(VIN)로 결합되는 완성차 EOL(End-Of-Line) 공정에서는 <strong>식별자 매핑과 최소한의 검증 잣대(공개키)만 주입</strong>한다.</p>
+        <ul>
+          <li><strong>차량 레지스트리(VLM) 매핑:</strong> MES가 라인에 투입된 모든 제어기(TGU, SGW, 일반 ECU)의 시리얼을 스캔하여, 이를 VLM 서버 상에서 단일 VIN과 식별자 매핑(DB 바인딩)을 수행한다. 3rd Party 외자품 ECU(Bosch 등) 또한 식별자만 스캔하여 VLM에 등록한다.</li>
+          <li><strong>SGW 로컬 검증 앵커화:</strong> EOL 테스터는 SGW에 향후 UDS 통신 검증을 위한 <strong>'OEM Root CA 공개키(.der)'</strong>와 자신이 속한 장비를 인식하기 위한 <strong>'문자열 VIN 텍스트'</strong>만을 주입한다.</li>
+          <li><em>결과:</em> SGW는 외부로 자신을 증명할 필요 없이 순수하게 타인을 검증(Verify)하는 완벽한 내부 방화벽으로 설정된다.</li>
+        </ul>
+
+        <h3>8.3. 단계 3: JITP 온라인 프로비저닝 (클라우드 연동)</h3>
+        <p>가동을 시작한 장비는 오직 <strong>TGU(Tier 1)</strong>를 통해서만 외부 클라우드(AWS IoT Core)와 연결된다.</p>
+        <ul>
+          <li><strong>mTLS 및 JITP 연결:</strong> TGU는 자신의 클라우드 디바이스 인증서(.pem)를 사용하여 AWS IoT Core에 접속한다.</li>
+          <li><strong>VIN 기반 사물(Thing) 인가:</strong> AWS 내부에 설정된 JITP Lambda가 VLM에 실시간 질의(Query)하여, 접속한 TGU 시리얼에 대응하는 'VIN 번호'를 확인한다. 성공 시 해당 VIN 이름으로 사물(Thing)이 생성 및 연결된다.</li>
+          <li><em>결과:</em> SGW 및 하위 일반 ECU는 외부 인터넷과 완전히 격리되며, 클라우드 연동은 전적으로 TGU가 대리(Proxy) 수행한다.</li>
+        </ul>
+
+        <h3>8.4. 단계 4: 오프라인 UDS 0x29 진단 (현장 유지보수)</h3>
+        <p>인터넷 통신이 철저히 차단된 산악/광산 현장에서, 클라우드의 개입 없이 로컬 통신만으로 완벽한 인증과 인가(Authorization)를 수행한다.</p>
+        <ul>
+          <li><strong>DMS 로컬 자가 통제:</strong> DMS 소프트웨어는 통신 전 자체적으로 인증서의 유효기간과 Role OID를 검사하여 UI 차단 및 권한 밖 메뉴를 숨긴다.</li>
+          <li><strong>Challenge-Response 상호 인증:</strong> DMS가 SGW에 접근하면 SGW는 난수(Challenge)를 송신하고, DMS는 개인키로 난수를 서명하여 인증서와 함께 제출한다.</li>
+          <li><strong>SGW 로컬 방화벽 통과:</strong> SGW는 내장된 Root CA 공개키를 통해 DMS의 서명과 Role을 오프라인 상태에서 즉각 수학적으로 검증한 후, 조건 부합 시 UDS 0x29 진단 세션을 개방한다.</li>
+        </ul>
+
+        <h3>8.5. 단계 5: 현장 부품 자가 교체 (수리할 권리 및 P&P)</h3>
+        <p>고장 난 하위 제어기(ECU)를 현장에서 교체할 때, 시스템의 가용성과 추적성을 동시에 보장하는 '비동기식 보안 연동'을 수행한다.</p>
+        <ul>
+          <li><strong>즉각적인 통신 허용 (Plug & Play):</strong> 정비사가 새 정품 ECU를 장착하면, SGW는 하드코딩된 특정 VIN 종속성 검사 없이 해당 부품이 정상적인 보안 규격(대칭키 등)을 갖추었는지만 판단하여 즉각 내부망 통신을 허용한다. 이를 통해 현장의 '수리할 권리'를 방해하지 않는다.</li>
+          <li><strong>장비 이력(SBOM) 최신화:</strong> 부품이 교체된 장비가 이후 텔레매틱스(TGU)를 통해 AWS 클라우드에 접속하면, 교체 이벤트 로그를 VLM으로 비동기 전송한다. VLM은 이를 바탕으로 장비의 부품 이력 데이터를 최신화한다.</li>
+          <li><em>결과:</em> 엄격한 하드웨어 강결합(Strict Binding)에서 탈피하여 정비 편의성을 극대화하면서도, EU CRA(사이버 복원력 법안)가 요구하는 생애주기 추적성을 만족한다.</li>
+        </ul>
+
+      </div>
+    </div>
+    
+  </div>
+
+  <script>
+    // Tab Switching Logic
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active', 'text-blue-600'));
+      document.getElementById('tab-' + tabId).classList.add('active', 'text-blue-600');
+      
+      document.getElementById('view-simulator').classList.add('hidden');
+      document.getElementById('view-document').classList.add('hidden');
+      
+      document.getElementById('view-' + tabId).classList.remove('hidden');
+    }
+
+    // Simulator Logic
+    const emptyState = "<span class='text-slate-400 italic text-[10px]'>대기 중</span>";
+    
+    const stepsData = {
+      1: {
+        title: "1. 단일 CA PKI 발급",
+        subtitle: "모든 행위자를 '디바이스'로 통합 인증",
+        activeNodes: ['node-ca', 'node-tgu', 'node-sgw', 'node-dms'],
+        actions: [
+          "OEM은 장비 CA, 사용자 CA를 구분하지 않고 <strong>단일 '디바이스 CA'</strong>를 구성합니다.",
+          "부품사 공정에서 <strong>TGU</strong>와 <strong>SGW</strong>는 HSM에 키를 생성하고 '디바이스 인증서'를 발급받습니다.",
+          "딜러의 <strong>DMS PC</strong> 또한 설치 시점에 '라이선스(단기 디바이스) 인증서'를 발급받습니다."
+        ],
+        insight: "장비 내부 부품(OT)과 외부 정비용 소프트웨어(IT) 모두 동일한 Root CA를 바라보는 단일 신뢰 체계(Trust Chain)로 통합되었습니다. (VIN 정보는 아직 없습니다)",
+        dataUpdates: {
+          'data-ca': "<div class='text-blue-700 font-mono'><b>[서명 완료]</b><br>TGU-01, SGW-02, DMS-PC</div>",
+          'data-vlm': emptyState,
+          'data-aws': emptyState,
+          'data-tgu': "<div class='text-blue-700 font-mono'>인증서: TGU-01 (VIN X)</div>",
+          'data-sgw': "<div class='text-teal-700 font-mono'>인증서: SGW-02 (VIN X)</div>",
+          'data-ecu': emptyState,
+          'data-eol': emptyState,
+          'data-dms': "<div class='text-purple-700 font-mono'>라이선스: DMS-PC (Role: 딜러)</div>"
+        }
+      },
+      2: {
+        title: "2. EOL 보안 주입 및 바인딩",
+        subtitle: "식별자 매핑과 로컬 검증 앵커 설정",
+        activeNodes: ['node-eol', 'node-vlm', 'node-tgu', 'node-sgw', 'node-ecu'],
+        actions: [
+          "<strong>MES</strong>가 제어기들을 스캔하여 <strong>VLM</strong>에 DB 바인딩(식별자 매핑)을 전송합니다.",
+          "<strong>[TGU]</strong> 물리적 주입 없이 VLM 바인딩만으로 준비 완료됩니다.",
+          "<strong>[SGW]</strong> <strong>'Root CA 공개키'</strong>와 식별용 <strong>'문자열 VIN'</strong>만 주입받습니다.",
+          "<strong>[외자품 ECU]</strong> PKI 주입 없이 Serial 정보만 읽어 VLM에 식별자 매핑 처리합니다."
+        ],
+        insight: "SGW에 무거운 키쌍이나 인증서를 넣는 오류를 제거했습니다. SGW는 순수하게 진단기를 검증(Verify)할 수 있는 잣대(Root 공개키)만 갖게 됩니다.",
+        dataUpdates: {
+          'data-ca': "<span class='text-slate-400 text-[10px]'>대기</span>",
+          'data-vlm': "<div class='text-indigo-700 font-mono'><b>[식별자 DB 매핑 완료]</b><br>VIN-99 = TGU-01, SGW-02, ECU-03</div>",
+          'data-aws': emptyState,
+          'data-eol': "<div class='text-indigo-700 font-mono'>SGW: 검증키 및 VIN 주입<br>ECU: 식별자 스캔 매핑</div>",
+          'data-tgu': "<div class='text-blue-700 font-mono'>인증서: TGU-01 (대기)</div>",
+          'data-sgw': "<div class='text-teal-700 font-mono'>인증서: SGW-02<br><b>+ Root CA 공개키(.der)</b><br><b>+ 텍스트 \"VIN-99\"</b></div>",
+          'data-ecu': "<div class='text-slate-700 font-mono'><b>식별자 매핑 완료</b></div>",
+          'data-dms': "<div class='text-purple-700 font-mono'>라이선스 대기 중</div>"
+        }
+      },
+      3: {
+        title: "3. JITP 온라인 프로비저닝",
+        subtitle: "TGU 전담 클라우드 접점 확보",
+        activeNodes: ['node-tgu', 'node-aws', 'node-vlm'],
+        actions: [
+          "인터넷망을 담당하는 <strong>TGU</strong>가 자신의 클라우드 디바이스 인증서(.pem)로 <strong>AWS IoT Core</strong>에 mTLS 접속합니다.",
+          "AWS 내부 JITP Lambda가 <strong>VLM</strong>에 질의하여, 해당 TGU가 'VIN-99' 소속임을 확인합니다.",
+          "AWS에 'VIN-99'라는 사물(Thing)이 생성되고 통신 채널이 확립됩니다."
+        ],
+        insight: "오직 외부 통신용인 TGU만 온라인 클라우드와 상호작용합니다. SGW나 ECU는 외부망에 전혀 노출되지 않아 완벽한 네트워크 격리가 이루어집니다.",
+        dataUpdates: {
+          'data-ca': "<span class='text-slate-400 text-[10px]'>대기</span>",
+          'data-vlm': "<div class='text-indigo-700 font-mono'>AWS의 JITP 질의 응답:<br>\"TGU-01은 VIN-99임\"</div>",
+          'data-aws': "<div class='text-orange-700 font-mono'><b>[Thing 생성] VIN-99</b><br>연결: TGU-01 (Active)</div>",
+          'data-tgu': "<div class='text-blue-700 font-mono'><b>[AWS Connected]</b><br>VIN-99 섀도 연동</div>",
+          'data-sgw': "<div class='text-teal-700 font-mono'>로컬 검증 대기 중...</div>",
+          'data-ecu': "<div class='text-slate-700 font-mono'>대기 중</div>",
+          'data-eol': emptyState,
+          'data-dms': "<div class='text-purple-700 font-mono'>라이선스 대기 중</div>"
+        }
+      },
+      4: {
+        title: "4. 오프라인 UDS 0x29 진단",
+        subtitle: "SGW와 DMS의 로컬 상호 인증",
+        activeNodes: ['node-dms', 'node-sgw', 'node-ecu'],
+        actions: [
+          "통신이 단절된 산속에서 DMS를 연결하면 <strong>SGW</strong>가 난수(Challenge)를 보냅니다.",
+          "DMS는 난수를 서명하여 제출하고, SGW는 주입받았던 <strong>Root 공개키로 이를 검증</strong>하여 UDS 0x29 세션을 엽니다.",
+          "외자품 ECU에 대해서는 DMS 내부의 <strong>벤더 제공 라이브러리</strong>를 호출하여 추가 인증(0x27 등)을 수행합니다."
+        ],
+        insight: "장비 내부 보안 게이트웨이(SGW)의 핵심 가치입니다. 클라우드 연결이 불가능한 상황에서도, 수학적 암호학만으로 완벽한 인가 처리를 오프라인에서 수행합니다.",
+        dataUpdates: {
+          'data-ca': "<span class='text-slate-400 text-[10px]'>[오프라인 단절]</span>",
+          'data-vlm': "<span class='text-slate-400 text-[10px]'>[오프라인 단절]</span>",
+          'data-aws': "<span class='text-slate-400 text-[10px]'>[오프라인 단절]</span>",
+          'data-dms': "<div class='text-purple-700 font-mono'>[인증서 + 서명] 제출 <br>▶ <b>SGW로 요청</b></div>",
+          'data-sgw': "<div class='text-teal-700 bg-teal-50 p-1 border border-teal-200 rounded font-mono text-[10px]'>1. 서명 무결성 확인: OK<br>2. 딜러 Role 확인: OK<br>▶ <b class='text-blue-600'>UDS 0x29 개방</b></div>",
+          'data-ecu': "<div class='text-slate-700 font-mono'><b>[정비 모드]</b><br>DMS 벤더 DLL을 통한 접근</div>",
+          'data-eol': emptyState,
+          'data-tgu': "<div class='text-blue-700 font-mono'>오프라인 상태 대기</div>"
+        }
+      },
+      5: {
+        title: "5. 현장 부품 자가 교체 (P&P)",
+        subtitle: "엄격한 바인딩 탈피 및 사후 이력 갱신",
+        activeNodes: ['node-sgw', 'node-tgu', 'node-ecu', 'node-vlm'],
+        actions: [
+          "정비사나 고객이 고장난 <strong>ECU</strong>를 빼고 새 정품(또는 벤더) ECU를 장착합니다.",
+          "<strong>SGW</strong>는 물리적 통신을 즉각 허용(Plug&Play)하여 수리할 권리를 보장합니다.",
+          "장비가 온라인(AWS)에 연결되면, <strong>TGU</strong>가 교체 사실을 알리고 <strong>VLM</strong>이 장비 이력(SBOM)을 최신화합니다."
+        ],
+        insight: "CRA(사이버 복원력 법안)의 추적성 요구와 현장의 유지보수성 간의 모순을 해결합니다. 통신은 P&P로 유연하게 허용하되, 관리는 VLM이 사후 비동기로 완벽하게 추적합니다.",
+        dataUpdates: {
+          'data-ca': "<span class='text-slate-400 text-[10px]'>대기</span>",
+          'data-vlm': "<div class='text-indigo-700 bg-indigo-50 p-1 border border-indigo-200 rounded font-mono'><b>[장비 이력(SBOM) 갱신]</b><br>VIN-99: ECU-03 $\\rightarrow$ ECU-04</div>",
+          'data-aws': "<div class='text-orange-700 font-mono'>섀도 업데이트 중계</div>",
+          'data-tgu': "<div class='text-blue-700 font-mono'>교체 이벤트 감지<br>▶ <b>VLM으로 사후 통보</b></div>",
+          'data-sgw': "<div class='text-teal-700 font-mono'>새 ECU 통신 허용<br>▶ <b>P&P 적용</b></div>",
+          'data-ecu': "<div class='text-green-700 font-bold bg-green-50 p-1 rounded font-mono'>[새 부품 (ECU-04)]<br>통신 가동 정상</div>",
+          'data-dms': "<span class='text-slate-400 text-[10px]'>작업 종료</span>",
+          'data-eol': emptyState
+        }
+      }
+    };
+
+    function setStep(step) {
+      document.querySelectorAll('.step-btn').forEach(btn => btn.classList.remove('active-step', 'bg-slate-900', 'text-white'));
+      document.getElementById(`btn-step-${step}`).classList.add('active-step', 'bg-slate-900', 'text-white');
+
+      const data = stepsData[step];
+
+      document.getElementById('panel-title').innerText = data.title;
+      document.getElementById('panel-subtitle').innerText = data.subtitle;
+      document.getElementById('insight-text').innerHTML = data.insight;
+      
+      const actionList = document.getElementById('action-list');
+      actionList.innerHTML = '';
+      data.actions.forEach((act, idx) => {
+        actionList.innerHTML += `<li class="flex gap-2.5 items-start"><span class="bg-blue-100 text-blue-800 w-4 h-4 rounded-full flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">${idx+1}</span> <span class="leading-relaxed flex-1">${act}</span></li>`;
+      });
+
+      document.querySelectorAll('.node-card').forEach(node => {
+        node.classList.remove('ring-4', 'ring-blue-400', 'opacity-30', 'scale-[1.02]');
+        node.classList.add('opacity-30'); 
+      });
+
+      data.activeNodes.forEach(nodeId => {
+        const el = document.getElementById(nodeId);
+        if(el) {
+          el.classList.remove('opacity-30');
+          el.classList.add('ring-4', 'ring-blue-400', 'scale-[1.02]');
+          el.parentElement.classList.remove('inactive-mode'); 
+        }
+      });
+
+      const zones = ['zone-cloud', 'zone-vehicle', 'zone-eol', 'zone-dms'];
+      zones.forEach(zoneId => {
+        const zone = document.getElementById(zoneId);
+        if(!zone) return;
+        const hasActiveNode = Array.from(zone.querySelectorAll('.node-card')).some(n => data.activeNodes.includes(n.id));
+        
+        if (hasActiveNode) {
+          zone.classList.remove('inactive-mode');
+        } else {
+          zone.classList.add('inactive-mode');
+        }
+      });
+
+      if (data.dataUpdates) {
+        for (const [id, htmlContent] of Object.entries(data.dataUpdates)) {
+          const el = document.getElementById(id);
+          if (el) el.innerHTML = htmlContent;
+        }
+      }
+    }
+
+    window.onload = () => {
+      setStep(1); 
+    };
+  </script>
+</body>
+</html>
