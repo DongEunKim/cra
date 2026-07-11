@@ -37,6 +37,7 @@
 **서브에이전트** (사용자 요청 시에만 스폰, read-only):
 - `pki-security-reviewer` — 암호·PKI 정확성 심층 심사.
 - `cra-compliance-analyst` — CRA 조문 ↔ 문서 매핑·갭 분석 (web 접근).
+- `korean-style-reviewer` — 문장·문체 자연스러움 검수(번역투·비유 등), 자연스러운 대안 제시.
 
 ## 정제 시 주의 (원본에서 확인된 결함)
 
