@@ -1,8 +1,8 @@
 # DOC-20 · 업데이트 사양 (A2)
 
 **본문:** [업데이트-보안명세서.md](업데이트-보안명세서.md) (v1.4)
-**원본:** `legacy/fota_v5.1.html` + `legacy/fota_v5.2.html` (구 DOC-10)
-**상태:** 🟢 정제본 (스파인 A2 · 문서 ID 10→20 재배치)
+**원본:** `legacy/fota_v5.1.html` + `legacy/fota_v5.2.html`
+**상태:** 🟢 정제본 (스파인 A2)
 
 FW 업데이트의 전자서명 PKI(이중서명·신뢰연쇄) · 패키지 트리(평문/Secure Flash) · 검증 절차 ·
 대칭키(FW-Group-Key) 암호화 · Secure Boot·Factory Flashing.
