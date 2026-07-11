@@ -2,13 +2,13 @@
   <!-- Root CA -->
   <rect x="280" y="30" width="200" height="50" rx="8" fill="#1e3a8a"/>
   <text x="380" y="52" fill="white" font-size="14" font-weight="bold" text-anchor="middle">OEM Root CA</text>
-  <text x="380" y="70" fill="#bfdbfe" font-size="10" text-anchor="middle">오프라인 · 최상위 신뢰 앵커</text>
+  <text x="380" y="70" fill="#bfdbfe" font-size="10" text-anchor="middle">최상위 앵커 · 개인키는 에어갭 오프라인 HSM</text>
 
   <!-- KMS (isolated) -->
   <rect x="560" y="34" width="190" height="66" rx="8" fill="#fee2e2" stroke="#dc2626" stroke-width="2"/>
-  <text x="655" y="56" fill="#991b1b" font-size="12" font-weight="bold" text-anchor="middle">🔒 KMS (격리)</text>
-  <text x="655" y="73" fill="#b91c1c" font-size="9" text-anchor="middle">모든 CA 개인키 ·</text>
-  <text x="655" y="86" fill="#b91c1c" font-size="9" text-anchor="middle">FW-Group-Key 보관</text>
+  <text x="655" y="56" fill="#991b1b" font-size="12" font-weight="bold" text-anchor="middle">🔒 운영 KMS (온라인)</text>
+  <text x="655" y="73" fill="#b91c1c" font-size="9" text-anchor="middle">Dev-IC/CS-IC 개인키 ·</text>
+  <text x="655" y="86" fill="#b91c1c" font-size="9" text-anchor="middle">FW-Group-Key</text>
 
   <!-- Intermediate CAs -->
   <rect x="120" y="150" width="220" height="50" rx="8" fill="#ffffff" stroke="#3b82f6" stroke-width="2"/>
@@ -25,11 +25,10 @@
   <text x="290" y="120" fill="#3b82f6" font-size="10" font-weight="bold" text-anchor="middle">발급</text>
   <text x="470" y="120" fill="#0d9488" font-size="10" font-weight="bold" text-anchor="middle">발급</text>
 
-  <!-- CA -> KMS (CA만 접근) -->
-  <path d="M 480 55 L 558 58" stroke="#dc2626" stroke-width="2" marker-end="url(#p-red)"/>
+  <!-- Dev-IC / CS-IC -> KMS (CA만 접근) -->
   <path d="M 340 165 C 620 150, 660 130, 655 102" stroke="#dc2626" stroke-width="1.5" stroke-dasharray="4,4" marker-end="url(#p-red)" fill="none"/>
   <path d="M 640 165 C 680 150, 665 125, 658 102" stroke="#dc2626" stroke-width="1.5" stroke-dasharray="4,4" marker-end="url(#p-red)" fill="none"/>
-  <text x="540" y="40" fill="#dc2626" font-size="9.5" font-weight="bold" text-anchor="middle">CA만 접근</text>
+  <text x="655" y="120" fill="#dc2626" font-size="9.5" font-weight="bold" text-anchor="middle">CA만 접근</text>
 
   <!-- Issuance targets -->
   <rect x="90" y="270" width="280" height="120" rx="8" fill="#eff6ff" stroke="#bfdbfe"/>

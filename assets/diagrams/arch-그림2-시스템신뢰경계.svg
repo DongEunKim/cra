@@ -32,8 +32,8 @@
   <text x="197" y="163" fill="#64748b" font-size="8" text-anchor="middle">코드서명 CA</text>
 
   <rect x="45" y="210" width="200" height="50" rx="6" fill="#fee2e2" stroke="#dc2626" stroke-width="2"/>
-  <text x="145" y="230" fill="#991b1b" font-size="11" font-weight="bold" text-anchor="middle">🔒 KMS (격리)</text>
-  <text x="145" y="246" fill="#b91c1c" font-size="9" text-anchor="middle">CA 개인키 · FW-Group-Key</text>
+  <text x="145" y="230" fill="#991b1b" font-size="11" font-weight="bold" text-anchor="middle">🔒 운영 KMS (온라인)</text>
+  <text x="145" y="246" fill="#b91c1c" font-size="9" text-anchor="middle">Dev-IC/CS-IC 키 · FW-Group-Key</text>
 
   <!-- ===== OEM 클라우드 ===== -->
   <rect x="300" y="78" width="290" height="58" rx="6" fill="#cffafe" stroke="#06b6d4"/>
