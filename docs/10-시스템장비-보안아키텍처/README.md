@@ -9,8 +9,8 @@ AWS IoT Core·키 인벤토리·신뢰 앵커 분배) · 설계 원칙·범위/�
 인증서 프로파일(§6) · EOL 주입(§7).
 
 ## 다이어그램
-- `assets/diagrams/arch-그림1-시스템신뢰경계.svg`
-- `assets/diagrams/arch-그림2-PKI계층.svg`
+- `assets/diagrams/arch-그림1-PKI계층.svg` (§1)
+- `assets/diagrams/arch-그림2-시스템신뢰경계.svg` (§2)
 
 ## 후속 TODO
 - [ ] CA 인증서(Root/Dev-IC/CS-IC)·SW 개발자 인증서 프로파일 추가 (§6)
