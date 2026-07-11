@@ -20,11 +20,11 @@ CRA/
 ├── README.md                  # (이 문서) 프로젝트 개요
 ├── CLAUDE.md                  # 작업 가이드 / 문서 규약
 ├── docs/                      # ★ 공식 문서 원본 (Markdown)
-│   ├── README.md              #   문서 체계 인덱스
-│   ├── 00-공통/               #   용어집·약어·참조표준
-│   ├── 10-FOTA보안아키텍처/   #   FOTA 보안 명세서 (legacy v5.1 + v5.2 통합)
-│   ├── 20-PKI-UDS진단보안/    #   PKI & UDS 0x29 진단 보안 명세서 (legacy v1.2)
-│   └── 30-CRA대응/            #   CRA 요구사항 ↔ 아키텍처 매핑 (신규)
+│   ├── README.md              #   ★ 문서 지도 (2-tier·읽는 순서·절차 배치 원칙)
+│   ├── 00-공통/               #   용어집·약어·참조표준 (DOC-00)
+│   ├── 참조-CRA배경/          #   Tier B 참조 (REF-01~03, 컨설턴트 소관·설계자 인지용)
+│   ├── 10-FOTA보안아키텍처/   #   Tier A 사양 · FOTA·업데이트 (legacy v5.1 + v5.2 통합)
+│   └── 20-PKI-UDS진단보안/    #   Tier A 사양 · PKI & UDS 0x29 진단 (legacy v1.2)
 ├── assets/
 │   └── diagrams/              #   SVG 등 다이어그램 자산
 └── legacy/                    # 원본 HTML 3종 (보존, 편집 금지)
@@ -33,13 +33,15 @@ CRA/
     └── pki_v1.2.html
 ```
 
-## 문서 계열
+## 문서 계층
 
-| 계열 | 문서 | 원본 | 상태 |
+두 계층으로 나뉜다. 상세 구조·읽는 순서·절차 배치 원칙은 [docs/README.md 문서 지도](docs/README.md).
+
+| 계층 | 문서 | 원본 | 상태 |
 |------|------|------|------|
-| FOTA 보안 | 제어기 SW 업데이트 보안 아키텍처 명세서 | `legacy/fota_v5.1.html`, `legacy/fota_v5.2.html` | 통합·정제 예정 |
-| PKI/진단 | 통합 PKI 및 UDS 0x29 진단 보안 명세서 | `legacy/pki_v1.2.html` | 정제 예정 |
-| CRA 대응 | CRA 요구사항 대응 매핑 | (신규) | 신규 작성 |
+| **A 사양** · FOTA·업데이트 | DOC-10 SW 업데이트 보안 명세서 | `legacy/fota_v5.1/5.2.html` | 🟢 정제본 v1.3 |
+| **A 사양** · PKI·진단 | DOC-20 통합 PKI 및 UDS 0x29 명세서 | `legacy/pki_v1.2.html` | 🟢 정제본 v1.2 |
+| **B 참조** · CRA 배경 | REF-01~03 (CRA 개요·관리체계·추적성) | (신규, 컨설턴트 소관) | 🔴 레퍼런스 스텁 |
 
 ## 작업 로드맵
 
