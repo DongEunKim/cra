@@ -15,3 +15,7 @@ Thumbs.db
 /tmp/
 *.tmp
 *.log
+
+# eSync 제3자 기밀 원문 (Excelfore Confidential — 커밋 금지)
+/eSync/*.pdf
+/eSync/*.json

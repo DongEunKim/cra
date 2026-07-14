@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>eSync의 종단간 보안 (End to end Security in eSync)</title>
+<style>
+:root {
+  --ink:#1f2933; --muted:#6b7280; --line:#e5e7eb; --accent:#0369a1;
+  --note-bg:#f8fafc; --note-line:#0ea5e9; --warn-bg:#fff7ed; --warn-line:#f59e0b;
+  --paper:#ffffff; --bg:#eceff1;
+}
+* { box-sizing:border-box; }
+html,body { margin:0; padding:0; }
+img { max-width:100%; height:auto; }
+body {
+  background:var(--bg); color:var(--ink);
+  font-family:"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-size:15px; line-height:1.75; -webkit-font-smoothing:antialiased;
+}
+.paper {
+  max-width:860px; margin:32px auto; background:var(--paper);
+  padding:56px 64px 72px; border:1px solid var(--line);
+  box-shadow:0 1px 3px rgba(0,0,0,.08), 0 8px 24px rgba(0,0,0,.06);
+}
+.confidential {
+  display:inline-block; font-size:11px; font-weight:700; letter-spacing:.06em;
+  color:#b91c1c; border:1px solid #fca5a5; background:#fef2f2;
+  padding:3px 10px; border-radius:4px; margin-bottom:20px;
+}
+h1 { font-size:27px; line-height:1.35; margin:6px 0 14px; letter-spacing:-.01em; }
+.meta {
+  font-size:12.5px; color:var(--muted); line-height:1.7;
+  border-left:3px solid var(--line); padding:8px 0 8px 14px; margin:0 0 8px;
+}
+hr { border:none; border-top:1px solid var(--line); margin:38px 0; }
+h2 {
+  font-size:20px; margin:44px 0 14px; padding-bottom:8px;
+  border-bottom:2px solid var(--accent); color:var(--accent);
+}
+h3 { font-size:16.5px; margin:30px 0 10px; color:#111827; }
+h4 { font-size:14.5px; margin:22px 0 8px; color:#374151; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:5px 0; }
+li > ul, li > ol { margin:4px 0; }
+strong { color:#111827; }
+code {
+  font-family:"SF Mono",Menlo,Consolas,monospace; font-size:.88em;
+  background:#f1f5f9; padding:1px 5px; border-radius:4px; color:#0f172a;
+}
+a { color:var(--accent); }
+/* 표 */
+table {
+  border-collapse:collapse; width:100%; margin:16px 0; font-size:13.5px;
+  display:block; overflow-x:auto;
+}
+th,td { border:1px solid var(--line); padding:7px 11px; text-align:left; vertical-align:top; }
+thead th { background:#f1f5f9; color:#111827; font-weight:700; }
+tbody tr:nth-child(even) { background:#fafbfc; }
+td[align="center"],th[align="center"] { text-align:center; }
+/* 인용/노트 */
+blockquote {
+  margin:16px 0; padding:12px 16px; background:var(--note-bg);
+  border-left:4px solid var(--note-line); border-radius:0 6px 6px 0;
+  font-size:14px; color:#334155;
+}
+blockquote p { margin:4px 0; }
+blockquote strong:first-child { color:#0c4a6e; }
+/* 경고(주의) 노트: '주의'로 시작하는 blockquote 강조는 JS 없이 일괄 note 스타일 유지 */
+/* 그림 */
+figure.fig {
+  margin:22px 0; text-align:center; page-break-inside:avoid; break-inside:avoid;
+}
+figure.fig img {
+  max-width:100%; height:auto; border:1px solid var(--line);
+  border-radius:6px; background:#fff; padding:8px;
+  box-shadow:0 1px 2px rgba(0,0,0,.05);
+}
+figure.fig figcaption {
+  margin-top:8px; font-size:12px; color:var(--muted);
+}
+/* 인쇄(PDF 저장) */
+@media print {
+  body { background:#fff; font-size:11pt; }
+  .paper { box-shadow:none; border:none; margin:0; max-width:none; padding:0 8mm; }
+  h2 { page-break-after:avoid; }
+  h3,h4 { page-break-after:avoid; }
+  table,figure.fig,blockquote { page-break-inside:avoid; }
+  a { color:inherit; text-decoration:none; }
+}
+@media (max-width:640px) {
+  .paper { padding:28px 20px; margin:0; }
+  body { font-size:14px; }
+}
+</style>
+</head>
+<body>
+<main class="paper">
+  <span class="confidential">EXCELFORE CONFIDENTIAL · 비공식 번역 · 외부 배포 금지</span>
+  <h1>eSync의 종단간 보안 (End to end Security in eSync)</h1>
+  <div class="meta"><strong>원문:</strong> Excelfore, <em>End to end Security in eSync</em> (29p, 2026). <strong>Excelfore Confidential.</strong><br><strong>성격:</strong> 내부 참조용 <strong>비공식 한글 번역</strong>. 외부 배포 금지. 원문 절·제목 구조를 유지하되 자연스러운 기술문서체로 옮겼다.<br>원문은 전반적으로 "권고(suggestive)이며 강제가 아님"을 밝힌다. 반복되는 동일 주의문은 한 번만 옮기고 이후는 생략한다.<br><strong>우리 아키텍처와의 대응(eSync Client ≈ TGU 등)은 문서 끝 「부록: 우리 프로젝트 대응표」에 별도로 정리한다.</strong></div>
+  <hr>
+  <h2>개요 (Overview)</h2>
+<p>eSync는 커넥티드 차량의 소프트웨어를 무선(OTA)으로 업데이트하고 데이터를 수집하는 기술이다. 서로 다른 운영체제로
+여러 네트워크·버스에 흩어진 다수의 전자 제어기를 하나의 보안 데이터 파이프라인으로 다룬다.</p>
+<p>이 문서는 eSync의 보안 아키텍처를 다룬다. eSync는 eSync Server에서 eSync Client 게이트웨이를 거쳐 종단 노드(HU,
+T-Box, ECU)까지 종단간 보안을 제공한다. ECU에서의 보안 수준은 그 ECU의 능력(메모리·연산·암호 지원)에 달려 있다.
+ECU가 자원 제약이 크면, 페이로드는 OTA 체인의 마지막 "안전한 홉(hop) 노드"까지만 보호된다.</p>
+<blockquote>
+<p><strong>주의:</strong> 사용하는 암호 모듈은 합의된 표준(consensus standards)을 따라야 한다. 따르지 않는다면 차량 제조사가 그 사용을 정당화해야 한다.</p>
+</blockquote>
+<h3>eSync Server-Client-Agent 모델</h3>
+<figure class="fig"><img alt="그림 · eSync 원문 p003" src="img/fig/fig-p003.png" /><figcaption>그림 · eSync 원문 p003</figcaption></figure>
+<p>세 하위 시스템(Server·Client·Agent)이 차량과 인프라 양 끝에서 암호화된 컴포넌트의 전달·설치를 담당한다. 세 시스템은
+서로 독립적으로 동작하며, 한쪽이 다른 쪽을 막거나 기다리지 않고 매끄럽게 협력해 OTA 업데이트를 수행한다.</p>
+<ul>
+<li><strong>eSync Cloud:</strong> eSync Server + 클라우드 하드웨어</li>
+<li><strong>Vehicle:</strong> eSync Client(차량 내 게이트웨이) + eSync Agent(ECU 상주)</li>
+<li>서버↔차량은 <strong>eSync Messaging Protocol</strong>(Air Interface), 차량 내부는 <strong>eSync Bus Messages</strong>로 통신한다.</li>
+</ul>
+<h3>eSync 전반의 보안 레벨 (Security Levels across eSync)</h3>
+<figure class="fig"><img alt="그림 · eSync 원문 p004" src="img/fig/fig-p004.png" /><figcaption>그림 · eSync 원문 p004</figcaption></figure>
+<p>OTA 업데이트는 원격 차량 내부의 엣지 디바이스까지 도달하므로, 전 과정에서 업데이트가 훼손되지 않도록 광범위한 보안이
+필요하다. eSync 시스템의 모든 인터페이스에 보안이 적용된다(사용자 인터페이스, 컴포넌트 업로더, 패키지·캠페인 DB,
+리포팅/알림, eDiag 서버, MongoDB·대시보드, eSync Client, 메시지 브로커, eSync Agent 등).</p>
+<h3>중요 노트 — 최소 보안 요건 (Important notes)</h3>
+<p>eSync OTA는 최소 보안 요건을 정하고, 그 위에 파이프라인 보안을 강화하는 구조를 제공한다. 충족해야 할 최소 조건:</p>
+<ul>
+<li><strong>인증서:</strong> eSync Server의 SSL/인증서, eSync Client·Agent·사용자(로그인·컴포넌트 서명·업로드·캠페인 배포)용 인증서.</li>
+<li><strong>암호화:</strong> 종단간 암호화가 원칙. 단, 엣지 디바이스가 복호화 능력이 없으면 예외로 하되, 구현자는 평문 페이로드를 안전하게 다뤄 대상 디바이스까지 전달해야 한다.</li>
+<li><strong>TLS:</strong> 별도 언급이 없으면 모든 통신은 최신 표준이 요구하는 버전의 TLS로 한다.</li>
+<li><strong>인증기관(CA):</strong> 구현자는 신뢰할 수 있는 CA를 도입한다.</li>
+<li><strong>PKI:</strong> 원하는 공개키 기반구조는 <strong>구현자가 직접 관리</strong>한다. † <em>PKI 인프라의 규정은 eSync 사양의 범위를 벗어난다.</em></li>
+<li><strong>인증서 갱신/폐기:</strong> 모든 인증서는 주기적으로 갱신·교체한다. 갱신 시점은 구현자가 정하되 eSync Alliance는 45~90일을 제안한다.</li>
+<li>인증서는 "장수명"이면 안 된다. 단수명 인증서(예: 90일)를 다룰 수 있어야 한다.</li>
+<li>NIST 권고상 3년을 넘지 않아야 하며, Apple 등은 398일 초과 인증서를 거부한다.</li>
+<li>UNECE·NIST·NHTSA·ITU-T X.1373 등 해당 규정을 만족해야 한다.</li>
+<li><strong>알고리즘:</strong> 가능하면 독자·특허 알고리즘으로 보안을 강화할 수 있으나, eSync OTA 솔루션 전반에서 동일하게 유지해야 한다.</li>
+<li><strong>컴플라이언스:</strong> 구현 지역의 규제 기관이 정한 보안 지침을 준수해야 한다.</li>
+</ul>
+<hr />
+<h2>최상위 아키텍처 (Top Level Architecture)</h2>
+<figure class="fig"><img alt="그림 · eSync 원문 p005" src="img/fig/fig-p005.png" /><figcaption>그림 · eSync 원문 p005</figcaption></figure>
+<p>보안은 다음 모든 인터페이스에 적용된다.</p>
+<ul>
+<li>사용자 인터페이스 ↔ eSync Server</li>
+<li>3rd Party 컴포넌트 ↔ eSync Server</li>
+<li>의존 컴포넌트 ↔ eSync Server</li>
+<li>eSync Server ↔ eSync Client</li>
+<li>eSync Client ↔ eSync Agent</li>
+</ul>
+<p><strong>클라우드(eSync Server) 주요 구성요소:</strong> 리포팅/알림, 사용자 인가, 캠페인(Scheduler·Manager·Delivery·Policies),
+역할 기반 접근제어(RBAC), Package Manager, Certificates/Authentication, Component Uploader, Workflow Engine, Encryption.
+어댑터를 통해 TSP·PKI·SW 업데이트·차량 신원 제공자·3rd Party·OKTA/SSO 등과 연동하고, DB(캠페인·패키지·컴포넌트·차량·사용자·승인 워크플로)와 스토리지(델타 압축)를 둔다.</p>
+<p><strong>차량(eSync Client) 주요 구성요소:</strong> Communication Manager, Orchestrator(Authenticator·Download Manager·Controller),
+Message Broker, Status/Policy/HMI Service, eSync Monitor. <strong>eSync Agent:</strong> Message Broker Interface, 암복호화, 델타 재구성,
+서명 검증, 업데이트 컨트롤러, 롤백 관리, Device Programming Interface, 상태 모니터링 등.</p>
+<hr />
+<h2>일반 종단간 보안 (General end to end Security)</h2>
+<figure class="fig"><img alt="그림 · eSync 원문 p006" src="img/fig/fig-p006.png" /><figcaption>그림 · eSync 원문 p006</figcaption></figure>
+<p>OTA 전 단계에서 <strong>인증서로 인증·검증한 뒤에야</strong> 업데이트가 진행된다. 데이터는 클라우드에서 암호화되어 차량까지
+전달되고, 필요 시 중간에서 재암호화(re-encrypt)된다. 전달 링크 예: eSync Cloud→차량 내 eSync Client, eSync Client→eSync Agent,
+eSync Agent→ECU. <strong>모든 단계의 인증으로 데이터 무결성을 보장한다.</strong></p>
+<h3>다중 보안 레벨 (Multiple Levels of Security)</h3>
+<p>OEM은 링크별 암호화 수준을 선택할 수 있다.</p>
+<ul>
+<li>송수신자용 <strong>X.509 인증서</strong>, 전 키에 대한 <strong>PKI</strong>, (고성능 프로세서 기기의) <strong>개인키</strong></li>
+<li><strong>데이터 무결성</strong>: SHA로 전송 중 변조 여부 확인</li>
+<li>SHA 값에 인증서로 서명(다단계 서명 포함)</li>
+<li>페이로드 <strong>암호화</strong>: 128/192/256비트 AES 또는 Camellia</li>
+<li>키 관리는 <strong>HSM</strong> 사용. 모든 트래픽은 TLS.</li>
+</ul>
+<p>eSync Server가 지원해야 하는 암호 조합:</p>
+<table>
+<thead>
+<tr>
+<th>암호화 방식</th>
+<th style="text-align: center;">ECDH</th>
+<th style="text-align: center;">DH</th>
+<th style="text-align: center;">RSA</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>AES-GCM</td>
+<td style="text-align: center;">X</td>
+<td style="text-align: center;">X</td>
+<td style="text-align: center;">X</td>
+</tr>
+<tr>
+<td>AES-256</td>
+<td style="text-align: center;">X</td>
+<td style="text-align: center;">X</td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td>AES-128</td>
+<td style="text-align: center;">X</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td>AES</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">X</td>
+<td style="text-align: center;">X</td>
+</tr>
+<tr>
+<td>Camellia-128</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">X</td>
+<td style="text-align: center;">X</td>
+</tr>
+<tr>
+<td>Camellia-256</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">X</td>
+<td style="text-align: center;">X</td>
+</tr>
+</tbody>
+</table>
+<p><strong>구현 선택과 이점:</strong> 일부 알고리즘은 연산 부담이 커서 저사양 ECU엔 무리다. 사양은 링크별 조합 최적화를 권한다. 시스템
+설계자는 링크마다 다른 수준을 자유롭게 쓸 수 있고, eSync Client는 이에 무관하다. 예를 들어 어떤 ECU는 AES-128만
+이해하고, 다른 트래픽은 다른 표준으로 암호화될 수 있다.</p>
+<hr />
+<h2>인증서 프로세스 (Certificate Process)</h2>
+<h3>최초 인증서 생성 (First-time certificate generation)</h3>
+<p>eSync Server는 RSA/ECC 개인키와 CSR을 만들어 PKI 제공자에 제출해 eSync Server 인증서를 발급받는다.</p>
+<ol>
+<li>eSync 관리자가 ECC 개인키를 생성한다.</li>
+<li>그 개인키로 CSR을 만든다.</li>
+<li>PKI 제공자 애플리케이션에 로그인해 CSR을 제출한다(검증·서명·반환).</li>
+<li>PKI 제공자가 선호 방식으로 CSR을 검증한다: <code>admin@&lt;OTA_server_FQDN&gt;</code>로 검증 링크 이메일 / DNS에 CNAME 추가 / 서버 루트에 텍스트 파일 업로드 중 하나.</li>
+<li>검증이 끝나면 인증서 다운로드 링크를 주거나 이메일 첨부로 보낸다.</li>
+</ol>
+<hr />
+<h2>서버 서명 (Server Signing)</h2>
+<p>eSync Server는 업로드 시 인증서를 검증한 뒤, <strong>원 서명을 제거하고 자신의 서명으로 교체</strong>한다. 서명에 쓰는 값:</p>
+<ul>
+<li>X.509 인증서 체인(다중 인증서 허용), PEM 인코딩</li>
+<li>대응 개인키(PKCS#1 또는 PKCS#8, PEM), 필요 시 개인키 암호(<code>server-private-key</code> 설정)</li>
+</ul>
+<blockquote>
+<p><strong>주의:</strong> 디바이스는 <strong>eSync Server가 서명한 콘텐츠만 수용</strong>하고, 개발자가 서명한 콘텐츠는 인정하지 않아야 한다.</p>
+</blockquote>
+<h3>서버 서명 콘텐츠의 인증서 검증</h3>
+<p>eSync Server는 자기 서명의 유효성도 확인한다. 업로드 콘텐츠 검증과 유사하되: 사용자명 확인은 없고, 서명자가 eSync
+Server 그룹에 속하며 "sign" 인가를 포함해야 한다.</p>
+<h3>디바이스 인증 (Device Authentication)</h3>
+<p>eSync Server는 들어오는 모든 디바이스를 <strong>상호 SSL(mTLS)</strong>로 인증한다. 모든 디바이스는 유효한 X.509 인증서를 제시해야
+하고, 지정된 신뢰 앵커(trust anchor) 목록에 대해 유효해야 한다. SSL 인증 성공 후 인가를 수행한다: 인증서 내 디바이스 ID
+확인, 디바이스 그룹 소속 확인, "SOTA" 인가 확인.</p>
+<h3>인증서 갱신 (Certificate Renewal)</h3>
+<p>eSync Server 인증서가 만료 임박(보통 만료 45~90일 전, 구현마다 다름)이면 관리자가 PKI 포털에서 갱신 요청을 제출하고,
+검증 후 새 인증서를 받는다.</p>
+<h3>인증서 검증 (Certificate validation)</h3>
+<p>eSync Client가 인증서를 검증한다. 발급 PKI가 인증서를 폐기하지 않았는지 확인하며, eSync Server는 <strong>OCSP Stapling과
+Must-Staple</strong>로 폐기 인증서를 탐지한다. eSync Server가 TSP·차량 내 eSync Client로부터 SSL 인증서를 받으면 다음을 수행한다.</p>
+<ul>
+<li><strong>신뢰 체인(Chain of trust):</strong> 로컬 신뢰 저장소의 Root·Intermediate CA 인증서와 제시된 인증서로 체인을 구성해 Root CA까지 잇는다.</li>
+<li><strong>유효기간:</strong> "Not Before"/"Not After"로 만료 여부 확인.</li>
+<li><strong>Common Name:</strong> CN 값으로 인증서가 제시 주체의 것인지 확인.</li>
+<li><strong>폐기 상태:</strong> PKI 인터페이스가 정의한 대로 OCSP 호출.</li>
+<li><strong>코드 서명 인증서:</strong> 업로드 전 PKI 제공자 인증서로 업데이트 SW 서명. 업로드 후 eSync Server가 서명을 검증하고, 확인되면 자기 개인키로 패키지에 서명해 컴포넌트 DB에 저장한다.</li>
+<li><em>(권고 워크플로)</em> 업로드 컴포넌트를 임시 메모리 풀에 두고, 업로더에게 확인 이메일을 보낸 뒤, 인가된 사용자가 확인하면 컴포넌트 DB로 옮긴다.</li>
+</ul>
+<p>코드 서명 인증서는 eSync Server가 유효성·인가 사용자 소속을 판별할 수 있는 특정 형식을 따른다. 벤더 인증서를 올바로
+검증하려면 그 형식을 벤더에 전달하거나 형식을 설명해야 한다.</p>
+<hr />
+<h2>디바이스 인증서 (Device certificates)</h2>
+<ul>
+<li><strong>CN:</strong> eSync Client 인증서의 CN은 eSync Client가 설치·구동되는 시스템의 시리얼 번호다.</li>
+<li><strong>유효기간:</strong> eSync Client·Agent 인증서는 자주 만료되도록(보통 45~90일) 설정해 신선도를 유지하고 침입을 막는다. 매번 만료 여부를 확인한다.</li>
+<li><strong>최초 프로비저닝:</strong> ECU 벤더가 PKI와 연동해, ECU 이미지(또는 eSync Client)를 플래시하기 전에 ECU 인증서를 요청한다. ECU 시리얼로 CSR을 만들어(CN=ECU 시리얼) PKI에 요청하고, PKI가 CN=<code>&lt;ECU_Serial_Number&gt;</code>로 OEM 유효기간의 인증서·개인키를 발급한다. 벤더는 파일시스템 인증서를 eSync Client가 접근 가능한 위치에 저장한다.</li>
+<li><em>보안상, Excelfore는 ECU 벤더가 </em><em>개인키를 직접(ECC로) 생성</em><em>하고 CN=<code>&lt;ECU_Serial_Number&gt;</code>로 CSR을 만들어 PKI에 보내 그 CSR로 발급받기를 권한다. ECU가 CSR 생성이 전혀 불가능할 때만 위 방식(PKI가 키 생성)을 쓴다.</em></li>
+<li><strong>인증서 교체:</strong> eSync Client 인증서는 OEM이 정한 기간에 만료된다. 폐기되면 eSync Server가 새 클라이언트 인증서를 요청해 차량 내 클라이언트로 내려보낼 수 있다(새 RSA 키+CSR, 캠페인으로 배포, Agent가 구 인증서를 교체, 검증 호출로 확인, 실패 시 롤백).</li>
+<li><strong>업로드 콘텐츠 검증:</strong> 업로드 콘텐츠 서명 인증서는 ① 업로더 사용자명과 일치, ② Developers 그룹 소속, ③ "sign" 인가 포함이어야 한다.</li>
+<li><strong>OCSP:</strong> eSync Server·Client는 OCSP로 서로의 인증서를 검증한다. 설정 가능한 단정값: <code>DISABLED</code>(기본, 검사 안 함)·<code>NONE</code>(검사하되 OCSP 실패해도 수용)·<code>REQUIRED</code>(OCSP 속성 없으면 인증 실패)·<code>ENFORCED</code>(OCSP 응답이 명시적 "GOOD"이 아니면 실패).</li>
+</ul>
+<h3>보안 권고 [Uptane/TUF]</h3>
+<ul>
+<li><strong>키 침해 취약성:</strong> 단일 키(또는 임계값 미만의 키)만 장악해도 클라이언트를 침해할 수 있다(온라인 단일 키·오프라인 단일 키 모두). eSync Server의 완화책: 인증서 서명 키, 승인 후 컴포넌트 서명 키, eSync Client의 서버 통신 키를 각각 분리한다. 이로써 미러 서버발 악성 업데이트를 막는다.</li>
+<li><strong>신뢰(Trust):</strong> 신뢰는 영구적이면 안 되고(미갱신 시 만료), 모든 당사자에게 동등하면 안 된다(구획화된 신뢰 — 루트가 정한 파일에 한해서만 신뢰). eSync Server는 인증서를 45~90일마다 만료·재발급하도록 요구한다(갱신 절차는 본 문서 범위 밖).</li>
+</ul>
+<h3>eSync OTA 폴트 톨러런스</h3>
+<ul>
+<li>캠페인 중 업데이트 실패는 일시적으로 간주하고 정해진 횟수만큼 재시도한다. 캠페인 종료 시에만 'Fail'이 확정된다.</li>
+<li>클라우드↔차량 장애: 연결 실패 시 서버가 재시도 예약, 전송 중단 시 클라이언트가 버퍼링하고 누락분 재전송 요청.</li>
+<li>차량 내부: 업데이트 실패 시 Agent가 자동 재시도, 손상 시 클라이언트가 서버에 재전송 요청. eSync는 클라이언트에 "미러" 저장공간을 요구하지 않고 Agent로 직접 전송한다.</li>
+<li><strong>중요 장치(Critical device):</strong> OS 구동 기기, 게이트웨이/스위치 등. 손상 시 복구를 위해 <strong>Insurance Kernel</strong>(최소 코드베이스)로 통신을 유지하고 호스트 OS를 재설치할 수 있게 한다.</li>
+</ul>
+<h3>보안 시퀀스 (Security Sequence Diagram)</h3>
+<p>OTA 업데이트 흐름: <strong>ECU 벤더 → OEM → OTA Server → eSync Client → eSync Agent → ECU</strong>(최종 플래시). 최종 바이너리
+이미지의 무결성이 핵심이며, eSync Server는 SHA로 이미지 무결성을 보장한다.</p>
+<ul>
+<li><strong>컴플라이언스 노트:</strong> SHA-256 권고(NIST). 최신 합의 표준의 해시 사용 권고. NIST는 SHA-224를 아직 허용하나 독일 BSI는 권장하지 않는다.</li>
+<li><strong>동작 원리:</strong> 캠페인 내 각 컴포넌트에 Secure Hash가 결합(승인 시 생성, 영구 유지). 해시 키는 RSA/DH로 암호화되어 인증된 송신자가 만들었음을 보장한다. 종단 디바이스가 수신 이미지의 SHA를 계산해 복호화된 SHA와 비교한다. 불일치 시 전송 오류·변조로 판단한다.</li>
+</ul>
+<figure class="fig"><img alt="그림 · eSync 원문 p013" src="img/fig/fig-p013.png" /><figcaption>그림 · eSync 원문 p013</figcaption></figure>
+<blockquote>
+<p><strong>컴포넌트 업로드 (ECU 벤더 → eSync Server):</strong> 벤더가 서명한 바이너리를 OEM이 업로드 → eSync Server가 서버 개인키로 서명 → OEM이 다운로드·테스트 → 성공 시 승인 → <strong>서명된 컴포넌트 DB</strong>에 저장. <em>(권고이며 강제 아님. 컴포넌트 서명은 보안상 eSync Server 밖에 두되, 필요 시 업로드 워크플로에 통합 가능.)</em></p>
+</blockquote>
+<figure class="fig"><img alt="그림 · eSync 원문 p014" src="img/fig/fig-p014.png" /><figcaption>그림 · eSync 원문 p014</figcaption></figure>
+<blockquote>
+<p><strong>eSync Server ↔ eSync Client 인증서 검증(상호):</strong> Client "Hello" → 서버가 인증서 제시 → 클라이언트가 서버 인증서 검증(체인) → 클라이언트가 자기 인증서 제시 → 서버가 CN으로 인증 → 양측 OCSP 검증 후 TLS 수립. 실패 시 거부. 모든 검증은 감사 로그로 남긴다.</p>
+</blockquote>
+<figure class="fig"><img alt="그림 · eSync 원문 p015" src="img/fig/fig-p015.png" /><figcaption>그림 · eSync 원문 p015</figcaption></figure>
+<blockquote>
+<p><strong>eSync Client ↔ eSync Agent 인증서 검증(상호):</strong> 위와 유사하되 <strong>OCSP 호출 없음</strong>. 성공 후에만 상태·정보를 주고받는다.</p>
+</blockquote>
+<figure class="fig"><img alt="그림 · eSync 원문 p016" src="img/fig/fig-p016.png" /><figcaption>그림 · eSync 원문 p016</figcaption></figure>
+<blockquote>
+<p><strong>Secure UID 검증:</strong> Client가 VIN 전송 → 서버가 차량 DB의 UID와 대조(make·model·year·location 등) → 유효 시 진행, 불일치 시 무통보 거부. UID 호출 로그는 선택(사양 강제 아님).</p>
+</blockquote>
+<figure class="fig"><img alt="그림 · eSync 원문 p016_2" src="img/fig/fig-p016_2.png" /><figcaption>그림 · eSync 원문 p016_2</figcaption></figure>
+<blockquote>
+<p><strong>업데이트 확인·다운로드:</strong> Client가 버전 전송 → 서버가 캠페인 DB 확인 → 있으면 CDN에서 바이너리 다운로드 → <strong>eSync Server 인증서로 바이너리 서명 검증</strong> → 유효 시 보호 메모리에 저장, 무효 시 재시도, 초과 시 폐기·서버 통보. 다운로드는 바이너리 모드, 청크 해시로 무결성 확인.</p>
+</blockquote>
+<figure class="fig"><img alt="그림 · eSync 원문 p017" src="img/fig/fig-p017.png" /><figcaption>그림 · eSync 원문 p017</figcaption></figure>
+<blockquote>
+<p><strong>정책 확인·Agent 전송:</strong> Client가 정책 확인 → 서명된 바이너리를 Agent 플래시 메모리로 다운로드 → Agent가 자체 SHA 검증 → 델타면 이미지 재구성 → 플래시 준비. 무효 시 재시도 후 거부.</p>
+</blockquote>
+<figure class="fig"><img alt="그림 · eSync 원문 p018" src="img/fig/fig-p018.png" /><figcaption>그림 · eSync 원문 p018</figcaption></figure>
+<blockquote>
+<p><strong>플래시·상태 갱신:</strong> Agent가 플래시 → 검증 → 성공 시 벤더별 후처리·새 이미지 primary 지정·버전 저장 → <code>INSTALL_COMPLETE</code> 보고. 실패 시 재시도 후 <code>INSTALL_FAILED</code> 보고.</p>
+</blockquote>
+<hr />
+<h2>서버와 애플리케이션 사이 (Between Server and Application)</h2>
+<figure class="fig"><img alt="그림 · eSync 원문 p019" src="img/fig/fig-p019.png" /><figcaption>그림 · eSync 원문 p019</figcaption></figure>
+<p>eSync 클라우드 내 eSync Server↔애플리케이션 보안. 컴포넌트 업로드부터 종단 소비·상태 보고까지 종단간 보안을 적용한다.</p>
+<figure class="fig"><img alt="그림 · eSync 원문 p020" src="img/fig/fig-p020.png" /><figcaption>그림 · eSync 원문 p020</figcaption></figure>
+<ul>
+<li><strong>Secure CDN 워크플로:</strong> ① 메타데이터를 클라이언트에 전달 — CDN 트래픽이 HTTPS면 그대로, 아니면 페이로드 암호화 키를 메타데이터에 추가해 TLS로 전송. ② CDN으로 페이로드 전달 — HTTPS면 그대로, 아니면 페이로드 암호화 키로 암호화해 전달.</li>
+</ul>
+<figure class="fig"><img alt="그림 · eSync 원문 p021" src="img/fig/fig-p021.png" /><figcaption>그림 · eSync 원문 p021</figcaption></figure>
+<figure class="fig"><img alt="그림 · eSync 원문 p021_2" src="img/fig/fig-p021_2.png" /><figcaption>그림 · eSync 원문 p021_2</figcaption></figure>
+<ul>
+<li><strong>컴포넌트 업로드 보안 흐름:</strong> 사용자/벤더가 키로 서명한 페이로드를 UI로 업로드 → 서버가 사용자 인증서를 떼어 검증(OCSP) → 유효하면 DB 저장, 무효면 오류 표시.</li>
+</ul>
+<p><strong>eSync Server 세부:</strong></p>
+<figure class="fig"><img alt="그림 · eSync 원문 p022" src="img/fig/fig-p022.png" /><figcaption>그림 · eSync 원문 p022</figcaption></figure>
+<ul>
+<li><strong>SW 서명·검증:</strong> 업로드 SW는 개발자 개인키로 서명해야 한다. 서명 = SHA-256 해시 → 개인키로 암호화 → SW에 부착. 검증 = 개발자 X.509 인증서로 서명 확인(Hash1 == Hash2 이면 유효).</li>
+<li><strong>SW 관리:</strong> eSync Server가 자기 키로 서명 후 저장(저장 시 암호화).</li>
+<li><strong>접근:</strong> 캠페인 매니저 접근은 인증 필요. OEM SSO 연동으로 MFA 적용.</li>
+<li><strong>DDoS 방지:</strong> 퍼블릭 클라우드 서비스 활용, 온프레미스면 OEM이 직접 구축.</li>
+<li><strong>애플리케이션 방화벽:</strong> HTTPS 보안 포트 외 외부 포트 차단.</li>
+<li><strong>DB:</strong> 외부에서 인바운드 불가, 애플리케이션 서버만 보안 채널로 접근.</li>
+<li><strong>로그·감사:</strong> 로그인 시도(성공·실패), SW 검증 과정, 사용자·역할 관리 변경을 기록·감사.</li>
+</ul>
+<hr />
+<h2>서버와 클라이언트 사이 (Between Server and Client)</h2>
+<figure class="fig"><img alt="그림 · eSync 원문 p023" src="img/fig/fig-p023.png" /><figcaption>그림 · eSync 원문 p023</figcaption></figure>
+<ul>
+<li><strong>통신:</strong> TCP/IP 위 TLS. 대칭 암호로 기밀성, 상대 인증, MAC로 무결성 보장.</li>
+<li><strong>인증:</strong> eSync Server가 차량이 제시한 X.509 인증서를 검증(CA까지 체인·유효기간·CN, OCSP로 폐기·만료 확인).</li>
+</ul>
+<figure class="fig"><img alt="그림 · eSync 원문 p024" src="img/fig/fig-p024.png" /><figcaption>그림 · eSync 원문 p024</figcaption></figure>
+<ul>
+<li><strong>신뢰 체인:</strong> Server 인증서 ← Intermediate CA ← Root CA. 각 상위 CA의 공개키로 하위 서명을 검증하며 Root까지 잇는다.</li>
+</ul>
+<figure class="fig"><img alt="그림 · eSync 원문 p025" src="img/fig/fig-p025.png" /><figcaption>그림 · eSync 원문 p025</figcaption></figure>
+<ul>
+<li><strong>클라이언트-서버 인증:</strong> ① 자원 요청 → ② 서버 인증서 → ③ CA로 서버 인증서 검증 → ④ 클라이언트 인증서 → ⑤ CA로 클라이언트 인증서 검증 → ⑥ 자원 접근 허용.</li>
+<li><strong>암호화:</strong> 서버↔클라이언트 전 통신은 TLS로 암호화.</li>
+<li><strong>SW 전송:</strong> eSync Server가 서명한 업데이트 SW를 TLS 링크로 차량 클라이언트에 전송(암호화됨).</li>
+<li><strong>eSync Client:</strong> 서버 X.509 인증서를 CN·신뢰 체인으로 검증. 다운로드한 SW의 서명·해시를 <strong>eSync Server 인증서</strong>로 검증(두 해시 일치 확인). Agent도 서명을 재검증해 <strong>last mile까지</strong> 무결성을 보장한다.</li>
+</ul>
+<hr />
+<h2>클라이언트와 에이전트 사이 (Between Client and Agent)</h2>
+<figure class="fig"><img alt="그림 · eSync 원문 p026" src="img/fig/fig-p026.png" /><figcaption>그림 · eSync 원문 p026</figcaption></figure>
+<ul>
+<li><strong>통신:</strong> eSync Client↔Agent는 <strong>TLS 버스</strong>로 통신(전 메시지 암호화).</li>
+<li><strong>인증:</strong> Client가 Agent의 X.509 인증서로 인증하고, Agent도 Client의 X.509 인증서를 검증한 뒤 TLS를 수립한다.</li>
+</ul>
+<figure class="fig"><img alt="그림 · eSync 원문 p027" src="img/fig/fig-p027.png" /><figcaption>그림 · eSync 원문 p027</figcaption></figure>
+<ul>
+<li><strong>차량 내부 채널 보안:</strong> 차량 내 채널은 X.509로 보호한다. Client↔Server가 인증서를 교환·검증해 보안 파이프를 만든다. 차량 시동 시마다(설정 가능) Client가 인증서를 제시·검증하고 웹소켓 연결로 UID 전송·업데이트 확인·다운로드·상태 보고·데이터 수집을 수행한다. <strong>차량 내 인증기관(in-vehicle CA)</strong>이 차량 내부 구성요소 인증서를 관리해야 한다.</li>
+</ul>
+<figure class="fig"><img alt="그림 · eSync 원문 p028" src="img/fig/fig-p028.png" /><figcaption>그림 · eSync 원문 p028</figcaption></figure>
+<ul>
+<li><strong>보안 in-vehicle 워크플로:</strong> 페이로드 암호화 시 TLS로 받은 키로 복호화 → 서버 인증서 검증 → 페이로드 서명 검증(서버 인증서) → 서버 인가 검증 → 모두 통과해야 Update Agent로 전달, 하나라도 실패 시 거부. 페이로드 인증서 검사를 "hard decision"으로 두어 무효 페이로드가 종단에 도달하지 못하게 한다.</li>
+</ul>
+<hr />
+<h2>부록: 우리 프로젝트(CRA) 대응표 — 번역자 정리</h2>
+<blockquote>
+<p>원문에 없는 내용. eSync 개념을 우리 DOC 체계와 잇기 위한 참조. (상세 대응·충돌은 별도 검토 대상)</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>eSync</th>
+<th>우리 프로젝트</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>eSync Server (클라우드)</td>
+<td>배포 시스템(자체 OTA Platform)</td>
+</tr>
+<tr>
+<td>eSync Client (차량 내 게이트웨이)</td>
+<td><strong>TGU</strong>(인스톨러)</td>
+</tr>
+<tr>
+<td>eSync Agent (ECU 상주)</td>
+<td><strong>타겟 제어기</strong>의 업데이트 에이전트</td>
+</tr>
+<tr>
+<td>PKI는 구현자 몫(범위 밖)</td>
+<td><strong>DOC-10 PKI</strong>(Root/Dev-IC/CS-IC/KMS)가 그 자리</td>
+</tr>
+<tr>
+<td>서버 재서명(디바이스는 서버 서명만 신뢰)</td>
+<td>우리는 이중서명(배포 서명=CS-IC + 펌웨어 서명=개발자). <strong>검증 대상 차이 — 조정 필요</strong></td>
+</tr>
+<tr>
+<td>디바이스 인증서 단수명 45~90일</td>
+<td>부품 정품 인증서 20년. <strong>충돌 — 재검토</strong></td>
+</tr>
+<tr>
+<td>OCSP 필수(서버↔클라이언트)</td>
+<td>오프라인 타겟은 OCSP 불가. <strong>폐기 전략 과제(트래커 B6)</strong></td>
+</tr>
+<tr>
+<td>CN=시리얼, ECC 키+CSR 자체생성, HSM</td>
+<td>부품 정품 인증서 CN=Serial, DOC-20 §4.1과 일치</td>
+</tr>
+<tr>
+<td>vdb / 차량 UID·VIN 검증</td>
+<td><strong>VLM의 실체 후보</strong></td>
+</tr>
+<tr>
+<td>campaigns / 캠페인 매니저</td>
+<td>배포 캠페인 구조</td>
+</tr>
+<tr>
+<td>CRA 미언급</td>
+<td><strong>CRA 대응은 우리 몫</strong></td>
+</tr>
+</tbody>
+</table>
+</main>
+</body>
+</html>
