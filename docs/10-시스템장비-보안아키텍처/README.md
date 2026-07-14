@@ -13,7 +13,7 @@ AWS IoT Core·키 인벤토리·신뢰 앵커 분배) · 설계 원칙·범위/�
 - `assets/diagrams/arch-그림2-시스템신뢰경계.svg` (§2)
 
 ## 후속 TODO
-- [ ] CA 인증서(Root/Dev-IC/CS-IC)·SW 개발자 인증서 프로파일 추가 (§6)
+- [ ] CA 인증서(Root/Dev-IC/CS-IC) 프로파일 추가 (§6)
 - [ ] `{OEM_ID}` OID PEN 확정 (§6.2)
 - [ ] FW-Group-Key **그룹 단위**·회전 정책 확정 (§2.4 TBD)
 - [ ] Secure Boot 토대(장비 신뢰근원)를 DOC-20 §5에서 이관 검토

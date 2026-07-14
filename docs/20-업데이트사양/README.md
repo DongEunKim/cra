@@ -4,14 +4,14 @@
 **원본:** `legacy/fota_v5.1.html` + `legacy/fota_v5.2.html`
 **상태:** 🟢 정제본 (스파인 A2)
 
-FW 업데이트의 전자서명 PKI(이중서명·신뢰연쇄) · 패키지 트리(평문/Secure Flash) · 검증 절차 ·
+FW 업데이트의 전자서명 PKI(중앙집중 서명·신뢰연쇄) · 패키지 트리(평문/Secure Flash) · 검증 절차 ·
 대칭키(FW-Group-Key) 암호화 · Secure Boot·Factory Flashing.
 
 ## 본문 목차
 
 | 절 | 제목 |
 |----|------|
-| 1 | FW 업데이트 패키지 전자서명 PKI (계층·이중서명·신뢰연쇄) |
+| 1 | FW 업데이트 패키지 전자서명 PKI (계층·중앙집중 서명·신뢰연쇄) |
 | 2 | FW 업데이트 패키지 구성트리 (Type A 평문 / Type B Secure Flash) |
 | 3 | 패키지 검증 주체 및 절차 (배포/설치 2단계 + 통합 무결성) |
 | 4 | 대칭키(FW-Group-Key) 기반 FW 암호화 |

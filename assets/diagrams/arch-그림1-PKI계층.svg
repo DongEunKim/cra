@@ -17,7 +17,7 @@
 
   <rect x="420" y="150" width="220" height="50" rx="8" fill="#ffffff" stroke="#0d9488" stroke-width="2"/>
   <text x="530" y="171" fill="#1e293b" font-size="13" font-weight="bold" text-anchor="middle">CS-IC (코드서명 CA)</text>
-  <text x="530" y="189" fill="#0d9488" font-size="10" text-anchor="middle">개발자 인증서 · 배포서명 서비스</text>
+  <text x="530" y="189" fill="#0d9488" font-size="10" text-anchor="middle">펌웨어·배포 서명 서비스</text>
 
   <!-- Root -> IC (발급) -->
   <path d="M 360 80 L 250 148" stroke="#3b82f6" stroke-width="2" stroke-dasharray="5,5" marker-end="url(#p-blue)" fill="none"/>
@@ -40,7 +40,7 @@
 
   <rect x="410" y="270" width="280" height="120" rx="8" fill="#f0fdfa" stroke="#99f6e4"/>
   <text x="550" y="290" fill="#0f766e" font-size="11" font-weight="bold" text-anchor="middle">CS-IC 발급 · 서비스</text>
-  <text x="428" y="312" fill="#334155" font-size="10">• SW 개발자 인증서 (펌웨어 서명 검증용)</text>
+  <text x="428" y="312" fill="#334155" font-size="10">• 펌웨어 서명 (개발자·벤더 키 없음)</text>
   <text x="428" y="332" fill="#334155" font-size="10">• 배포 서명 서비스 — 배포 시스템 요청 시</text>
   <text x="428" y="352" fill="#334155" font-size="10">   개인키는 KMS에 상주(배포 시스템 미보유)</text>
   <text x="428" y="372" fill="#64748b" font-size="9">FW-Group-Key 랩핑도 KMS 연산으로 수행</text>
