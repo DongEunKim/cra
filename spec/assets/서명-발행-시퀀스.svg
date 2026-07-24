@@ -1,0 +1,56 @@
+<svg viewBox="0 0 920 410" width="920" height="410" xmlns="http://www.w3.org/2000/svg" font-family="Inter, sans-serif">
+
+  <!-- 액터 -->
+  <rect x="60" y="20" width="120" height="44" rx="6" fill="#64748b"/>
+  <text x="120" y="41" fill="#ffffff" font-size="12" font-weight="bold" text-anchor="middle">GPDM</text>
+  <text x="120" y="57" fill="#e2e8f0" font-size="9" text-anchor="middle">소스 · 원장</text>
+
+  <rect x="345" y="20" width="150" height="44" rx="6" fill="#1e3a8a"/>
+  <text x="420" y="47" fill="#ffffff" font-size="12" font-weight="bold" text-anchor="middle">eSync Server</text>
+
+  <rect x="630" y="20" width="120" height="44" rx="6" fill="#db2777"/>
+  <text x="690" y="41" fill="#ffffff" font-size="12" font-weight="bold" text-anchor="middle">KMS</text>
+  <text x="690" y="57" fill="#fce7f3" font-size="9" text-anchor="middle">서명 리프 키</text>
+
+  <!-- 레인 -->
+  <line x1="120" y1="64" x2="120" y2="395" stroke="#94a3b8" stroke-dasharray="5,5" stroke-width="1.5"/>
+  <line x1="420" y1="64" x2="420" y2="395" stroke="#94a3b8" stroke-dasharray="5,5" stroke-width="1.5"/>
+  <line x1="690" y1="64" x2="690" y2="395" stroke="#94a3b8" stroke-dasharray="5,5" stroke-width="1.5"/>
+
+  <!-- 1 -->
+  <text x="270" y="94" fill="#334155" font-size="10.5" font-weight="bold" text-anchor="middle">1. 컴포넌트 업로드 (ZIP: manifest.xml + binary)</text>
+  <path d="M 122 102 L 418 102" stroke="#334155" stroke-width="2" marker-end="url(#s-ar)"/>
+  <text x="270" y="116" fill="#64748b" font-size="9" text-anchor="middle">API /binary/blind_upload · 청크 업로드</text>
+
+  <!-- 2 -->
+  <rect x="300" y="128" width="240" height="34" rx="4" fill="#eff6ff" stroke="#1e3a8a"/>
+  <text x="420" y="150" fill="#1e3a8a" font-size="10.5" font-weight="bold" text-anchor="middle">2. 컴포넌트 조립 · SHA-256 해시</text>
+
+  <!-- 3 -->
+  <text x="555" y="190" fill="#334155" font-size="10.5" font-weight="bold" text-anchor="middle">3. 서명 요청 (digest)</text>
+  <path d="M 422 198 L 688 198" stroke="#334155" stroke-width="2" marker-end="url(#s-ar)"/>
+
+  <!-- 4 -->
+  <rect x="588" y="216" width="204" height="34" rx="4" fill="#fce7f3" stroke="#db2777"/>
+  <text x="690" y="238" fill="#9d174d" font-size="10.5" font-weight="bold" text-anchor="middle">4. 리프 키(P-256) ECDSA 서명</text>
+
+  <!-- 5 -->
+  <text x="555" y="278" fill="#334155" font-size="10.5" font-weight="bold" text-anchor="middle">5. Signature</text>
+  <path d="M 688 286 L 422 286" stroke="#94a3b8" stroke-width="1.8" stroke-dasharray="5,4" marker-end="url(#s-ar-gray)"/>
+
+  <!-- 6 -->
+  <rect x="268" y="304" width="304" height="34" rx="4" fill="#dbeafe" stroke="#3b82f6"/>
+  <text x="420" y="326" fill="#1e40af" font-size="10.5" font-weight="bold" text-anchor="middle">6. Signature + CS Cert 동봉 → Signed Component</text>
+
+  <!-- 7 -->
+  <rect x="790" y="336" width="120" height="52" rx="6" fill="#fff7ed" stroke="#f59e0b"/>
+  <text x="850" y="358" fill="#b45309" font-size="10" font-weight="bold" text-anchor="middle">Signed</text>
+  <text x="850" y="373" fill="#b45309" font-size="10" font-weight="bold" text-anchor="middle">Component DB</text>
+  <text x="600" y="358" fill="#334155" font-size="10.5" font-weight="bold" text-anchor="middle">7. 저장 (재서명 시 /componentItems/resign)</text>
+  <path d="M 422 366 L 788 366" stroke="#334155" stroke-width="2" marker-end="url(#s-ar)"/>
+
+  <defs>
+    <marker id="s-ar" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L8,3 z" fill="#334155"/></marker>
+    <marker id="s-ar-gray" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L8,3 z" fill="#94a3b8"/></marker>
+  </defs>
+</svg>

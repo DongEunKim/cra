@@ -1,0 +1,45 @@
+<svg viewBox="0 0 780 412" width="780" height="412" xmlns="http://www.w3.org/2000/svg" font-family="Inter, sans-serif">
+
+  <!-- 액터 -->
+  <rect x="90" y="20" width="160" height="44" rx="6" fill="#0ea5e9"/>
+  <text x="170" y="47" fill="#ffffff" font-size="12" font-weight="bold" text-anchor="middle">eSync Client (TGU)</text>
+  <rect x="530" y="20" width="160" height="44" rx="6" fill="#1e3a8a"/>
+  <text x="610" y="47" fill="#ffffff" font-size="12" font-weight="bold" text-anchor="middle">eSync Server</text>
+
+  <text x="170" y="80" fill="#64748b" font-size="8.5" text-anchor="middle">자기 인증서(CN=Serial)·개인키 · Root CA 신뢰앵커 보유</text>
+  <text x="610" y="80" fill="#64748b" font-size="8.5" text-anchor="middle">자기 인증서·개인키 · Device CA 신뢰앵커 보유</text>
+
+  <!-- 레인 -->
+  <line x1="170" y1="90" x2="170" y2="392" stroke="#94a3b8" stroke-dasharray="5,5" stroke-width="1.5"/>
+  <line x1="610" y1="90" x2="610" y2="392" stroke="#94a3b8" stroke-dasharray="5,5" stroke-width="1.5"/>
+
+  <!-- 1 -->
+  <text x="390" y="112" fill="#334155" font-size="10.5" font-weight="bold" text-anchor="middle">1. ClientHello</text>
+  <path d="M 172 120 L 608 120" stroke="#334155" stroke-width="2" marker-end="url(#m-ar)"/>
+
+  <!-- 2 -->
+  <text x="390" y="146" fill="#334155" font-size="10.5" font-weight="bold" text-anchor="middle">2. 서버 인증서 제시</text>
+  <path d="M 608 154 L 172 154" stroke="#334155" stroke-width="2" marker-end="url(#m-ar)"/>
+
+  <!-- 3: Client verifies server cert -->
+  <rect x="110" y="174" width="410" height="42" rx="5" fill="#e0f2fe" stroke="#0ea5e9"/>
+  <text x="315" y="199" fill="#0369a1" font-size="10.5" font-weight="bold" text-anchor="middle">3. 서버 인증서 검증 — 체인(Root→Intermediate)·유효기간·CN·OCSP</text>
+
+  <!-- 4 -->
+  <text x="390" y="248" fill="#334155" font-size="10.5" font-weight="bold" text-anchor="middle">4. 클라이언트 인증서 제시 (CN=Serial)</text>
+  <path d="M 172 256 L 608 256" stroke="#334155" stroke-width="2" marker-end="url(#m-ar)"/>
+
+  <!-- 5: Server verifies client cert -->
+  <rect x="290" y="276" width="400" height="42" rx="5" fill="#eff6ff" stroke="#1e3a8a"/>
+  <text x="490" y="301" fill="#1e3a8a" font-size="10.5" font-weight="bold" text-anchor="middle">5. 클라이언트 인증서 검증 — 체인·CN·OCSP</text>
+
+  <!-- 6: TLS established -->
+  <text x="390" y="352" fill="#047857" font-size="10.5" font-weight="bold" text-anchor="middle">6. mTLS 수립 → 이후 모든 통신 암호화</text>
+  <path d="M 174 362 L 606 362" stroke="#22c55e" stroke-width="2" marker-end="url(#m-ar-green)"/>
+  <path d="M 606 362 L 174 362" stroke="#22c55e" stroke-width="2" marker-end="url(#m-ar-green)"/>
+
+  <defs>
+    <marker id="m-ar" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L8,3 z" fill="#334155"/></marker>
+    <marker id="m-ar-green" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L8,3 z" fill="#22c55e"/></marker>
+  </defs>
+</svg>
