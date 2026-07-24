@@ -22,16 +22,17 @@ OTA에 쓰이는 인증기관 계층, 인증서 프로파일, 신뢰 체인, 키
 - **OEM Root CA** — 최상위 인증기관. 개인키(서명키)는 오프라인 보관하며, 하위 인증기관 발급에만 쓴다.
 - **Device CA** — 디바이스 인증서를 발급하는 인증기관. 개인키는 KMS에 보관한다.
 - **Code Sign CA** — 코드서명 인증서를 발급하는 인증기관. 개인키는 KMS에 보관한다.
+- **진단 라이선스 CA** — DMS 라이선스를 발급하는 인증기관. 개인키는 KMS에 보관한다.
 
 ### 1.2 3단계 대칭 구조
 
-계층은 `Root CA → { Device CA, Code Sign CA } → 리프 인증서`의 3단계다. 두 갈래(디바이스 신원, 코드 서명)가 대칭이다.
+계층은 `Root CA → { Device CA, Code Sign CA, 진단 라이선스 CA } → 리프 인증서`의 3단계다. 세 갈래(디바이스 신원, 코드 서명, 진단 라이선스)가 대칭이다.
 
 이 구조는 **디바이스 관점의 일관성**을 목표로 한다.
 
 - 디바이스가 보유하는 신뢰앵커는 **Root CA 공개키 하나**뿐이다.
 - 디바이스는 서명 검증이든 상대 신원 검증이든 **"Root → 목적별 CA → 리프"라는 같은 규칙**으로 체인을 구성한다.
-- Device CA는 다수의 디바이스 인증서를 발급하므로 Root를 오프라인으로 두려면 중간 인증기관이어야 한다. Code Sign CA를 대칭으로 두면 두 갈래의 검증 규칙과 보유 자산이 일치한다.
+- Device CA는 다수의 디바이스 인증서를 발급하므로 Root를 오프라인으로 두려면 중간 인증기관이어야 한다. Code Sign CA·진단 라이선스 CA를 대칭으로 두면 세 갈래의 검증 규칙과 보유 자산이 일치한다.
 
 ### 1.3 암호 스위트
 
@@ -62,9 +63,23 @@ OTA에 쓰이는 인증기관 계층, 인증서 프로파일, 신뢰 체인, 키
 | 용도 | 컴포넌트 서명. 개인키는 KMS에 보관 |
 | 배포 | 검증을 위해 컴포넌트에 동봉 |
 
-### 2.3 인증기관 인증서
+### 2.3 DMS 라이선스 인증서
 
-Root CA·Device CA·Code Sign CA 인증서는 `basicConstraints: cA=TRUE`, `Key Usage: keyCertSign`을 가진다. Root는 자기서명(self-signed)이다.
+| 항목 | 값 |
+|------|-----|
+| 발급기관 | 진단 라이선스 CA |
+| Subject CN | PC 고유 ID / 조작자 식별자 |
+| Key Usage | `digitalSignature` |
+| Extended Key Usage | `clientAuth (1.3.6.1.5.5.7.3.2)` |
+| Role OID | 허용 서비스·CAN 선로·대상 (사용자정의 OID) |
+| 유효기간 | 단수명 (발급 시 사용자 인증 + PC 고유 ID) |
+| 용도 | 이중 — SGW의 UDS `0x29` APCE 검증 + TGU의 mTLS 클라이언트 인증 |
+
+DMS 라이선스는 하나의 인증서를 두 게이트웨이가 각자의 방식으로 검증한다([40 §5](40-유선업데이트-사양서.md)).
+
+### 2.4 인증기관 인증서
+
+Root CA·Device CA·Code Sign CA·진단 라이선스 CA 인증서는 `basicConstraints: cA=TRUE`, `Key Usage: keyCertSign`을 가진다. Root는 자기서명(self-signed)이다.
 
 ---
 

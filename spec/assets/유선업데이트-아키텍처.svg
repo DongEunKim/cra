@@ -1,0 +1,66 @@
+<svg viewBox="0 0 1000 710" width="1000" height="710" xmlns="http://www.w3.org/2000/svg" font-family="Inter, sans-serif">
+
+  <!-- 클라우드 -->
+  <rect x="100" y="36" width="320" height="76" rx="8" fill="#ffffff" stroke="#1e3a8a" stroke-width="1.8"/>
+  <text x="260" y="64" fill="#1e3a8a" font-size="13" font-weight="bold" text-anchor="middle">eSync Server / Dashboard</text>
+  <text x="260" y="88" fill="#64748b" font-size="10.5" text-anchor="middle">Signed Component / Package</text>
+
+  <rect x="560" y="36" width="300" height="76" rx="8" fill="#faf5ff" stroke="#9333ea" stroke-width="1.8"/>
+  <text x="710" y="64" fill="#6b21a8" font-size="13" font-weight="bold" text-anchor="middle">진단 라이선스 CA</text>
+  <text x="710" y="88" fill="#64748b" font-size="10.5" text-anchor="middle">DMS 라이선스 발급</text>
+
+  <!-- DMS -->
+  <rect x="330" y="168" width="340" height="90" rx="8" fill="#f3e8ff" stroke="#9333ea" stroke-width="2"/>
+  <text x="500" y="196" fill="#6b21a8" font-size="13" font-weight="bold" text-anchor="middle">DMS (윈도우 PC 진단툴)</text>
+  <text x="500" y="219" fill="#334155" font-size="10.5" text-anchor="middle">서명·호환성 대행 검증</text>
+  <text x="500" y="239" fill="#334155" font-size="10.5" text-anchor="middle">DMS 라이선스 보유</text>
+
+  <path d="M 270 112 C 300 150, 360 158, 412 166" stroke="#334155" stroke-width="1.8" fill="none" marker-end="url(#u-ar)"/>
+  <text x="300" y="145" fill="#334155" font-size="10" font-weight="bold">① 서명 컴포넌트 다운로드 (RBAC)</text>
+  <path d="M 700 112 C 660 150, 610 158, 588 166" stroke="#9333ea" stroke-width="1.8" fill="none" marker-end="url(#u-ar-purple)"/>
+  <text x="690" y="145" fill="#6b21a8" font-size="10" font-weight="bold" text-anchor="end">② 라이선스 발급</text>
+
+  <!-- OBD-II -->
+  <text x="500" y="290" fill="#64748b" font-size="10.5" font-weight="bold" text-anchor="middle">OBD-II 접속 (CAN · 이더넷)</text>
+
+  <!-- 장비 -->
+  <rect x="40" y="300" width="920" height="386" rx="10" fill="#f0fdf4" stroke="#bbf7d0"/>
+  <text x="58" y="324" fill="#15803d" font-size="13" font-weight="bold">장비</text>
+
+  <!-- SGW -->
+  <rect x="110" y="352" width="250" height="94" rx="8" fill="#ffffff" stroke="#0d9488" stroke-width="2.2"/>
+  <text x="235" y="380" fill="#0f766e" font-size="12.5" font-weight="bold" text-anchor="middle">SGW · CAN 게이트웨이 (HSM)</text>
+  <text x="235" y="404" fill="#334155" font-size="10.5" text-anchor="middle">③ UDS 0x29 APCE 검증</text>
+  <text x="235" y="424" fill="#334155" font-size="10.5" text-anchor="middle">→ CAN 선로 개방</text>
+
+  <rect x="155" y="566" width="160" height="70" rx="6" fill="#fef3c7" stroke="#f59e0b"/>
+  <text x="235" y="596" fill="#92400e" font-size="12" font-weight="bold" text-anchor="middle">EPOS-10i</text>
+  <text x="235" y="616" fill="#b45309" font-size="9.5" text-anchor="middle">OSEK · CAN</text>
+  <path d="M 235 446 L 235 564" stroke="#334155" stroke-width="2" fill="none" marker-end="url(#u-ar)"/>
+  <text x="245" y="512" fill="#334155" font-size="9.5">④ 0x27 → 플래시 (0x34/36/37)</text>
+
+  <!-- TGU -->
+  <rect x="600" y="352" width="280" height="94" rx="8" fill="#ffffff" stroke="#0ea5e9" stroke-width="2.2"/>
+  <text x="740" y="380" fill="#0369a1" font-size="12.5" font-weight="bold" text-anchor="middle">TGU · 이더넷 게이트웨이</text>
+  <text x="740" y="404" fill="#334155" font-size="10.5" text-anchor="middle">③ mTLS + 역할 (TODO)</text>
+  <text x="740" y="424" fill="#334155" font-size="10.5" text-anchor="middle">→ 이더넷 경로 개방</text>
+
+  <rect x="640" y="566" width="200" height="70" rx="6" fill="#ffffff" stroke="#64748b"/>
+  <text x="740" y="596" fill="#334155" font-size="12" font-weight="bold" text-anchor="middle">이더넷 제어기</text>
+  <text x="740" y="616" fill="#64748b" font-size="9.5" text-anchor="middle">SAVM · PHM · XCU …</text>
+  <path d="M 740 446 L 740 564" stroke="#334155" stroke-width="2" fill="none" marker-end="url(#u-ar)"/>
+  <text x="750" y="512" fill="#334155" font-size="9.5">④ 플래시</text>
+
+  <!-- DMS → SGW / TGU -->
+  <path d="M 420 256 C 340 300, 260 320, 235 350" stroke="#0d9488" stroke-width="2" fill="none" marker-end="url(#u-ar-teal)"/>
+  <text x="300" y="330" fill="#0f766e" font-size="9.5" text-anchor="middle">CAN</text>
+  <path d="M 580 256 C 660 300, 720 320, 740 350" stroke="#0ea5e9" stroke-width="2" fill="none" marker-end="url(#u-ar-blue)"/>
+  <text x="700" y="330" fill="#0369a1" font-size="9.5" text-anchor="middle">이더넷</text>
+
+  <defs>
+    <marker id="u-ar" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L8,3 z" fill="#334155"/></marker>
+    <marker id="u-ar-purple" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L8,3 z" fill="#9333ea"/></marker>
+    <marker id="u-ar-teal" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L8,3 z" fill="#0d9488"/></marker>
+    <marker id="u-ar-blue" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L8,3 z" fill="#0ea5e9"/></marker>
+  </defs>
+</svg>

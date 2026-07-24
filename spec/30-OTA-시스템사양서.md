@@ -49,6 +49,11 @@
 | HSM 보유 제어기 | 대상 제어기 자체 | Secure Flash(암호화) | (별도) |
 | 이더넷 Linux/Android | 대상 자체(Verified Boot 등) | (별도) | (별도) |
 
+**설치 경로**는 두 가지다. 같은 서명 Component/Package를 재사용한다.
+
+- **무선(OTA):** eSync Server → 통신 계층 → TGU. 본 문서가 다룬다.
+- **유선(DMS):** eSync Server/Dashboard → DMS(진단툴) → OBD-II → SGW/TGU 게이트웨이 → 대상. → [40 유선 업데이트 사양서](40-유선업데이트-사양서.md).
+
 ---
 
 ## 2. 종단간 업데이트 워크플로 (EPOS-10i)

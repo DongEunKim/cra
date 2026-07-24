@@ -1,0 +1,59 @@
+<svg viewBox="0 0 1080 596" width="1080" height="596" xmlns="http://www.w3.org/2000/svg" font-family="Inter, sans-serif">
+
+  <!-- 액터 -->
+  <rect x="40" y="20" width="180" height="44" rx="6" fill="#1e3a8a"/>
+  <text x="130" y="41" fill="#ffffff" font-size="11.5" font-weight="bold" text-anchor="middle">eSync Server</text>
+  <text x="130" y="57" fill="#dbeafe" font-size="9" text-anchor="middle">/ Dashboard</text>
+  <rect x="310" y="20" width="180" height="44" rx="6" fill="#9333ea"/>
+  <text x="400" y="47" fill="#ffffff" font-size="11.5" font-weight="bold" text-anchor="middle">DMS</text>
+  <rect x="590" y="20" width="180" height="44" rx="6" fill="#0d9488"/>
+  <text x="680" y="41" fill="#ffffff" font-size="11.5" font-weight="bold" text-anchor="middle">게이트웨이 (SGW)</text>
+  <text x="680" y="57" fill="#ccfbf1" font-size="9" text-anchor="middle">CAN · HSM</text>
+  <rect x="850" y="20" width="170" height="44" rx="6" fill="#f59e0b"/>
+  <text x="935" y="47" fill="#ffffff" font-size="11.5" font-weight="bold" text-anchor="middle">EPOS-10i</text>
+
+  <!-- 레인 -->
+  <line x1="130" y1="64" x2="130" y2="576" stroke="#94a3b8" stroke-dasharray="5,5" stroke-width="1.4"/>
+  <line x1="400" y1="64" x2="400" y2="576" stroke="#94a3b8" stroke-dasharray="5,5" stroke-width="1.4"/>
+  <line x1="680" y1="64" x2="680" y2="576" stroke="#94a3b8" stroke-dasharray="5,5" stroke-width="1.4"/>
+  <line x1="935" y1="64" x2="935" y2="576" stroke="#94a3b8" stroke-dasharray="5,5" stroke-width="1.4"/>
+
+  <text x="265" y="92" fill="#334155" font-size="10" font-weight="bold" text-anchor="middle">1. 라이선스 요청 (사용자 인증 + PC ID)</text>
+  <path d="M 398 100 L 132 100" stroke="#334155" stroke-width="1.8" marker-end="url(#s-ar)"/>
+  <text x="265" y="122" fill="#334155" font-size="10" font-weight="bold" text-anchor="middle">2. DMS 라이선스 발급</text>
+  <path d="M 132 130 L 398 130" stroke="#334155" stroke-width="1.8" marker-end="url(#s-ar)"/>
+  <text x="265" y="152" fill="#334155" font-size="10" font-weight="bold" text-anchor="middle">3. 서명 컴포넌트 다운로드 (RBAC)</text>
+  <path d="M 398 160 L 132 160" stroke="#334155" stroke-width="1.8" marker-end="url(#s-ar)"/>
+  <text x="265" y="182" fill="#334155" font-size="10" font-weight="bold" text-anchor="middle">4. 서명 컴포넌트(ZIP) 전달</text>
+  <path d="M 132 190 L 398 190" stroke="#334155" stroke-width="1.8" marker-end="url(#s-ar)"/>
+
+  <rect x="268" y="206" width="264" height="34" rx="5" fill="#f3e8ff" stroke="#9333ea"/>
+  <text x="400" y="227" fill="#6b21a8" font-size="10" font-weight="bold" text-anchor="middle">5. 서명 검증 (체인·ECDSA·재해시)</text>
+
+  <text x="540" y="266" fill="#334155" font-size="10" font-weight="bold" text-anchor="middle">6. 게이트 인증 (UDS 0x29 APCE)</text>
+  <path d="M 402 274 L 678 274" stroke="#334155" stroke-width="1.8" marker-end="url(#s-ar)"/>
+  <rect x="560" y="290" width="240" height="34" rx="5" fill="#f0fdfa" stroke="#0d9488"/>
+  <text x="680" y="311" fill="#0f766e" font-size="10" font-weight="bold" text-anchor="middle">7. 라이선스 검증 → CAN 선로 개방</text>
+
+  <text x="667" y="350" fill="#334155" font-size="10" font-weight="bold" text-anchor="middle">8. 호환성 확인 (UDS 0x22)</text>
+  <path d="M 402 358 L 933 358" stroke="#334155" stroke-width="1.8" marker-end="url(#s-ar)"/>
+  <text x="667" y="380" fill="#64748b" font-size="9.5" text-anchor="middle">9. HW ID 응답</text>
+  <path d="M 933 388 L 402 388" stroke="#94a3b8" stroke-width="1.6" stroke-dasharray="5,4" marker-end="url(#s-ar-gray)"/>
+  <rect x="300" y="404" width="200" height="32" rx="5" fill="#f3e8ff" stroke="#9333ea"/>
+  <text x="400" y="425" fill="#6b21a8" font-size="10" font-weight="bold" text-anchor="middle">10. 호환성 판정</text>
+
+  <text x="667" y="460" fill="#334155" font-size="10" font-weight="bold" text-anchor="middle">11. 0x27 세션 게이트</text>
+  <path d="M 402 468 L 933 468" stroke="#f59e0b" stroke-width="1.8" marker-end="url(#s-ar-amber)"/>
+  <text x="667" y="490" fill="#334155" font-size="10" font-weight="bold" text-anchor="middle">12. 플래시 (0x34/0x36/0x37)</text>
+  <path d="M 402 498 L 933 498" stroke="#f59e0b" stroke-width="1.8" marker-end="url(#s-ar-amber)"/>
+  <text x="667" y="520" fill="#64748b" font-size="9.5" text-anchor="middle">13. 결과</text>
+  <path d="M 933 528 L 402 528" stroke="#94a3b8" stroke-width="1.6" stroke-dasharray="5,4" marker-end="url(#s-ar-gray)"/>
+  <rect x="270" y="544" width="260" height="30" rx="5" fill="#dcfce7" stroke="#22c55e"/>
+  <text x="400" y="564" fill="#166534" font-size="10" font-weight="bold" text-anchor="middle">14. 상태 로그(오프라인) → 후 동기화</text>
+
+  <defs>
+    <marker id="s-ar" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L8,3 z" fill="#334155"/></marker>
+    <marker id="s-ar-gray" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L8,3 z" fill="#94a3b8"/></marker>
+    <marker id="s-ar-amber" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L8,3 z" fill="#f59e0b"/></marker>
+  </defs>
+</svg>
