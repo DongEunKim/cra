@@ -1,10 +1,9 @@
 <svg viewBox="0 0 1240 752" width="1240" height="752" xmlns="http://www.w3.org/2000/svg" font-family="Inter, sans-serif">
 
   <!-- ===== DevOps ===== -->
-  <rect x="24" y="95" width="96" height="40" rx="5" fill="#ffffff" stroke="#64748b"/>
-  <text x="72" y="119" fill="#334155" font-size="11" font-weight="bold" text-anchor="middle">Developer</text>
-  <rect x="24" y="150" width="96" height="40" rx="5" fill="#ffffff" stroke="#64748b"/>
-  <text x="72" y="174" fill="#334155" font-size="11" font-weight="bold" text-anchor="middle">SW Vendor</text>
+  <rect x="24" y="112" width="96" height="40" rx="5" fill="#ffffff" stroke="#64748b"/>
+  <text x="72" y="130" fill="#334155" font-size="11" font-weight="bold" text-anchor="middle">내부</text>
+  <text x="72" y="145" fill="#334155" font-size="11" font-weight="bold" text-anchor="middle">개발자</text>
 
   <rect x="140" y="66" width="360" height="132" rx="8" fill="#f8fafc" stroke="#94a3b8"/>
   <text x="156" y="86" fill="#334155" font-size="12" font-weight="bold">DevOps</text>
@@ -19,13 +18,11 @@
   <text x="435" y="138" fill="#64748b" font-size="9.5" text-anchor="middle">(PLM)</text>
   <path d="M 255 126 L 269 126" stroke="#334155" stroke-width="1.5" marker-end="url(#w-ar)"/>
   <path d="M 370 126 L 384 126" stroke="#334155" stroke-width="1.5" marker-end="url(#w-ar)"/>
-  <path d="M 120 115 L 154 122" stroke="#334155" stroke-width="1.5" fill="none" marker-end="url(#w-ar)"/>
-  <path d="M 120 170 L 200 156" stroke="#334155" stroke-width="1.5" fill="none" marker-end="url(#w-ar)"/>
-  <text x="150" y="150" fill="#64748b" font-size="9">SRM</text>
+  <path d="M 120 132 L 154 130" stroke="#334155" stroke-width="1.5" fill="none" marker-end="url(#w-ar)"/>
 
   <!-- GPDM -> eSync Server -->
-  <path d="M 485 120 L 519 140" stroke="#334155" stroke-width="1.8" fill="none" marker-end="url(#w-ar)"/>
-  <text x="505" y="115" fill="#64748b" font-size="9">업로드</text>
+  <path d="M 485 128 L 519 140" stroke="#334155" stroke-width="1.8" fill="none" marker-end="url(#w-ar)"/>
+  <text x="500" y="119" fill="#64748b" font-size="9" text-anchor="middle">업로드</text>
 
   <!-- ===== eSync Server ===== -->
   <rect x="520" y="70" width="560" height="338" rx="8" fill="#ffffff" stroke="#334155"/>
