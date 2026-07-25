@@ -1,0 +1,78 @@
+<svg viewBox="0 0 1000 640" width="1000" height="640" xmlns="http://www.w3.org/2000/svg" font-family="Inter, sans-serif">
+
+  <!-- 내부 계층 -->
+  <rect x="30" y="40" width="940" height="170" rx="8" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.8"/>
+  <text x="50" y="66" fill="#b45309" font-size="13" font-weight="bold">내부 계층 — EPOS 전용 이미지 보안처리 (주체: 중앙 KMS · 개발자 아님)</text>
+
+  <rect x="55" y="100" width="180" height="70" rx="6" fill="#ffffff" stroke="#f59e0b"/>
+  <text x="145" y="130" fill="#334155" font-size="12" font-weight="bold" text-anchor="middle">원본 바이너리</text>
+  <text x="145" y="150" fill="#64748b" font-size="10" text-anchor="middle">(평문 FW)</text>
+
+  <rect x="285" y="100" width="180" height="70" rx="6" fill="#fef3c7" stroke="#f59e0b"/>
+  <text x="375" y="128" fill="#334155" font-size="12" font-weight="bold" text-anchor="middle">암호화</text>
+  <text x="375" y="148" fill="#64748b" font-size="10" text-anchor="middle">AES-128-CTR · CEK</text>
+
+  <rect x="515" y="100" width="180" height="70" rx="6" fill="#fef3c7" stroke="#f59e0b"/>
+  <text x="605" y="128" fill="#334155" font-size="12" font-weight="bold" text-anchor="middle">이미지 진위 서명</text>
+  <text x="605" y="148" fill="#64748b" font-size="10" text-anchor="middle">ECDSA P-256</text>
+
+  <rect x="745" y="100" width="200" height="70" rx="6" fill="#ffffff" stroke="#b45309" stroke-width="1.8"/>
+  <text x="845" y="128" fill="#b45309" font-size="12" font-weight="bold" text-anchor="middle">SE Binary</text>
+  <text x="845" y="148" fill="#64748b" font-size="10" text-anchor="middle">암호화+서명된 이미지</text>
+
+  <path d="M 237 135 L 283 135" stroke="#334155" stroke-width="2" marker-end="url(#e-ar)"/>
+  <path d="M 467 135 L 513 135" stroke="#334155" stroke-width="2" marker-end="url(#e-ar)"/>
+  <path d="M 697 135 L 743 135" stroke="#334155" stroke-width="2" marker-end="url(#e-ar)"/>
+
+  <!-- 외부 계층 -->
+  <rect x="30" y="240" width="940" height="170" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.8"/>
+  <text x="50" y="266" fill="#1e3a8a" font-size="13" font-weight="bold">외부 계층 — eSync OTA 진위 (주체: eSync Server + KMS)</text>
+
+  <rect x="55" y="300" width="200" height="70" rx="6" fill="#ffffff" stroke="#3b82f6"/>
+  <text x="155" y="330" fill="#334155" font-size="12" font-weight="bold" text-anchor="middle">SE Binary</text>
+  <text x="155" y="350" fill="#64748b" font-size="10" text-anchor="middle">통짜 페이로드로 취급</text>
+
+  <rect x="315" y="300" width="200" height="70" rx="6" fill="#dbeafe" stroke="#3b82f6"/>
+  <text x="415" y="330" fill="#334155" font-size="12" font-weight="bold" text-anchor="middle">Component 래핑</text>
+  <text x="415" y="350" fill="#64748b" font-size="10" text-anchor="middle">+ manifest.xml</text>
+
+  <rect x="575" y="300" width="180" height="70" rx="6" fill="#dbeafe" stroke="#3b82f6"/>
+  <text x="665" y="330" fill="#334155" font-size="12" font-weight="bold" text-anchor="middle">CS Cert 서명</text>
+  <text x="665" y="350" fill="#64748b" font-size="10" text-anchor="middle">ECDSA P-256</text>
+
+  <rect x="795" y="300" width="150" height="70" rx="6" fill="#ffffff" stroke="#1e3a8a" stroke-width="1.8"/>
+  <text x="870" y="330" fill="#1e3a8a" font-size="12" font-weight="bold" text-anchor="middle">서명된</text>
+  <text x="870" y="350" fill="#1e3a8a" font-size="12" font-weight="bold" text-anchor="middle">Component</text>
+
+  <path d="M 257 335 L 313 335" stroke="#334155" stroke-width="2" marker-end="url(#e-ar)"/>
+  <path d="M 517 335 L 573 335" stroke="#334155" stroke-width="2" marker-end="url(#e-ar)"/>
+  <path d="M 757 335 L 793 335" stroke="#334155" stroke-width="2" marker-end="url(#e-ar)"/>
+
+  <!-- 계층 연결 -->
+  <path d="M 845 170 L 845 205 L 155 205 L 155 298" stroke="#94a3b8" stroke-width="1.6" fill="none" stroke-dasharray="4,4" marker-end="url(#e-ar-gray)"/>
+  <text x="500" y="200" fill="#64748b" font-size="10" text-anchor="middle">내부 계층 결과물을 그대로 입력</text>
+
+  <!-- 전송 -->
+  <path d="M 870 370 L 870 425" stroke="#0ea5e9" stroke-width="2.2" marker-end="url(#e-ar-sky)"/>
+  <text x="870" y="428" fill="#0369a1" font-size="10" font-weight="bold" text-anchor="middle">전송 (mTLS → TGU → UDS)</text>
+
+  <!-- 검증 -->
+  <rect x="30" y="450" width="940" height="160" rx="8" fill="#ecfdf5" stroke="#22c55e" stroke-width="1.8"/>
+  <text x="50" y="476" fill="#166534" font-size="13" font-weight="bold">검증 — 계층별 주체가 분담</text>
+
+  <rect x="55" y="500" width="430" height="90" rx="6" fill="#ffffff" stroke="#0ea5e9" stroke-width="1.6"/>
+  <text x="270" y="528" fill="#0369a1" font-size="12" font-weight="bold" text-anchor="middle">TGU · eSync Agent — 외부 계층</text>
+  <text x="270" y="550" fill="#334155" font-size="10.5" text-anchor="middle">CS Cert 체인 · 서명 · 재해시</text>
+  <text x="270" y="568" fill="#64748b" font-size="10" text-anchor="middle">ECDSA P-256 (eSync 신뢰 경계)</text>
+
+  <rect x="515" y="500" width="430" height="90" rx="6" fill="#ffffff" stroke="#f59e0b" stroke-width="1.6"/>
+  <text x="730" y="528" fill="#b45309" font-size="12" font-weight="bold" text-anchor="middle">EPOS-30i HSM — 내부 계층</text>
+  <text x="730" y="550" fill="#334155" font-size="10.5" text-anchor="middle">복호화(CEK 재파생) + 이미지 진위</text>
+  <text x="730" y="568" fill="#64748b" font-size="10" text-anchor="middle">ECDSA P-256 (제어기 자체 검증)</text>
+
+  <defs>
+    <marker id="e-ar" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L8,3 z" fill="#334155"/></marker>
+    <marker id="e-ar-gray" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L8,3 z" fill="#94a3b8"/></marker>
+    <marker id="e-ar-sky" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L8,3 z" fill="#0ea5e9"/></marker>
+  </defs>
+</svg>

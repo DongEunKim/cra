@@ -1,0 +1,55 @@
+<svg viewBox="0 0 980 620" width="980" height="620" xmlns="http://www.w3.org/2000/svg" font-family="Inter, sans-serif">
+
+  <text x="30" y="34" fill="#1e3a8a" font-size="14" font-weight="bold">EPOS-30i 업데이트 워크플로</text>
+
+  <!-- 1 -->
+  <rect x="30" y="60" width="920" height="66" rx="6" fill="#fffbeb" stroke="#f59e0b"/>
+  <text x="52" y="86" fill="#b45309" font-size="12" font-weight="bold">1. 발행 · 보안처리 (KMS)</text>
+  <text x="52" y="108" fill="#334155" font-size="10.5">GPDM 릴리스 → 암호화(AES-128-CTR) + ECDSA P-256 서명 → SE Binary (내부 계층)</text>
+
+  <!-- 2 -->
+  <rect x="30" y="140" width="920" height="66" rx="6" fill="#eff6ff" stroke="#3b82f6"/>
+  <text x="52" y="166" fill="#1e3a8a" font-size="12" font-weight="bold">2. eSync 패키징 · 서명</text>
+  <text x="52" y="188" fill="#334155" font-size="10.5">SE Binary → Component 래핑 + CS Cert 서명(P-256) · manifest.xml은 GPDM 프로퍼티에서 생성 (외부 계층)</text>
+
+  <!-- 3 -->
+  <rect x="30" y="220" width="920" height="66" rx="6" fill="#f0f9ff" stroke="#0ea5e9"/>
+  <text x="52" y="246" fill="#0369a1" font-size="12" font-weight="bold">3. 타겟팅 · 전송</text>
+  <text x="52" y="268" fill="#334155" font-size="10.5">캠페인 선정 → AWS IoT Core 시그널링 → 펌웨어 HTTPS 다운로드 → TGU 보호 저장</text>
+
+  <!-- 4 -->
+  <rect x="30" y="300" width="920" height="66" rx="6" fill="#f0f9ff" stroke="#0ea5e9"/>
+  <text x="52" y="326" fill="#0369a1" font-size="12" font-weight="bold">4. TGU 검증 (외부 계층)</text>
+  <text x="52" y="348" fill="#334155" font-size="10.5">eSync Agent가 CS Cert 체인 · 서명 · 재해시 검증 → 통과분만 EPOS-30i로 전달</text>
+
+  <!-- 5 -->
+  <rect x="30" y="380" width="920" height="66" rx="6" fill="#fef3c7" stroke="#f59e0b"/>
+  <text x="52" y="406" fill="#b45309" font-size="12" font-weight="bold">5. 세션 개방 (UDS 0x29)</text>
+  <text x="52" y="428" fill="#334155" font-size="10.5">2단계 인증서 인증(P-256) → Secure Flash 전제. 미인증 시 0x34는 NRC 0x33 거부</text>
+
+  <!-- 6 -->
+  <rect x="30" y="460" width="920" height="66" rx="6" fill="#fef3c7" stroke="#f59e0b"/>
+  <text x="52" y="486" fill="#b45309" font-size="12" font-weight="bold">6. Secure Flash (내부 계층 · HSM)</text>
+  <text x="52" y="508" fill="#334155" font-size="10.5">0x34/0x36/0x37 → 복호화(CEK 재파생) + ECDSA 진위검증 + 안티롤백 → 비활성 뱅크 기록</text>
+
+  <!-- 7,8 -->
+  <rect x="30" y="540" width="450" height="66" rx="6" fill="#ecfdf5" stroke="#22c55e"/>
+  <text x="52" y="566" fill="#166534" font-size="12" font-weight="bold">7. A/B 커밋</text>
+  <text x="52" y="588" fill="#334155" font-size="10.5">Read-back 재검증 → UCB_SWAP 스왑 활성화</text>
+
+  <rect x="500" y="540" width="450" height="66" rx="6" fill="#ecfdf5" stroke="#22c55e"/>
+  <text x="522" y="566" fill="#166534" font-size="12" font-weight="bold">8. 상태 보고</text>
+  <text x="522" y="588" fill="#334155" font-size="10.5">INSTALL_COMPLETE → eSync Client → eSync Server</text>
+
+  <!-- 화살표 -->
+  <path d="M 490 126 L 490 138" stroke="#94a3b8" stroke-width="2" marker-end="url(#w-ar)"/>
+  <path d="M 490 206 L 490 218" stroke="#94a3b8" stroke-width="2" marker-end="url(#w-ar)"/>
+  <path d="M 490 286 L 490 298" stroke="#94a3b8" stroke-width="2" marker-end="url(#w-ar)"/>
+  <path d="M 490 366 L 490 378" stroke="#94a3b8" stroke-width="2" marker-end="url(#w-ar)"/>
+  <path d="M 490 446 L 490 458" stroke="#94a3b8" stroke-width="2" marker-end="url(#w-ar)"/>
+  <path d="M 490 526 L 490 538" stroke="#94a3b8" stroke-width="2" marker-end="url(#w-ar)"/>
+
+  <defs>
+    <marker id="w-ar" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L8,3 z" fill="#94a3b8"/></marker>
+  </defs>
+</svg>

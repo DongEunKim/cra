@@ -1,0 +1,88 @@
+<svg viewBox="0 0 1000 660" width="1000" height="660" xmlns="http://www.w3.org/2000/svg" font-family="Inter, sans-serif">
+
+  <text x="30" y="34" fill="#1e3a8a" font-size="14" font-weight="bold">EPOS-30i 키 관리 · 파생 · 주입</text>
+
+  <!-- 발행측 KMS -->
+  <rect x="30" y="55" width="440" height="300" rx="8" fill="#eff6ff" stroke="#1e3a8a" stroke-width="1.6"/>
+  <text x="50" y="80" fill="#1e3a8a" font-size="12.5" font-weight="bold">발행측 — KMS (보안처리 주체)</text>
+
+  <rect x="55" y="98" width="180" height="56" rx="6" fill="#dbeafe" stroke="#3b82f6"/>
+  <text x="145" y="122" fill="#334155" font-size="11.5" font-weight="bold" text-anchor="middle">마스터키[세대]</text>
+  <text x="145" y="140" fill="#64748b" font-size="9.5" text-anchor="middle">AES-128 · 플릿 공통</text>
+
+  <rect x="265" y="98" width="180" height="56" rx="6" fill="#ffffff" stroke="#3b82f6"/>
+  <text x="355" y="122" fill="#334155" font-size="11.5" font-weight="bold" text-anchor="middle">KDF (SP800-108)</text>
+  <text x="355" y="140" fill="#64748b" font-size="9.5" text-anchor="middle">salt = IV ‖ FW_ID</text>
+
+  <rect x="160" y="188" width="180" height="56" rx="6" fill="#dbeafe" stroke="#3b82f6"/>
+  <text x="250" y="212" fill="#334155" font-size="11.5" font-weight="bold" text-anchor="middle">CEK (Component별)</text>
+  <text x="250" y="230" fill="#64748b" font-size="9.5" text-anchor="middle">파생 대칭키</text>
+
+  <rect x="160" y="278" width="180" height="56" rx="6" fill="#fef3c7" stroke="#f59e0b"/>
+  <text x="250" y="302" fill="#b45309" font-size="11.5" font-weight="bold" text-anchor="middle">AES-128-CTR 암호화</text>
+  <text x="250" y="320" fill="#64748b" font-size="9.5" text-anchor="middle">→ 플릿 공통 암호문</text>
+
+  <path d="M 235 126 L 263 126" stroke="#334155" stroke-width="1.8" marker-end="url(#k-ar)"/>
+  <path d="M 355 154 L 355 172 L 250 172 L 250 186" stroke="#334155" stroke-width="1.8" fill="none" marker-end="url(#k-ar)"/>
+  <path d="M 145 154 L 145 172 L 250 172" stroke="#334155" stroke-width="1.8" fill="none"/>
+  <path d="M 250 244 L 250 276" stroke="#334155" stroke-width="1.8" marker-end="url(#k-ar)"/>
+
+  <!-- HSM 슬롯 -->
+  <rect x="530" y="55" width="440" height="300" rx="8" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.6"/>
+  <text x="550" y="80" fill="#b45309" font-size="12.5" font-weight="bold">EPOS-30i HSM 키 슬롯</text>
+
+  <rect x="550" y="96" width="400" height="34" rx="5" fill="#ffffff" stroke="#f59e0b"/>
+  <text x="562" y="118" fill="#334155" font-size="10.5">Slot 4~13 · MASTER_KEY_GEN_00~09 (세대별 마스터키)</text>
+
+  <rect x="550" y="136" width="400" height="34" rx="5" fill="#ffffff" stroke="#f59e0b"/>
+  <text x="562" y="158" fill="#334155" font-size="10.5">Slot 2 · BOOT_MAC_KEY (AES-128-CMAC · 기기별)</text>
+
+  <rect x="550" y="176" width="400" height="34" rx="5" fill="#ffffff" stroke="#f59e0b"/>
+  <text x="562" y="198" fill="#334155" font-size="10.5">Slot 14 · SA_ROOT_CA_PUB (P-256 · 0x29 앵커)</text>
+
+  <rect x="550" y="216" width="400" height="34" rx="5" fill="#ffffff" stroke="#f59e0b"/>
+  <text x="562" y="238" fill="#334155" font-size="10.5">Slot 15 · IMG_SIGN_PUB (P-256 · 이미지 서명 검증)</text>
+
+  <rect x="550" y="256" width="400" height="34" rx="5" fill="#ffffff" stroke="#f59e0b"/>
+  <text x="562" y="278" fill="#334155" font-size="10.5">Slot 16 · SECURE_LOG_KEY (CMAC · 기기별)</text>
+
+  <rect x="550" y="296" width="400" height="34" rx="5" fill="#ffffff" stroke="#f59e0b"/>
+  <text x="562" y="318" fill="#334155" font-size="10.5">Slot 17~ · 기기 프로비저닝 키쌍 (P-256 · 기기별)</text>
+
+  <!-- 주입/갱신 -->
+  <rect x="30" y="380" width="440" height="250" rx="8" fill="#f0fdfa" stroke="#0d9488" stroke-width="1.6"/>
+  <text x="50" y="406" fill="#0f766e" font-size="12.5" font-weight="bold">키 주입 · 갱신</text>
+
+  <rect x="55" y="424" width="390" height="60" rx="6" fill="#ffffff" stroke="#0d9488"/>
+  <text x="250" y="448" fill="#0f766e" font-size="11" font-weight="bold" text-anchor="middle">① EOL 직접 주입</text>
+  <text x="250" y="468" fill="#64748b" font-size="9.5" text-anchor="middle">물리 격리 · WP 슬롯 · 순서 강제</text>
+
+  <rect x="55" y="500" width="390" height="110" rx="6" fill="#ccfbf1" stroke="#0d9488"/>
+  <text x="250" y="524" fill="#0f766e" font-size="11" font-weight="bold" text-anchor="middle">② 마스터키 필드 갱신 (ECIES)</text>
+  <text x="250" y="546" fill="#334155" font-size="9.5" text-anchor="middle">새 세대 마스터키를 기기 공개키로 래핑</text>
+  <text x="250" y="562" fill="#334155" font-size="9.5" text-anchor="middle">(임시 ECDH → KDF → AES-GCM)</text>
+  <text x="250" y="582" fill="#334155" font-size="9.5" text-anchor="middle">HSM이 개인키로 복호 · 세대 슬롯 저장</text>
+  <text x="250" y="600" fill="#64748b" font-size="9" text-anchor="middle">전달물에 프로비저닝 기관 서명</text>
+
+  <!-- 기기측 재파생 -->
+  <rect x="530" y="380" width="440" height="250" rx="8" fill="#ecfdf5" stroke="#22c55e" stroke-width="1.6"/>
+  <text x="550" y="406" fill="#166534" font-size="12.5" font-weight="bold">기기측 CEK 재파생 · 복호화</text>
+
+  <rect x="555" y="424" width="390" height="50" rx="6" fill="#ffffff" stroke="#22c55e"/>
+  <text x="750" y="454" fill="#334155" font-size="10.5" text-anchor="middle">이미지 헤더에서 IV · 세대 인덱스 추출</text>
+
+  <rect x="555" y="490" width="390" height="50" rx="6" fill="#ffffff" stroke="#22c55e"/>
+  <text x="750" y="520" fill="#334155" font-size="10.5" text-anchor="middle">CEK = KDF(마스터키[세대], IV ‖ FW_ID)</text>
+
+  <rect x="555" y="556" width="390" height="54" rx="6" fill="#dcfce7" stroke="#059669"/>
+  <text x="750" y="580" fill="#166534" font-size="10.5" font-weight="bold" text-anchor="middle">AES-128-CTR 복호화 (별도 키 전달 불요)</text>
+  <text x="750" y="598" fill="#64748b" font-size="9" text-anchor="middle">→ 오프라인 · 유선에서도 동작</text>
+
+  <path d="M 750 474 L 750 488" stroke="#22c55e" stroke-width="1.8" marker-end="url(#k-ar-green)"/>
+  <path d="M 750 540 L 750 554" stroke="#22c55e" stroke-width="1.8" marker-end="url(#k-ar-green)"/>
+
+  <defs>
+    <marker id="k-ar" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L8,3 z" fill="#334155"/></marker>
+    <marker id="k-ar-green" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L8,3 z" fill="#22c55e"/></marker>
+  </defs>
+</svg>
