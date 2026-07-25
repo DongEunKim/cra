@@ -1,4 +1,4 @@
-<svg viewBox="0 0 900 432" width="900" height="432" xmlns="http://www.w3.org/2000/svg" font-family="Inter, sans-serif">
+<svg viewBox="0 0 900 456" width="900" height="456" xmlns="http://www.w3.org/2000/svg" font-family="Inter, sans-serif">
 
   <!-- 액터 -->
   <rect x="90" y="20" width="160" height="44" rx="6" fill="#0ea5e9"/>
@@ -8,12 +8,13 @@
   <rect x="680" y="20" width="170" height="44" rx="6" fill="#1e3a8a"/>
   <text x="765" y="47" fill="#ffffff" font-size="12" font-weight="bold" text-anchor="middle">eSync Server / VLM</text>
 
-  <text x="90" y="82" fill="#64748b" font-size="9">사전: Device CA 인증서를 AWS IoT Core에 등록(+JITP 템플릿) · 같은 Device CA를 eSync Server 신뢰앵커로 공유</text>
+  <text x="90" y="80" fill="#334155" font-size="9" font-weight="bold">TGU 사전 보유(Tier-1): 디바이스 인증서 · 개인키 · Device CA(signer) · Amazon Root CA · OEM Root CA</text>
+  <text x="90" y="93" fill="#64748b" font-size="9">서버측 사전: Device CA를 AWS IoT Core에 등록(+JITP 템플릿) · eSync Server에 공유</text>
 
   <!-- 레인 -->
-  <line x1="170" y1="92" x2="170" y2="412" stroke="#94a3b8" stroke-dasharray="5,5" stroke-width="1.5"/>
-  <line x1="470" y1="92" x2="470" y2="412" stroke="#94a3b8" stroke-dasharray="5,5" stroke-width="1.5"/>
-  <line x1="765" y1="92" x2="765" y2="412" stroke="#94a3b8" stroke-dasharray="5,5" stroke-width="1.5"/>
+  <line x1="170" y1="100" x2="170" y2="436" stroke="#94a3b8" stroke-dasharray="5,5" stroke-width="1.5"/>
+  <line x1="470" y1="100" x2="470" y2="436" stroke="#94a3b8" stroke-dasharray="5,5" stroke-width="1.5"/>
+  <line x1="765" y1="100" x2="765" y2="436" stroke="#94a3b8" stroke-dasharray="5,5" stroke-width="1.5"/>
 
   <!-- 1 -->
   <text x="320" y="118" fill="#334155" font-size="10.5" font-weight="bold" text-anchor="middle">1. mTLS 접속 시도 (TGU 인증서 제시)</text>
@@ -24,9 +25,10 @@
   <text x="470" y="165" fill="#0e7490" font-size="10.5" font-weight="bold" text-anchor="middle">2. 인증서 미등록 → 첫 접속 실패</text>
 
   <!-- 3 self -->
-  <rect x="345" y="188" width="250" height="46" rx="5" fill="#ecfeff" stroke="#06b6d4"/>
-  <text x="470" y="209" fill="#0e7490" font-size="10.5" font-weight="bold" text-anchor="middle">3. 템플릿 로드 → Thing·Policy·Cert 생성</text>
-  <text x="470" y="226" fill="#334155" font-size="9.5" text-anchor="middle">인증서 PENDING_ACTIVATION → ACTIVE</text>
+  <rect x="345" y="186" width="250" height="64" rx="5" fill="#ecfeff" stroke="#06b6d4"/>
+  <text x="470" y="205" fill="#0e7490" font-size="10.5" font-weight="bold" text-anchor="middle">3. 템플릿 로드 → Thing·Policy·Cert 생성</text>
+  <text x="470" y="222" fill="#334155" font-size="9.5" text-anchor="middle">인증서 PENDING_ACTIVATION → ACTIVE</text>
+  <text x="470" y="240" fill="#b45309" font-size="9.5" font-weight="bold" text-anchor="middle">디바이스에 전달 없음 (서버측 등록)</text>
 
   <!-- 4 -->
   <text x="618" y="258" fill="#334155" font-size="10.5" font-weight="bold" text-anchor="middle">4. Registry 이벤트 (Thing created · 시리얼)</text>
@@ -40,6 +42,8 @@
   <text x="320" y="344" fill="#334155" font-size="10.5" font-weight="bold" text-anchor="middle">6. 이후 시그널링 (Jobs / MQTT)</text>
   <path d="M 174 352 L 466 352" stroke="#334155" stroke-width="1.8" marker-end="url(#j-ar)"/>
   <path d="M 466 352 L 174 352" stroke="#334155" stroke-width="1.8" marker-end="url(#j-ar)"/>
+
+  <text x="90" y="450" fill="#64748b" font-size="9">JITP ≠ Fleet Provisioning — Fleet만 디바이스가 인증서·키를 발급받아 저장. JITP는 이미 보유(전달 없음).</text>
 
   <defs>
     <marker id="j-ar" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L8,3 z" fill="#334155"/></marker>

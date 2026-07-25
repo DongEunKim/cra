@@ -45,7 +45,7 @@
   <!-- 주석 -->
   <rect x="30" y="424" width="1060" height="92" rx="8" fill="#eff6ff" stroke="#cbd5e1"/>
   <text x="46" y="448" fill="#1e3a8a" font-size="12" font-weight="bold">신뢰앵커·역할</text>
-  <text x="46" y="470" fill="#334155" font-size="11">• 디바이스는 Root CA 공개키 하나만 신뢰앵커로 보유하고, "Root → 목적별 CA → 리프"라는 같은 규칙으로 검증한다.</text>
+  <text x="46" y="470" fill="#334155" font-size="11">• 디바이스는 Root CA 인증서를 신뢰앵커로 보유하고, "Root → 목적별 CA → 리프"라는 같은 규칙으로 검증한다.</text>
   <text x="46" y="491" fill="#334155" font-size="11">• eSync Server는 CS Cert 개인키(KMS)로 컴포넌트에 서명하고, 디바이스·DMS 인증서를 검증한다(발급은 각 CA).</text>
   <text x="46" y="509" fill="#64748b" font-size="10">• DMS 라이선스는 하나의 인증서를 SGW가 UDS 0x29 APCE로, TGU가 mTLS로 검증한다.</text>
 

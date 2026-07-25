@@ -8,7 +8,7 @@
   <text x="700" y="41" fill="#ffffff" font-size="12" font-weight="bold" text-anchor="middle">SGW</text>
   <text x="700" y="57" fill="#ccfbf1" font-size="9" text-anchor="middle">CAN 게이트웨이 · HSM</text>
 
-  <text x="90" y="82" fill="#64748b" font-size="9">SGW 보유: 신뢰앵커(Root CA 공개키) · 진단 라이선스 CA 인증서 · APCE 단방향</text>
+  <text x="90" y="82" fill="#64748b" font-size="9">SGW 보유: 신뢰앵커(Root CA 인증서) · 진단 라이선스 CA 인증서 · APCE 단방향</text>
 
   <!-- 레인 -->
   <line x1="180" y1="90" x2="180" y2="418" stroke="#94a3b8" stroke-dasharray="5,5" stroke-width="1.5"/>
