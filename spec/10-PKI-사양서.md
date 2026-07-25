@@ -68,14 +68,44 @@ OTA에 쓰이는 인증기관 계층, 인증서 프로파일, 신뢰 체인, 키
 | 항목 | 값 |
 |------|-----|
 | 발급기관 | 진단 라이선스 CA |
-| Subject CN | PC 고유 ID / 조작자 식별자 |
+| Subject | `CN=<PC 고유 ID>, O=<OEM>, OU=Diagnostics` |
+| 공개키·서명 | ECDSA P-256 · `ecdsa-with-SHA256` |
 | Key Usage | `digitalSignature` |
 | Extended Key Usage | `clientAuth (1.3.6.1.5.5.7.3.2)` |
-| Role OID | 허용 서비스·CAN 선로·대상 (사용자정의 OID) |
-| 유효기간 | 단수명 (발급 시 사용자 인증 + PC 고유 ID) |
+| Role 확장(사용자정의) | OID `1.3.6.1.4.1.<PEN>.4.1` — 진단 Role 값 |
+| 유효기간 | 단수명. 단, 만료 강제는 절대시각이 아닌 방식(→ [40 §9](40-유선업데이트-사양서.md)) |
 | 용도 | 이중 — SGW의 UDS `0x29` APCE 검증 + TGU의 mTLS 클라이언트 인증 |
 
-DMS 라이선스는 하나의 인증서를 두 게이트웨이가 각자의 방식으로 검증한다([40 §5](40-유선업데이트-사양서.md)).
+**Role 값**
+
+| 값 | Role | 개요 |
+|----|------|------|
+| `0x01` | Engineering | 전체 서비스·대상 |
+| `0x02` | Dealer-Service | 서비스 선로·승인 대상, 플래시 |
+| `0x03` | Read-Only | 진단 조회만 |
+
+Role → 허용 CAN 선로/대상/서비스의 구체 매핑은 [40 §8](40-유선업데이트-사양서.md)에 둔다.
+
+**예시** (openssl `x509 -text` 발췌)
+
+```
+Certificate:
+  Data:
+    Signature Algorithm: ecdsa-with-SHA256
+    Issuer: CN=Diagnostic License CA, O=<OEM>
+    Subject: CN=DMS-PC-3F2A91, O=<OEM>, OU=Diagnostics
+    Subject Public Key Info:
+      Public Key Algorithm: id-ecPublicKey (prime256v1)
+    X509v3 extensions:
+      X509v3 Key Usage: critical
+        Digital Signature
+      X509v3 Extended Key Usage:
+        TLS Web Client Authentication
+      1.3.6.1.4.1.<PEN>.4.1: 0x02   # Role = Dealer-Service
+  Signature Algorithm: ecdsa-with-SHA256
+```
+
+DMS 라이선스는 하나의 인증서를 두 게이트웨이가 각자의 방식으로 검증한다([40 §5](40-유선업데이트-사양서.md)). `<PEN>`(Private Enterprise Number)은 TODO(§7).
 
 ### 2.4 인증기관 인증서
 
@@ -130,6 +160,7 @@ Root CA·Device CA·Code Sign CA·진단 라이선스 CA 인증서는 `basicCons
 |--------|-----------|
 | 디바이스 인증서 | TBD (§7) |
 | CS Cert (코드서명 리프) | 단수명 · 주기 회전 |
+| DMS 라이선스 | 단수명. 만료 강제는 절대시각이 아닌 방식(→ [40 §9](40-유선업데이트-사양서.md)) |
 | 중간 CA | 장수명 |
 | Root CA | 장수명 |
 
@@ -158,8 +189,8 @@ Root CA·Device CA·Code Sign CA·진단 라이선스 CA 인증서는 `basicCons
 
 인증서 유효기간(§3.3-3)과 OCSP 검증(§5.2)은 신뢰할 수 있는 현재 시각을 전제한다.
 
-- TGU는 신뢰 시각 소스를 보유해야 한다.
-- 시각 소스·동기화 방식은 TBD(§7).
+- **온라인 경계(TGU ↔ 클라우드):** TGU는 신뢰 시각 소스를 보유해, 유효기간·OCSP를 검증한다. 소스·동기화 방식은 TBD(§7).
+- **유선 경계(SGW·DMS PC·EPOS):** 시각 동기화가 불가능하고(EPOS는 RTC 없음) 조작될 수 있다. 이 경계에서는 **절대시각을 보안 게이트로 쓰지 않는다.** 유효성은 세션 nonce·폐기·단조 방식으로 판단한다(→ [40 §9](40-유선업데이트-사양서.md)).
 
 ---
 

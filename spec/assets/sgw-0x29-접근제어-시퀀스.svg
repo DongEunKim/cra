@@ -1,45 +1,45 @@
-<svg viewBox="0 0 860 432" width="860" height="432" xmlns="http://www.w3.org/2000/svg" font-family="Inter, sans-serif">
+<svg viewBox="0 0 880 452" width="880" height="452" xmlns="http://www.w3.org/2000/svg" font-family="Inter, sans-serif">
 
   <!-- 액터 -->
   <rect x="90" y="20" width="180" height="44" rx="6" fill="#9333ea"/>
   <text x="180" y="41" fill="#ffffff" font-size="12" font-weight="bold" text-anchor="middle">DMS</text>
   <text x="180" y="57" fill="#f3e8ff" font-size="9" text-anchor="middle">진단툴 · 라이선스 보유</text>
-  <rect x="590" y="20" width="180" height="44" rx="6" fill="#0d9488"/>
-  <text x="680" y="41" fill="#ffffff" font-size="12" font-weight="bold" text-anchor="middle">SGW</text>
-  <text x="680" y="57" fill="#ccfbf1" font-size="9" text-anchor="middle">CAN 게이트웨이 · HSM</text>
+  <rect x="610" y="20" width="180" height="44" rx="6" fill="#0d9488"/>
+  <text x="700" y="41" fill="#ffffff" font-size="12" font-weight="bold" text-anchor="middle">SGW</text>
+  <text x="700" y="57" fill="#ccfbf1" font-size="9" text-anchor="middle">CAN 게이트웨이 · HSM</text>
 
-  <text x="90" y="82" fill="#64748b" font-size="9">SGW 보유: 신뢰앵커(Root CA 공개키) · 진단 라이선스 CA 인증서</text>
+  <text x="90" y="82" fill="#64748b" font-size="9">SGW 보유: 신뢰앵커(Root CA 공개키) · 진단 라이선스 CA 인증서 · APCE 단방향</text>
 
   <!-- 레인 -->
-  <line x1="180" y1="90" x2="180" y2="412" stroke="#94a3b8" stroke-dasharray="5,5" stroke-width="1.5"/>
-  <line x1="680" y1="90" x2="680" y2="412" stroke="#94a3b8" stroke-dasharray="5,5" stroke-width="1.5"/>
+  <line x1="180" y1="90" x2="180" y2="418" stroke="#94a3b8" stroke-dasharray="5,5" stroke-width="1.5"/>
+  <line x1="700" y1="90" x2="700" y2="418" stroke="#94a3b8" stroke-dasharray="5,5" stroke-width="1.5"/>
 
   <!-- 1 -->
-  <text x="430" y="108" fill="#334155" font-size="10.5" font-weight="bold" text-anchor="middle">1. Authentication 요청 (UDS 0x29)</text>
-  <path d="M 182 116 L 678 116" stroke="#334155" stroke-width="2" marker-end="url(#g-ar)"/>
+  <text x="440" y="106" fill="#334155" font-size="10.5" font-weight="bold" text-anchor="middle">1. 29 08 authenticationConfiguration</text>
+  <path d="M 182 114 L 698 114" stroke="#334155" stroke-width="2" marker-end="url(#g-ar)"/>
   <!-- 2 -->
-  <text x="430" y="138" fill="#334155" font-size="10.5" font-weight="bold" text-anchor="middle">2. 지원 구성 응답</text>
-  <path d="M 678 146 L 182 146" stroke="#334155" stroke-width="1.8" marker-end="url(#g-ar)"/>
+  <text x="440" y="136" fill="#334155" font-size="10.5" font-weight="bold" text-anchor="middle">2. 69 08 02 (ARP=APCE)</text>
+  <path d="M 698 144 L 182 144" stroke="#334155" stroke-width="1.8" marker-end="url(#g-ar)"/>
   <!-- 3 -->
-  <text x="430" y="168" fill="#334155" font-size="10.5" font-weight="bold" text-anchor="middle">3. DMS 라이선스 인증서 제시 (DER)</text>
-  <path d="M 182 176 L 678 176" stroke="#334155" stroke-width="2" marker-end="url(#g-ar)"/>
+  <text x="440" y="166" fill="#334155" font-size="10.5" font-weight="bold" text-anchor="middle">3. 29 01 verifyCertUnidir + DMS 라이선스(DER) + clientChallenge</text>
+  <path d="M 182 174 L 698 174" stroke="#334155" stroke-width="2" marker-end="url(#g-ar)"/>
   <!-- 4 self -->
-  <rect x="420" y="192" width="420" height="44" rx="5" fill="#f0fdfa" stroke="#0d9488"/>
-  <text x="630" y="212" fill="#0f766e" font-size="10.5" font-weight="bold" text-anchor="middle">4. 체인·유효기간·Role 검증</text>
-  <text x="630" y="228" fill="#334155" font-size="9.5" text-anchor="middle">Root 앵커 → 진단 라이선스 CA → DMS 라이선스</text>
+  <rect x="430" y="190" width="410" height="44" rx="5" fill="#f0fdfa" stroke="#0d9488"/>
+  <text x="635" y="210" fill="#0f766e" font-size="10.5" font-weight="bold" text-anchor="middle">4. 체인 검증 + Role 추출</text>
+  <text x="635" y="226" fill="#334155" font-size="9.5" text-anchor="middle">Root 앵커 → 진단 라이선스 CA → DMS 라이선스 (HSM)</text>
   <!-- 5 -->
-  <text x="430" y="258" fill="#334155" font-size="10.5" font-weight="bold" text-anchor="middle">5. challenge (nonce)</text>
-  <path d="M 678 266 L 182 266" stroke="#334155" stroke-width="1.8" marker-end="url(#g-ar)"/>
+  <text x="440" y="256" fill="#334155" font-size="10.5" font-weight="bold" text-anchor="middle">5. 69 01 11 (ARP) + serverChallenge (32B, 1회성)</text>
+  <path d="M 698 264 L 182 264" stroke="#334155" stroke-width="1.8" marker-end="url(#g-ar)"/>
   <!-- 6 -->
-  <text x="430" y="288" fill="#334155" font-size="10.5" font-weight="bold" text-anchor="middle">6. challenge 서명 (개인키 소유 증명)</text>
-  <path d="M 182 296 L 678 296" stroke="#334155" stroke-width="2" marker-end="url(#g-ar)"/>
+  <text x="440" y="286" fill="#334155" font-size="10.5" font-weight="bold" text-anchor="middle">6. 29 03 proofOfOwnership + ECDSA P-256 서명</text>
+  <path d="M 182 294 L 698 294" stroke="#334155" stroke-width="2" marker-end="url(#g-ar)"/>
   <!-- 7 self -->
-  <rect x="520" y="312" width="320" height="32" rx="5" fill="#f0fdfa" stroke="#0d9488"/>
-  <text x="680" y="333" fill="#0f766e" font-size="10.5" font-weight="bold" text-anchor="middle">7. 서명 검증</text>
+  <rect x="520" y="310" width="320" height="32" rx="5" fill="#f0fdfa" stroke="#0d9488"/>
+  <text x="700" y="331" fill="#0f766e" font-size="10.5" font-weight="bold" text-anchor="middle">7. 서명(소유증명) 검증</text>
   <!-- 8 -->
-  <text x="430" y="366" fill="#166534" font-size="10.5" font-weight="bold" text-anchor="middle">8. 인증 성공 → Role로 CAN 선로 개방</text>
-  <path d="M 678 374 L 182 374" stroke="#22c55e" stroke-width="2" marker-end="url(#g-ar-green)"/>
-  <text x="430" y="398" fill="#b91c1c" font-size="9.5" text-anchor="middle">검증 실패 시 거부 · 선로 미개방</text>
+  <text x="440" y="366" fill="#166534" font-size="10.5" font-weight="bold" text-anchor="middle">8. 69 03 12 (인증 완료) → Role로 CAN 선로 개방</text>
+  <path d="M 698 374 L 182 374" stroke="#22c55e" stroke-width="2" marker-end="url(#g-ar-green)"/>
+  <text x="440" y="398" fill="#b91c1c" font-size="9.5" text-anchor="middle">실패 시 NRC: 0x52(체인)·0x51(서명)·0x57(폐기)·0x58(소유증명)·0x34·0x37</text>
 
   <defs>
     <marker id="g-ar" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L8,3 z" fill="#334155"/></marker>
