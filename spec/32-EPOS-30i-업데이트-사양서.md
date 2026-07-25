@@ -317,6 +317,7 @@ UDS `0x29` 인증(§10)을 전제로 하며, 미인증 상태에서 `0x34`는 NR
 ## 12. eSync Agent 위치
 
 - **확정(권장):** eSync Agent는 **TGU**에 둔다. eSync 신뢰 경계는 OTA 다운로드·전달까지이고, 서명 검증(내부 계층)·복호화는 **EPOS-30i가 자체 수행**한다. EPOS-30i가 HSM으로 ECDSA 검증·AES 복호화 능력을 갖추므로 이 배치가 자연스럽다.
+- **제어기별 Agent:** eSync Agent는 대상 제어기별로 하나이며(Component `type`이 담당 Agent 지정, [30 §3.1](30-eSync-OTA-공통아키텍처.md)), 현재 모두 TGU에 co-locate한다. EPOS-30i용 Agent는 전달을 담당하고 검증·복호화는 제어기 HSM이 수행한다. CAN 관점에서 TGU는 SGW 뒤의 내부 노드다([30 §1 그림 2](30-eSync-OTA-공통아키텍처.md)).
 - **대안(상세설계 TODO):** eSync Agent를 EPOS-30i에 두는 방안은 HSM 리소스·eSync Agent 이식성·CAN 대역 등 구체 설계 논의가 필요하다(§13).
 
 ---
