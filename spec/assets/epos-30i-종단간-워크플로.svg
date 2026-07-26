@@ -1,0 +1,134 @@
+<svg viewBox="0 0 1420 740" width="1420" height="740" xmlns="http://www.w3.org/2000/svg" font-family="Inter, sans-serif">
+
+  <text x="20" y="28" fill="#1e3a8a" font-size="14" font-weight="bold">EPOS-30i 종단간 워크플로 — 주체(누가) × 단계(언제): 프로비저닝 → 발행 → 배포 → 설치</text>
+
+  <!-- 레인 배경 -->
+  <rect x="10" y="74" width="1400" height="108" fill="#ffffff"/>
+  <rect x="10" y="182" width="1400" height="108" fill="#f8fafc"/>
+  <rect x="10" y="290" width="1400" height="108" fill="#ffffff"/>
+  <rect x="10" y="398" width="1400" height="108" fill="#f8fafc"/>
+  <rect x="10" y="506" width="1400" height="108" fill="#ffffff"/>
+  <rect x="10" y="614" width="1400" height="108" fill="#f8fafc"/>
+
+  <!-- 단계 헤더 -->
+  <rect x="10" y="44" width="1400" height="30" fill="#1e293b"/>
+  <text x="324" y="64" fill="#ffffff" font-size="11.5" font-weight="bold" text-anchor="middle">① 프로비저닝 (제조·EOL, 1회)</text>
+  <text x="655" y="64" fill="#ffffff" font-size="11.5" font-weight="bold" text-anchor="middle">② 발행 (릴리스마다)</text>
+  <text x="965" y="64" fill="#ffffff" font-size="11.5" font-weight="bold" text-anchor="middle">③ 배포·전송</text>
+  <text x="1260" y="64" fill="#ffffff" font-size="11.5" font-weight="bold" text-anchor="middle">④ 설치</text>
+
+  <!-- 레인 라벨 -->
+  <rect x="10" y="74" width="148" height="108" fill="#f1f5f9" stroke="#cbd5e1"/>
+  <text x="84" y="132" fill="#334155" font-size="11" font-weight="bold" text-anchor="middle">GPDM · 빌드</text>
+  <rect x="10" y="182" width="148" height="108" fill="#eef2ff" stroke="#cbd5e1"/>
+  <text x="84" y="232" fill="#1e3a8a" font-size="11" font-weight="bold" text-anchor="middle">OEM PKI · KMS</text>
+  <text x="84" y="248" fill="#64748b" font-size="9.5" text-anchor="middle">(보안처리 주체)</text>
+  <rect x="10" y="290" width="148" height="108" fill="#eff6ff" stroke="#cbd5e1"/>
+  <text x="84" y="348" fill="#1d4ed8" font-size="11" font-weight="bold" text-anchor="middle">eSync Server</text>
+  <rect x="10" y="398" width="148" height="108" fill="#e0f2fe" stroke="#cbd5e1"/>
+  <text x="84" y="450" fill="#0369a1" font-size="11" font-weight="bold" text-anchor="middle">TGU</text>
+  <text x="84" y="466" fill="#0369a1" font-size="9.5" text-anchor="middle">(Client·Agent)</text>
+  <rect x="10" y="506" width="148" height="108" fill="#f0fdfa" stroke="#cbd5e1"/>
+  <text x="84" y="564" fill="#0f766e" font-size="11" font-weight="bold" text-anchor="middle">EOL 생산라인</text>
+  <rect x="10" y="614" width="148" height="108" fill="#fffbeb" stroke="#cbd5e1"/>
+  <text x="84" y="666" fill="#b45309" font-size="11" font-weight="bold" text-anchor="middle">EPOS-30i</text>
+  <text x="84" y="682" fill="#b45309" font-size="9.5" text-anchor="middle">(HSM)</text>
+
+  <!-- 단계 구분선 -->
+  <line x1="158" y1="44" x2="158" y2="722" stroke="#94a3b8" stroke-width="1.5"/>
+  <line x1="490" y1="44" x2="490" y2="722" stroke="#cbd5e1" stroke-dasharray="4,4"/>
+  <line x1="820" y1="44" x2="820" y2="722" stroke="#cbd5e1" stroke-dasharray="4,4"/>
+  <line x1="1110" y1="44" x2="1110" y2="722" stroke="#cbd5e1" stroke-dasharray="4,4"/>
+  <rect x="10" y="44" width="1400" height="678" fill="none" stroke="#94a3b8" stroke-width="1.5"/>
+
+  <!-- ===== ① 프로비저닝 ===== -->
+  <!-- L2 KMS -->
+  <rect x="166" y="196" width="316" height="80" rx="6" fill="#eef2ff" stroke="#6366f1"/>
+  <text x="324" y="222" fill="#334155" font-size="9.5" text-anchor="middle">OEM PKI 준비 · CA(Root/Device/CodeSign)</text>
+  <text x="324" y="240" fill="#334155" font-size="9.5" text-anchor="middle">마스터키·이미지서명키 생성 (KMS)</text>
+  <text x="324" y="258" fill="#64748b" font-size="9.5" text-anchor="middle">공개 앵커(SA_ROOT_CA_PUB·IMG_SIGN_PUB) 준비</text>
+  <!-- L4 TGU 프로비저닝 -->
+  <rect x="166" y="412" width="316" height="80" rx="6" fill="#e0f2fe" stroke="#0ea5e9"/>
+  <text x="324" y="446" fill="#334155" font-size="9.5" text-anchor="middle">TGU Tier-1 인증서·신뢰앵커 주입</text>
+  <text x="324" y="466" fill="#64748b" font-size="9.5" text-anchor="middle">AWS IoT Core 등록 (JITP)</text>
+  <!-- L5 EOL -->
+  <rect x="166" y="520" width="316" height="80" rx="6" fill="#f0fdfa" stroke="#0d9488"/>
+  <text x="324" y="544" fill="#334155" font-size="9.5" text-anchor="middle">Device 인증서 발급 · 앵커·대칭키 주입</text>
+  <text x="324" y="562" fill="#334155" font-size="9.5" text-anchor="middle">마스터키 주입 (직접 또는 ECIES)</text>
+  <text x="324" y="580" fill="#64748b" font-size="9.5" text-anchor="middle">WP 설정</text>
+  <!-- L6 EPOS -->
+  <rect x="166" y="628" width="316" height="80" rx="6" fill="#fffbeb" stroke="#f59e0b"/>
+  <text x="324" y="654" fill="#334155" font-size="9.5" text-anchor="middle">기기 키쌍 HSM 자체 생성 → CSR</text>
+  <text x="324" y="672" fill="#334155" font-size="9.5" text-anchor="middle">앵커·마스터키 수령</text>
+  <text x="324" y="690" fill="#64748b" font-size="9.5" text-anchor="middle">Secure Boot 활성화 (HSMBOOTEN=1)</text>
+
+  <!-- P1 arrows -->
+  <path d="M 470 276 L 486 276 L 486 560 L 484 560" fill="none" stroke="#475569" stroke-width="1.6" marker-end="url(#wf-ar)"/>
+  <text x="500" y="410" fill="#475569" font-size="8.5" transform="rotate(90 500 410)">키·인증서 자료</text>
+  <path d="M 300 520 L 300 494" stroke="#0d9488" stroke-width="1.6" marker-end="url(#wf-ar-teal)"/>
+  <path d="M 360 600 L 360 626" stroke="#0d9488" stroke-width="1.6" marker-end="url(#wf-ar-teal)"/>
+  <text x="378" y="616" fill="#0f766e" font-size="8.5">주입</text>
+
+  <!-- ===== ② 발행 ===== -->
+  <!-- L1 GPDM -->
+  <rect x="498" y="90" width="314" height="80" rx="6" fill="#f1f5f9" stroke="#94a3b8"/>
+  <text x="655" y="124" fill="#334155" font-size="9.5" text-anchor="middle">빌드(Jenkins) → GPDM 릴리스</text>
+  <text x="655" y="144" fill="#64748b" font-size="9.5" text-anchor="middle">바이너리 + 메타(버전·품번·호환성·롤백)</text>
+  <!-- L2 보안처리 -->
+  <rect x="498" y="196" width="314" height="80" rx="6" fill="#e0e7ff" stroke="#6366f1" stroke-width="1.6"/>
+  <text x="655" y="220" fill="#3730a3" font-size="9.5" font-weight="bold" text-anchor="middle">[보안처리 주체 — 내부 계층]</text>
+  <text x="655" y="238" fill="#334155" font-size="9.5" text-anchor="middle">메타헤더 생성 + 암호화(CEK)</text>
+  <text x="655" y="256" fill="#334155" font-size="9.5" text-anchor="middle">+ 이미지 서명(ECDSA) → SE Binary</text>
+  <!-- L3 eSync -->
+  <rect x="498" y="304" width="314" height="80" rx="6" fill="#eff6ff" stroke="#3b82f6"/>
+  <text x="655" y="330" fill="#1d4ed8" font-size="9.5" font-weight="bold" text-anchor="middle">[외부 계층]</text>
+  <text x="655" y="348" fill="#334155" font-size="9.5" text-anchor="middle">SE Binary+manifest 래핑 → Component</text>
+  <text x="655" y="366" fill="#334155" font-size="9.5" text-anchor="middle">CS Cert 서명(KMS 요청) → 저장</text>
+
+  <!-- P2 arrows -->
+  <path d="M 655 170 L 655 194" stroke="#475569" stroke-width="1.8" marker-end="url(#wf-ar)"/>
+  <path d="M 655 276 L 655 302" stroke="#475569" stroke-width="1.8" marker-end="url(#wf-ar)"/>
+  <text x="668" y="290" fill="#475569" font-size="8.5">SE Binary(통짜)</text>
+
+  <!-- ===== ③ 배포·전송 ===== -->
+  <!-- L3 eSync -->
+  <rect x="828" y="304" width="274" height="80" rx="6" fill="#eff6ff" stroke="#3b82f6"/>
+  <text x="965" y="338" fill="#334155" font-size="9.5" text-anchor="middle">캠페인·타겟팅 (VLM)</text>
+  <text x="965" y="358" fill="#64748b" font-size="9.5" text-anchor="middle">다운로드 메타 배포</text>
+  <!-- L4 TGU -->
+  <rect x="828" y="412" width="274" height="80" rx="6" fill="#e0f2fe" stroke="#0ea5e9"/>
+  <text x="965" y="446" fill="#334155" font-size="9.5" text-anchor="middle">mTLS 접속(AWS IoT Core)·시그널링</text>
+  <text x="965" y="466" fill="#64748b" font-size="9.5" text-anchor="middle">펌웨어 HTTPS 다운로드</text>
+
+  <!-- P2→P3, P3 arrows -->
+  <path d="M 812 344 L 826 344" stroke="#475569" stroke-width="1.8" marker-end="url(#wf-ar)"/>
+  <path d="M 965 384 L 965 410" stroke="#475569" stroke-width="1.8" marker-end="url(#wf-ar)"/>
+
+  <!-- ===== ④ 설치 ===== -->
+  <!-- L3 eSync 상태 -->
+  <rect x="1118" y="316" width="284" height="56" rx="6" fill="#eff6ff" stroke="#3b82f6"/>
+  <text x="1260" y="349" fill="#334155" font-size="9.5" text-anchor="middle">설치 상태 수신 · 감사</text>
+  <!-- L4 TGU -->
+  <rect x="1118" y="412" width="284" height="80" rx="6" fill="#e0f2fe" stroke="#0ea5e9"/>
+  <text x="1260" y="446" fill="#334155" font-size="9.5" text-anchor="middle">CS Cert 체인·서명·재해시 검증(외부)</text>
+  <text x="1260" y="466" fill="#64748b" font-size="9.5" text-anchor="middle">UDS 0x29 세션 → SE Binary 전달</text>
+  <!-- L6 EPOS -->
+  <rect x="1118" y="628" width="284" height="80" rx="6" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.6"/>
+  <text x="1260" y="652" fill="#b45309" font-size="9.5" font-weight="bold" text-anchor="middle">0x29 인증 → Secure Flash</text>
+  <text x="1260" y="670" fill="#334155" font-size="9" text-anchor="middle">복호화(CEK재파생)+ECDSA진위+안티롤백</text>
+  <text x="1260" y="688" fill="#334155" font-size="9" text-anchor="middle">비활성뱅크 → A/B 스왑 → Secure Boot(CMAC)</text>
+
+  <!-- P3→P4, P4 arrows -->
+  <path d="M 1102 452 L 1116 452" stroke="#475569" stroke-width="1.8" marker-end="url(#wf-ar)"/>
+  <path d="M 1260 492 L 1260 626" stroke="#475569" stroke-width="1.8" marker-end="url(#wf-ar)"/>
+  <text x="1272" y="560" fill="#475569" font-size="8.5" transform="rotate(90 1272 560)">UDS on CAN</text>
+  <!-- 상태 보고 (좌측 게터로 우회) -->
+  <path d="M 1118 660 L 1114 660 L 1114 350 L 1116 350" fill="none" stroke="#059669" stroke-width="1.5" stroke-dasharray="5,4" marker-end="url(#wf-ar-green)"/>
+  <text x="1100" y="505" fill="#059669" font-size="8.5" transform="rotate(90 1100 505)">상태·감사</text>
+
+  <defs>
+    <marker id="wf-ar" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L8,3 z" fill="#475569"/></marker>
+    <marker id="wf-ar-teal" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L8,3 z" fill="#0d9488"/></marker>
+    <marker id="wf-ar-green" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L8,3 z" fill="#059669"/></marker>
+  </defs>
+</svg>

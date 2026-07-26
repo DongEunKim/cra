@@ -77,9 +77,19 @@ eSync 절차가 제거하는 "개발자 서명"은 **업로더가 자기 키로 
 
 [30 §2](30-eSync-OTA-공통아키텍처.md)의 공통 단계 모델을 EPOS-30i에 적용한다.
 
-![그림 2 · EPOS-30i 업데이트 워크플로](assets/epos-30i-워크플로.svg)
+### 3.0 주체 × 단계 (누가·무엇·언제)
 
-*[그림 2] EPOS-30i 업데이트 워크플로*
+프로비저닝부터 설치까지, **어느 주체가 어느 단계에서 무엇을 하는지**를 [그림 2]로 개괄한다. 발행의 내부 계층(암호화·이미지 서명)은 **보안처리 주체(KMS)**가, 외부 계층(Component·CS Cert)은 **eSync Server**가, 프로비저닝 주입은 **EOL 생산라인**이, 설치 검증·복호화는 **EPOS-30i(HSM)**가 담당한다. 프로비저닝 상세는 [20](20-프로비저닝-사양서.md), 발행 파이프라인의 주체 구분은 §2.
+
+![그림 2 · EPOS-30i 종단간 워크플로(주체 × 단계)](assets/epos-30i-종단간-워크플로.svg)
+
+*[그림 2] EPOS-30i 종단간 워크플로 (주체 × 단계)*
+
+### 3.1 OTA 실행 단계
+
+![그림 3 · EPOS-30i 업데이트 워크플로](assets/epos-30i-워크플로.svg)
+
+*[그림 3] EPOS-30i 업데이트 워크플로*
 
 1. **발행·보안처리** — GPDM 릴리스 → 보안처리 주체(KMS)가 이미지를 암호화(§5)·ECDSA 서명(§4)해 SE Binary 생성(내부 계층).
 2. **eSync 패키징·서명** — eSync Server가 SE Binary를 Component로 감싸고 CS Cert 서명(외부 계층). manifest.xml은 GPDM 프로퍼티에서 생성(§6, [30 §3.2.4](30-eSync-OTA-공통아키텍처.md)).
@@ -90,7 +100,7 @@ eSync 절차가 제거하는 "개발자 서명"은 **업로더가 자기 키로 
 7. **A/B 커밋** — Read-back 재검증 통과 후 뱅크 스왑으로 활성화(§9).
 8. **상태 보고** — `INSTALL_COMPLETE`를 eSync Client 경유로 보고([30 §9](30-eSync-OTA-공통아키텍처.md)).
 
-Secure Flash 상세 시퀀스는 §8, 그림 4.
+Secure Flash 상세 시퀀스는 §8, 그림 5.
 
 ---
 
@@ -241,9 +251,9 @@ GPDM 프로퍼티(버전·품번·호환성·롤백·**세대·FW ID**)가 두 �
 - **대비:** ① 세대 로테이션으로 유출 시 해당 세대만 노출·롤포워드 ② KDF 일방향으로 파생키→마스터키 역산 차단 ③ HSM 경계 밖 평문 노출 금지·WP 슬롯 ④ 진위⊥기밀성 분리 유지 ⑤ 유출 모니터링·세대 폐기·강제 재프로비저닝·Secure Log(§9.3) ⑥ 펌웨어에 2차 비밀(키·자격증명) 미탑재.
 - **공유 범위(확정):** **단일 플릿 마스터키 + 세대 로테이션.** 그룹(배치·리전)별 키·per-device 엔벨로프는 blast-radius 축소가 필요할 때의 확장 옵션이다(§13).
 
-![그림 3 · EPOS-30i 키 관리·주입](assets/epos-30i-엔벨로프-키관리.svg)
+![그림 4 · EPOS-30i 키 관리·주입](assets/epos-30i-엔벨로프-키관리.svg)
 
-*[그림 3] EPOS-30i 키 관리·주입*
+*[그림 4] EPOS-30i 키 관리·주입*
 
 ---
 
@@ -258,9 +268,9 @@ GPDM 프로퍼티(버전·품번·호환성·롤백·**세대·FW ID**)가 두 �
 
 UDS `0x29` 인증(§10)을 전제로 하며, 미인증 상태에서 `0x34`는 NRC `0x33`(securityAccessDenied)로 거부된다.
 
-![그림 4 · EPOS-30i Secure Flash 시퀀스](assets/epos-30i-secure-flash-시퀀스.svg)
+![그림 5 · EPOS-30i Secure Flash 시퀀스](assets/epos-30i-secure-flash-시퀀스.svg)
 
-*[그림 4] EPOS-30i Secure Flash 시퀀스*
+*[그림 5] EPOS-30i Secure Flash 시퀀스*
 
 - **Phase 0 — Secure Access 선행:** UDS `0x29` 2단계 인증 완료(§10).
 - **Phase 1 — 다운로드 개시:** `0x34 RequestDownload`(대상=비활성 뱅크).
@@ -292,7 +302,7 @@ UDS `0x29` 인증(§10)을 전제로 하며, 미인증 상태에서 `0x34`는 NR
 
 ## 10. UDS 0x29 인증 (Secure Access)
 
-진단·플래시 세션의 세션 게이트다. **단방향 인증**(제어기가 진단기/툴을 인증)이며, 인증서 기반(X.509 v3) ECDSA P-256이다. 시퀀스는 [그림 4]의 Phase 0에 포함된다.
+진단·플래시 세션의 세션 게이트다. **단방향 인증**(제어기가 진단기/툴을 인증)이며, 인증서 기반(X.509 v3) ECDSA P-256이다. 시퀀스는 [그림 5]의 Phase 0에 포함된다.
 
 - **Phase 1 — verifyCertificateUnidirectional (`0x29 0x01`):** 진단기가 `certificateClient`(X.509 DER)·`challengeClient`를 제시. HSM이 `SA_ROOT_CA_PUB`로 인증서를 ECDSA P-256 검증(SHA-256·KeyUsage 확인·PubKey 추출)하고 TRNG로 `challengeServer[32B]` 생성. 응답 `0x69 0x01` + `authReturnParam(0x10)` + `challengeServer`.
 - **Phase 2 — proofOfOwnership (`0x29 0x03`):** 진단기가 `ownershipProof = ECDSA_Sign(privKey, SHA-256(challengeServer))` 제시. HSM이 진단기 공개키로 검증 → 상태=Authenticated, `EVT_SA_SUCCESS`. 응답 `0x69 0x03` + `authReturnParam(0x11)`.
