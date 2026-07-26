@@ -72,23 +72,23 @@
   <!-- ===== ② 발행 ===== -->
   <!-- L1 GPDM -->
   <rect x="498" y="90" width="314" height="80" rx="6" fill="#f1f5f9" stroke="#94a3b8"/>
-  <text x="655" y="124" fill="#334155" font-size="9.5" text-anchor="middle">빌드(Jenkins) → GPDM 릴리스</text>
-  <text x="655" y="144" fill="#64748b" font-size="9.5" text-anchor="middle">바이너리 + 메타(버전·품번·호환성·롤백)</text>
-  <!-- L2 보안처리 -->
-  <rect x="498" y="196" width="314" height="80" rx="6" fill="#e0e7ff" stroke="#6366f1" stroke-width="1.6"/>
-  <text x="655" y="220" fill="#3730a3" font-size="9.5" font-weight="bold" text-anchor="middle">[보안처리 주체 — 내부 계층]</text>
-  <text x="655" y="238" fill="#334155" font-size="9.5" text-anchor="middle">메타헤더 생성 + 암호화(CEK)</text>
-  <text x="655" y="256" fill="#334155" font-size="9.5" text-anchor="middle">+ 이미지 서명(ECDSA) → SE Binary</text>
+  <text x="655" y="118" fill="#334155" font-size="9.5" text-anchor="middle">GPDM 릴리스 → Component 소스 제공</text>
+  <text x="655" y="136" fill="#64748b" font-size="9.5" text-anchor="middle">바이너리 + 메타(버전·품번·호환성·롤백)</text>
+  <text x="655" y="156" fill="#64748b" font-size="9" text-anchor="middle">(EPOS-30i: 상류 준비된 SE Binary 포함)</text>
+  <!-- L2 상류 준비(범위 밖) -->
+  <rect x="545" y="196" width="267" height="80" rx="6" fill="#f8fafc" stroke="#cbd5e1" stroke-dasharray="5,4"/>
+  <text x="678" y="228" fill="#94a3b8" font-size="9.5" font-weight="bold" text-anchor="middle">상류 발행 준비(서명·암호화)</text>
+  <text x="678" y="248" fill="#94a3b8" font-size="9.5" text-anchor="middle">범위 밖 — 결과는 Component</text>
+  <text x="678" y="264" fill="#94a3b8" font-size="9.5" text-anchor="middle">소스에 포함</text>
   <!-- L3 eSync -->
   <rect x="498" y="304" width="314" height="80" rx="6" fill="#eff6ff" stroke="#3b82f6"/>
   <text x="655" y="330" fill="#1d4ed8" font-size="9.5" font-weight="bold" text-anchor="middle">[외부 계층]</text>
-  <text x="655" y="348" fill="#334155" font-size="9.5" text-anchor="middle">SE Binary+manifest 래핑 → Component</text>
+  <text x="655" y="348" fill="#334155" font-size="9.5" text-anchor="middle">Component 래핑(SE Binary+manifest)</text>
   <text x="655" y="366" fill="#334155" font-size="9.5" text-anchor="middle">CS Cert 서명(KMS 요청) → 저장</text>
 
-  <!-- P2 arrows -->
-  <path d="M 655 170 L 655 194" stroke="#475569" stroke-width="1.8" marker-end="url(#wf-ar)"/>
-  <path d="M 655 276 L 655 302" stroke="#475569" stroke-width="1.8" marker-end="url(#wf-ar)"/>
-  <text x="668" y="290" fill="#475569" font-size="8.5">SE Binary(통짜)</text>
+  <!-- P2 arrow: GPDM -> eSync (Component 소스 제공) -->
+  <path d="M 520 170 L 520 302" stroke="#475569" stroke-width="1.8" marker-end="url(#wf-ar)"/>
+  <text x="510" y="240" fill="#475569" font-size="8.5" transform="rotate(90 510 240)">Component 소스 (SE Binary)</text>
 
   <!-- ===== ③ 배포·전송 ===== -->
   <!-- L3 eSync -->
