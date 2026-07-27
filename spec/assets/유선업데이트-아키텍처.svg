@@ -16,7 +16,7 @@
   <text x="500" y="239" fill="#334155" font-size="10.5" text-anchor="middle">DMS 라이선스 보유</text>
 
   <path d="M 270 112 C 300 150, 360 158, 412 166" stroke="#334155" stroke-width="1.8" fill="none" marker-end="url(#u-ar)"/>
-  <text x="300" y="145" fill="#334155" font-size="10" font-weight="bold">① 서명 컴포넌트 다운로드 (RBAC)</text>
+  <text x="300" y="145" fill="#334155" font-size="10" font-weight="bold">① 서명 Component 다운로드 (RBAC)</text>
   <path d="M 700 112 C 660 150, 610 158, 588 166" stroke="#9333ea" stroke-width="1.8" fill="none" marker-end="url(#u-ar-purple)"/>
   <text x="690" y="145" fill="#6b21a8" font-size="10" font-weight="bold" text-anchor="end">② 라이선스 발급</text>
 

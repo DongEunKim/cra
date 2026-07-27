@@ -34,7 +34,7 @@
 
 ### 1.2 계층별 구성
 
-- **eSync Server** — 캠페인·타겟팅, Component·Package DB, 서명, 감사.
+- **eSync Server** — Campaign·타겟팅, Component·Package DB, 서명, 감사.
 - **GPDM** — Component와 SW BOM의 출처 원장이자, **eSync Server에 Component 소스를 제공하는 단일 상류(SSOT)**다. **Component 소스** = 릴리스 산출물(바이너리 + 메타데이터: 버전·품번·호환성·롤백). eSync Server는 언제나 GPDM으로부터 Component 소스를 입력받는다. 상류 발행 준비(서명·암호화 시점·주체)와 제조 배포(공급망) 세부는 **본 사양 범위 밖**이며 Component 소스에 캡슐화된다(§3.2.4·§10).
 - **VLM** — 시리얼↔VIN↔장비 옵션 매핑, SBOM 이력.
 - **KMS** — 서명 개인키 보관([10 §4](10-PKI-사양서.md)). HSM 보유 제어기의 경우 이미지 서명·암호화의 보안처리 주체를 겸한다([32 §4·§5](32-EPOS-30i-업데이트-사양서.md)).
@@ -74,12 +74,12 @@
 
 ## 2. 종단간 업데이트 워크플로 (공통 단계 모델)
 
-소스(GPDM)에서 시작해 eSync Server에서 서명·패키징하고, 캠페인으로 대상 장비를 선정한 뒤, AWS IoT Core를 통해 TGU에 전달한다. TGU가 검증·호환성 확인·설치 정책을 거쳐 대상 제어기를 플래시하고 상태를 보고한다.
+소스(GPDM)에서 시작해 eSync Server에서 서명·패키징하고, Campaign으로 대상 장비를 선정한 뒤, AWS IoT Core를 통해 TGU에 전달한다. TGU가 검증·호환성 확인·설치 정책을 거쳐 대상 제어기를 플래시하고 상태를 보고한다.
 
 워크플로는 제어기와 무관하게 다음 단계로 구성된다.
 
 1. **발행** — GPDM이 Component 소스를 eSync Server에 제공 → eSync Server 조립·서명·패키징(§3·§4). 상류 준비 세부는 범위 밖(§1.2).
-2. **타겟팅** — 캠페인이 대상 장비를 선정하고 다운로드 메타데이터를 내려준다(§6).
+2. **타겟팅** — Campaign이 대상 장비를 선정하고 다운로드 메타데이터를 내려준다(§6).
 3. **전송** — TGU가 mTLS로 접속해 시그널링을 받고, 펌웨어를 HTTPS로 다운로드해 보호 저장한다(§5).
 4. **설치** — eSync Agent가 검증·호환성 확인·세션 개방을 거쳐 대상 제어기를 플래시한다. **검증 위치와 페이로드 형태, 세션 게이트, 뱅크 전략은 제어기 능력에 따라 달라진다**(§1.4).
 5. **커밋·보고** — 활성화(원자적 커밋 또는 A/B 스왑) 후 상태를 eSync Server에 보고한다(§8·§9).
@@ -88,7 +88,7 @@
 
 ---
 
-## 3. 컴포넌트·패키지·매니페스트
+## 3. Component·Package·매니페스트
 
 ### 3.1 데이터 모델
 
@@ -100,13 +100,13 @@
 
 #### 3.2.1 패키징
 
-컴포넌트는 다음을 담은 ZIP이다. manifest.xml은 컴포넌트 안에 포함되어 서명 대상에 함께 들어간다(§4.1).
+Component는 다음을 담은 ZIP이다. manifest.xml은 Component 안에 포함되어 서명 대상에 함께 들어간다(§4.1).
 
 ```
 📦 eSync Component (ZIP)
 ├── 📄 manifest.xml
 ├── 📦 binary
-└── 📄 manifest_diff.xml   (델타 시)
+└── 📄 manifest_diff.xml   (Delta 시)
 ```
 
 HSM 보유 제어기의 `binary`는 **암호화·서명된 이미지**(SE Binary)이며, eSync는 이를 불투명(opaque) 페이로드로 취급한다. 이미지 내부 헤더 메타데이터는 manifest.xml과 별개로 관리하되 같은 GPDM 프로퍼티에서 공동 생성한다([32 §6](32-EPOS-30i-업데이트-사양서.md)).
@@ -120,7 +120,7 @@ HSM 보유 제어기의 `binary`는 **암호화·서명된 이미지**(SE Binary
 | SW 품번 | 장비 옵션별 SW 변종의 **구분자**(호환성 정보 아님, §6.1) |
 | 호환성(HW) | 적용 가능한 HW 버전·모델(호환성 판정용, §6.2) |
 | rollback | 다운그레이드 방지 기준 버전(§8.3) |
-| delta | 델타 기준 버전(§3.3) |
+| delta | Delta 기준 버전(§3.3) |
 | binary sha256 | 바이너리 무결성 |
 
 #### 3.2.3 예시
@@ -140,7 +140,7 @@ HSM 보유 제어기의 `binary`는 **암호화·서명된 이미지**(SE Binary
 
   <rollback allowedFrom="2.3.0"/>
   <binary sha256="a1b2c3…" size="1048576"/>
-  <!-- 델타 시: <delta from="2.3.0" reference="…"/> -->
+  <!-- Delta 시: <delta from="2.3.0" reference="…"/> -->
 </manifest>
 ```
 
@@ -149,12 +149,12 @@ HSM 보유 제어기의 `binary`는 **암호화·서명된 이미지**(SE Binary
 #### 3.2.4 작성 주체·툴 (GPDM 단일 원천)
 
 - manifest.xml은 사람이 손으로 쓰지 않는다. **릴리스 패키징 툴**이 GPDM 릴리스 메타데이터(버전·품번·호환성·롤백)에서 **생성**한다.
-- 컴포넌트 ZIP은 eSync Server 업로드 시 사전검증(preValidate)되어 필수 태그·형식이 강제된다.
+- Component ZIP은 eSync Server 업로드 시 사전검증(preValidate)되어 필수 태그·형식이 강제된다.
 - HSM 보유 제어기는 **같은 GPDM 프로퍼티**에서 이미지 헤더 메타데이터도 공동 생성한다 → manifest와 이미지 헤더가 구성상 일치([32 §6](32-EPOS-30i-업데이트-사양서.md)).
 
-### 3.3 델타 업데이트
+### 3.3 Delta 업데이트
 
-- 델타 컴포넌트는 `manifest_diff.xml`과 기준 버전 참조를 포함한다.
+- Delta Component는 `manifest_diff.xml`과 기준 버전 참조를 포함한다.
 - eSync Agent(또는 대상 제어기)가 기준 버전을 확인하고 이미지를 재구성한 뒤 검증·플래시한다.
 
 ---
@@ -165,19 +165,19 @@ HSM 보유 제어기의 `binary`는 **암호화·서명된 이미지**(SE Binary
 
 - **알고리즘:** ECDSA `P-256` / `SHA-256`([10 §1.3](10-PKI-사양서.md)).
 - **주체·키:** eSync Server가 KMS에 서명을 요청하고, KMS가 CS Cert(코드서명 인증서) 개인키로 서명한다. 개발자·벤더는 서명 키를 갖지 않는다.
-- **대상:** 컴포넌트(ZIP) 전체. manifest.xml이 안에 있으므로 하나의 서명이 바이너리와 메타데이터를 함께 보증한다.
+- **대상:** Component(ZIP) 전체. manifest.xml이 안에 있으므로 하나의 서명이 바이너리와 메타데이터를 함께 보증한다.
 
 ![그림 3 · 서명 발행 시퀀스](assets/서명-발행-시퀀스.svg)
 
 *[그림 3] 서명 발행 시퀀스*
 
 1. GPDM이 Component 소스(릴리스 산출물)를 eSync Server에 제공한다(§1.2).
-2. eSync Server가 컴포넌트를 조립하고 SHA-256으로 해시한다.
+2. eSync Server가 Component를 조립하고 SHA-256으로 해시한다.
 3. eSync Server가 KMS에 서명을 요청한다.
 4. KMS가 CS Cert 개인키(P-256)로 ECDSA 서명한다.
 5. 서명값을 반환한다.
-6. eSync Server가 서명값과 CS Cert(체인 포함)를 컴포넌트에 동봉한다.
-7. 서명된 컴포넌트를 저장한다.
+6. eSync Server가 서명값과 CS Cert(체인 포함)를 Component에 동봉한다.
+7. 서명된 Component를 저장한다.
 
 > HSM 보유 제어기는 이 eSync CS Cert 서명(외부 계층) **이전에**, 보안처리 주체가 이미지 자체에 암호화와 별도 진위 서명(내부 계층)을 적용한다. 두 계층의 관계는 [32 §2](32-EPOS-30i-업데이트-사양서.md).
 
@@ -225,10 +225,10 @@ HSM 보유 제어기의 `binary`는 **암호화·서명된 이미지**(SE Binary
 
 ## 6. 대상 선정·호환성
 
-### 6.1 캠페인 타겟팅
+### 6.1 Campaign 타겟팅
 
-- 캠페인은 **차량(장비) 단위**로 대상을 선정한다(VIN·그룹). 개별 제어기를 등록하지 않는다.
-- **SW 품번(옵션 변종) 선택은 VLM·정책과 연동**한다. VLM이 장비의 옵션→적용 품번을 알고, 캠페인이 그에 맞는 변종을 대상 장비군에 배포한다. 품번만으로 디바이스에서 자동 설치가 일어나지 않는다.
+- Campaign은 **차량(장비) 단위**로 대상을 선정한다(VIN·그룹). 개별 제어기를 등록하지 않는다.
+- **SW 품번(옵션 변종) 선택은 VLM·정책과 연동**한다. VLM이 장비의 옵션→적용 품번을 알고, Campaign이 그에 맞는 변종을 대상 장비군에 배포한다. 품번만으로 디바이스에서 자동 설치가 일어나지 않는다.
 - 단계적 롤아웃(일부→확대)과 중단(halt)을 지원한다.
 
 ### 6.2 호환성 판정
@@ -241,7 +241,7 @@ HSM 보유 제어기의 `binary`는 **암호화·서명된 이미지**(SE Binary
 
 ### 6.3 componentRules (설치 규칙)
 
-Package는 컴포넌트별 설치 규칙과 원자적 롤백을 정의한다.
+Package는 Component별 설치 규칙과 원자적 롤백을 정의한다.
 
 ```json
 {
@@ -256,7 +256,7 @@ Package는 컴포넌트별 설치 규칙과 원자적 롤백을 정의한다.
 }
 ```
 
-- `atomicity` — `NonAtomic` / `PersistentAtomic` / `NonPersistentAtomic` / `ServerAtomic`. 묶인 컴포넌트는 모두 성공하거나 모두 롤백된다.
+- `atomicity` — `NonAtomic` / `PersistentAtomic` / `NonPersistentAtomic` / `ServerAtomic`. 묶인 Component는 모두 성공하거나 모두 롤백된다.
 - `atomicRollback.layers` — 이전 계층 설치 실패 시 설치할 대체(롤백) 계층.
 
 ---
@@ -293,7 +293,7 @@ Package는 컴포넌트별 설치 규칙과 원자적 롤백을 정의한다.
 
 ### 8.1 폴트 톨러런스
 
-- 캠페인 중 실패는 일시적으로 보고 정해진 횟수만큼 **재시도**한다. `Fail`은 캠페인 종료 시에만 확정된다.
+- Campaign 중 실패는 일시적으로 보고 정해진 횟수만큼 **재시도**한다. `Fail`은 Campaign 종료 시에만 확정된다.
 - 연결 실패 시 재시도를 예약하고, 전송 중단 시 누락분만 재전송한다(§5.3).
 
 ### 8.2 원자적 커밋·복구 (제어기별)

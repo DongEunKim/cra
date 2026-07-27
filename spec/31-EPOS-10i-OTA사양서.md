@@ -49,10 +49,10 @@ EPOS-10i의 공통 변주 축은 [30 §1.4](30-eSync-OTA-공통아키텍처.md) 
 *[그림 3] EPOS-10i 런타임 시퀀스*
 
 1. **업데이트 확인** — eSync Client가 현재 버전을 보고하고 업데이트를 확인한다.
-2. **캠페인 매칭** — 캠페인이 있으면 eSync Server가 다운로드 메타데이터를 내려준다([30 §6](30-eSync-OTA-공통아키텍처.md)).
-3. **다운로드 요청** — eSync Client가 펌웨어 파일 서버에 컴포넌트를 요청한다([30 §5.3](30-eSync-OTA-공통아키텍처.md)).
-4. **컴포넌트 수신** — 컴포넌트(ZIP)를 청크 해시로 무결성 확인하며 받아 보호 저장한다.
-5. **Agent 전달** — eSync Client가 컴포넌트를 eSync Agent로 전달한다(IPC).
+2. **Campaign 매칭** — Campaign이 있으면 eSync Server가 다운로드 메타데이터를 내려준다([30 §6](30-eSync-OTA-공통아키텍처.md)).
+3. **다운로드 요청** — eSync Client가 펌웨어 파일 서버에 Component를 요청한다([30 §5.3](30-eSync-OTA-공통아키텍처.md)).
+4. **Component 수신** — Component(ZIP)를 청크 해시로 무결성 확인하며 받아 보호 저장한다.
+5. **Agent 전달** — eSync Client가 Component를 eSync Agent로 전달한다(IPC).
 6. **서명 검증** — eSync Agent가 체인·서명·재해시를 검증한다(§4).
 7. **호환성 조회** — eSync Agent가 UDS `0x22`로 EPOS-10i의 HW ID를 읽는다([30 §6.2](30-eSync-OTA-공통아키텍처.md)).
 8. **HW ID 응답** — EPOS-10i가 HW ID를 반환한다.
@@ -67,11 +67,11 @@ EPOS-10i의 공통 변주 축은 [30 §1.4](30-eSync-OTA-공통아키텍처.md) 
 
 ---
 
-## 3. 컴포넌트·페이로드
+## 3. Component·페이로드
 
 - 데이터 모델·매니페스트·GPDM 연동은 [30 §3](30-eSync-OTA-공통아키텍처.md)을 따른다.
 - EPOS-10i의 `binary`는 **평문**이다. EPOS-10i는 복호화 능력이 없으므로 암호화 페이로드를 쓰지 않는다.
-- 델타 업데이트는 [30 §3.3](30-eSync-OTA-공통아키텍처.md)을 따르며, 이미지 재구성은 TGU(eSync Agent)가 수행한다.
+- Delta 업데이트는 [30 §3.3](30-eSync-OTA-공통아키텍처.md)을 따르며, 이미지 재구성은 TGU(eSync Agent)가 수행한다.
 
 ---
 
@@ -85,7 +85,7 @@ EPOS-10i는 서명을 검증하지 못하므로 **TGU의 eSync Agent가 대행 �
 
 1. **체인 구성** — 동봉된 CS Cert·Code Sign CA 인증서로 `Root → Code Sign CA → CS Cert` 체인을 만든다.
 2. **서명 검증** — CS Cert 공개키로 서명을 검증한다(ECDSA P-256).
-3. **재해시** — 수신 컴포넌트를 SHA-256으로 다시 해시해 서명값과 대조한다.
+3. **재해시** — 수신 Component를 SHA-256으로 다시 해시해 서명값과 대조한다.
 4. **판정** — 모두 통과해야 진행한다. 하나라도 실패하면 폐기한다.
 
 체인 검증 규칙·유효기간·폐기·신뢰앵커는 [10 §3](10-PKI-사양서.md)을 따른다. 코드서명은 **서명 시점** 기준으로 검증하므로, CS Cert가 회전·만료돼도 **Component/Package는 만료되지 않는다**([10 §3.3](10-PKI-사양서.md)).

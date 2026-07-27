@@ -25,20 +25,20 @@
   <text x="327" y="92" fill="#334155" font-size="10" font-weight="bold" text-anchor="middle">1. 버전 보고 · 업데이트 확인</text>
   <path d="M 538 100 L 117 100" stroke="#334155" stroke-width="1.8" marker-end="url(#r-ar)"/>
   <!-- 2 -->
-  <text x="327" y="122" fill="#334155" font-size="10" font-weight="bold" text-anchor="middle">2. 캠페인 有 → 다운로드 메타데이터</text>
+  <text x="327" y="122" fill="#334155" font-size="10" font-weight="bold" text-anchor="middle">2. Campaign 有 → 다운로드 메타데이터</text>
   <path d="M 117 130 L 538 130" stroke="#334155" stroke-width="1.8" marker-end="url(#r-ar)"/>
   <!-- 3 -->
-  <text x="430" y="152" fill="#334155" font-size="10" font-weight="bold" text-anchor="middle">3. 컴포넌트 다운로드 요청</text>
+  <text x="430" y="152" fill="#334155" font-size="10" font-weight="bold" text-anchor="middle">3. Component 다운로드 요청</text>
   <path d="M 538 160 L 322 160" stroke="#334155" stroke-width="1.8" marker-end="url(#r-ar)"/>
   <!-- 4 -->
-  <text x="430" y="182" fill="#334155" font-size="10" font-weight="bold" text-anchor="middle">4. 컴포넌트(ZIP) 전달 · 청크 해시</text>
+  <text x="430" y="182" fill="#334155" font-size="10" font-weight="bold" text-anchor="middle">4. Component(ZIP) 전달 · 청크 해시</text>
   <path d="M 322 190 L 538 190" stroke="#334155" stroke-width="1.8" marker-end="url(#r-ar)"/>
   <!-- 5 -->
-  <text x="648" y="212" fill="#334155" font-size="10" font-weight="bold" text-anchor="middle">5. 컴포넌트 전달 (IPC)</text>
+  <text x="648" y="212" fill="#334155" font-size="10" font-weight="bold" text-anchor="middle">5. Component 전달 (IPC)</text>
   <path d="M 542 220 L 753 220" stroke="#334155" stroke-width="1.8" marker-end="url(#r-ar)"/>
   <!-- 6 box -->
   <rect x="583" y="236" width="344" height="36" rx="5" fill="#dbeafe" stroke="#3b82f6"/>
-  <text x="755" y="259" fill="#1e40af" font-size="10" font-weight="bold" text-anchor="middle">6. 서명 검증 — Root→CS Cert 체인 · ECDSA · 컴포넌트 재해시 비교</text>
+  <text x="755" y="259" fill="#1e40af" font-size="10" font-weight="bold" text-anchor="middle">6. 서명 검증 — Root→CS Cert 체인 · ECDSA · Component 재해시 비교</text>
   <!-- 7 -->
   <text x="865" y="296" fill="#334155" font-size="10" font-weight="bold" text-anchor="middle">7. 호환성 확인 (UDS 0x22)</text>
   <path d="M 757 304 L 973 304" stroke="#334155" stroke-width="1.8" marker-end="url(#r-ar)"/>

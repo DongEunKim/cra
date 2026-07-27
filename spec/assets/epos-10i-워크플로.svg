@@ -33,7 +33,7 @@
   <rect x="542" y="110" width="212" height="214" rx="6" fill="#fde7e7" stroke="#ef9a9a"/>
   <text x="648" y="130" fill="#b91c1c" font-size="12" font-weight="bold" text-anchor="middle">eSync Component</text>
   <rect x="556" y="140" width="184" height="66" rx="4" fill="#ffffff" stroke="#ef9a9a"/>
-  <text x="648" y="159" fill="#334155" font-size="10.5" font-weight="bold" text-anchor="middle">ZIP 컴포넌트</text>
+  <text x="648" y="159" fill="#334155" font-size="10.5" font-weight="bold" text-anchor="middle">ZIP Component</text>
   <text x="566" y="178" fill="#334155" font-size="10">├ manifest.xml</text>
   <text x="566" y="196" fill="#334155" font-size="10">└ binary</text>
   <rect x="556" y="214" width="184" height="34" rx="4" fill="#ffffff" stroke="#ef9a9a"/>
@@ -56,7 +56,7 @@
   <path d="M 837 212 L 837 225" stroke="#334155" stroke-width="1.6" marker-end="url(#w-ar)"/>
   <path d="M 837 266 L 837 279" stroke="#334155" stroke-width="1.6" marker-end="url(#w-ar)"/>
   <path d="M 740 168 L 784 140" stroke="#334155" stroke-width="1.6" fill="none" marker-end="url(#w-ar)"/>
-  <text x="742" y="128" fill="#64748b" font-size="9">컴포넌트 전체</text>
+  <text x="742" y="128" fill="#64748b" font-size="9">Component 전체</text>
   <path d="M 785 300 L 742 236" stroke="#3b82f6" stroke-width="1.6" fill="none" stroke-dasharray="4,3" marker-end="url(#w-ar-blue)"/>
   <text x="700" y="330" fill="#3b82f6" font-size="9">부착</text>
 
@@ -94,7 +94,7 @@
 
   <rect x="150" y="596" width="480" height="108" rx="6" fill="#f0fdf4" stroke="#bbf7d0"/>
   <text x="164" y="616" fill="#047857" font-size="10.5" font-weight="bold">eSync Agent 처리 (EPOS 대신 무결성 검증):</text>
-  <text x="164" y="640" fill="#334155" font-size="10.5">① 서명 검증: Root 신뢰앵커 → CS Cert 체인 → ECDSA 검증 → 컴포넌트 재해시 비교</text>
+  <text x="164" y="640" fill="#334155" font-size="10.5">① 서명 검증: Root 신뢰앵커 → CS Cert 체인 → ECDSA 검증 → Component 재해시 비교</text>
   <text x="164" y="664" fill="#334155" font-size="10.5">② 호환성: manifest 타겟 + HW ID(UDS 0x22) 대조</text>
   <text x="164" y="688" fill="#334155" font-size="10.5">③ 플래시: 0x27 SecurityAccess 게이트 → 평문 플래시 (0x29 미사용)</text>
 

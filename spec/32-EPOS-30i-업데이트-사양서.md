@@ -49,7 +49,7 @@ EPOS-30i 사이버보안은 다음 영역으로 구성된다(개발사 제안서
 
 ## 2. 2계층 보안 모델
 
-EPOS-30i 이미지는 **두 계층의 독립적 보안 처리**를 거친다. 이 구분이 eSync 경계 오해(개발자가 eSync 밖에서 패키지를 만든다는 서술)를 해소하는 핵심이다.
+EPOS-30i 이미지는 **두 계층의 독립적 보안 처리**를 거친다. 이 구분이 eSync 경계 오해(개발자가 eSync 밖에서 Package를 만든다는 서술)를 해소하는 핵심이다.
 
 ![그림 1 · EPOS-30i 2계층 보안 모델](assets/epos-30i-2계층-보안모델.svg)
 
@@ -92,7 +92,7 @@ eSync 절차가 제거하는 "개발자 서명"은 **업로더가 자기 키로 
 
 1. **발행** — GPDM이 Component 소스를 eSync에 제공한다. EPOS-30i의 소스 바이너리는 상류에서 준비된 **SE Binary**(내부 계층: 암호화 §5 + ECDSA 서명 §4 완료본)다. 상류 준비의 시점·주체·제조 배포는 범위 밖(§2.1, [30 §1.2](30-eSync-OTA-공통아키텍처.md)).
 2. **eSync 패키징·서명** — eSync Server가 SE Binary를 Component로 감싸고 CS Cert 서명(외부 계층). manifest.xml은 GPDM 프로퍼티에서 생성(§6, [30 §3.2.4](30-eSync-OTA-공통아키텍처.md)).
-3. **타겟팅·전송** — 캠페인 선정 후 AWS IoT Core로 TGU에 시그널링, 펌웨어는 HTTPS 다운로드([30 §5·§6](30-eSync-OTA-공통아키텍처.md)).
+3. **타겟팅·전송** — Campaign 선정 후 AWS IoT Core로 TGU에 시그널링, 펌웨어는 HTTPS 다운로드([30 §5·§6](30-eSync-OTA-공통아키텍처.md)).
 4. **TGU 검증** — eSync Agent가 CS Cert 체인·서명·재해시를 검증(외부 계층). 통과분만 EPOS-30i로 전달.
 5. **세션 개방** — UDS `0x29`(2단계 인증서 인증)로 프로그래밍 세션을 연다(§10). Secure Flash의 전제조건이다.
 6. **Secure Flash** — UDS `0x34/0x36/0x37`로 SE Binary를 전송. EPOS-30i HSM이 복호화·진위검증·안티롤백을 수행하며 **비활성 뱅크**에 기록(§8).
