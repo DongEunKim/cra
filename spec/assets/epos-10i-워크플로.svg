@@ -25,9 +25,9 @@
   <text x="500" y="119" fill="#64748b" font-size="9" text-anchor="middle">업로드</text>
 
   <!-- ===== eSync Server ===== -->
-  <rect x="520" y="70" width="560" height="338" rx="8" fill="#ffffff" stroke="#334155"/>
-  <rect x="520" y="70" width="560" height="28" rx="8" fill="#1e293b"/>
-  <text x="800" y="89" fill="#ffffff" font-size="13" font-weight="bold" text-anchor="middle">eSync Server</text>
+  <rect x="520" y="70" width="390" height="338" rx="8" fill="#ffffff" stroke="#334155"/>
+  <rect x="520" y="70" width="390" height="28" rx="8" fill="#1e293b"/>
+  <text x="715" y="89" fill="#ffffff" font-size="13" font-weight="bold" text-anchor="middle">eSync Server</text>
 
   <!-- Component -->
   <rect x="542" y="110" width="212" height="214" rx="6" fill="#fde7e7" stroke="#ef9a9a"/>
@@ -60,13 +60,14 @@
   <path d="M 785 300 L 742 236" stroke="#3b82f6" stroke-width="1.6" fill="none" stroke-dasharray="4,3" marker-end="url(#w-ar-blue)"/>
   <text x="700" y="330" fill="#3b82f6" font-size="9">부착</text>
 
-  <!-- KMS -->
-  <rect x="915" y="212" width="150" height="82" rx="6" fill="#fce7f3" stroke="#db2777"/>
-  <text x="990" y="236" fill="#9d174d" font-size="12" font-weight="bold" text-anchor="middle">KMS</text>
-  <text x="990" y="256" fill="#334155" font-size="9.5" text-anchor="middle">서명 리프 개인키</text>
-  <text x="990" y="272" fill="#334155" font-size="9.5" text-anchor="middle">(P-256)</text>
-  <path d="M 913 250 L 891 248" stroke="#db2777" stroke-width="1.8" fill="none" marker-end="url(#w-ar-pink)"/>
-  <text x="900" y="242" fill="#9d174d" font-size="9">서명</text>
+  <!-- KMS (별도 시스템 · eSync Server 밖) -->
+  <rect x="950" y="206" width="150" height="94" rx="6" fill="#fce7f3" stroke="#db2777"/>
+  <text x="1025" y="230" fill="#9d174d" font-size="12" font-weight="bold" text-anchor="middle">KMS</text>
+  <text x="1025" y="249" fill="#334155" font-size="9.5" text-anchor="middle">서명 리프 개인키</text>
+  <text x="1025" y="265" fill="#334155" font-size="9.5" text-anchor="middle">(P-256)</text>
+  <text x="1025" y="285" fill="#9d174d" font-size="9" text-anchor="middle">(별도 시스템)</text>
+  <path d="M 948 246 L 891 246" stroke="#db2777" stroke-width="1.8" fill="none" marker-end="url(#w-ar-pink)"/>
+  <text x="920" y="240" fill="#9d174d" font-size="9" text-anchor="middle">서명 요청·반환</text>
 
   <!-- Package -->
   <rect x="542" y="336" width="340" height="60" rx="6" fill="#fde7e7" stroke="#ef9a9a"/>

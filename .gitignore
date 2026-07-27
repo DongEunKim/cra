@@ -19,3 +19,7 @@ Thumbs.db
 # eSync 제3자 기밀 원문 (Excelfore Confidential — 커밋 금지)
 /eSync/*.pdf
 /eSync/*.json
+
+# 프로젝트 로컬 도구·가이드 (git 제외)
+/.claude/
+/CLAUDE.md
