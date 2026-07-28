@@ -1,0 +1,99 @@
+<svg viewBox="0 0 1080 600" width="1080" height="600" xmlns="http://www.w3.org/2000/svg" font-family="Inter, sans-serif">
+
+  <text x="24" y="28" fill="#1e3a8a" font-size="14" font-weight="bold">ECU 유선 업데이트 3케이스 — 엔진진단툴 처리 방식별 변주 (유선 인프라·게이트 인증은 40 사양 전제)</text>
+
+  <!-- ================= 케이스 1 ================= -->
+  <rect x="24" y="46" width="1032" height="22" rx="4" fill="#dbeafe"/>
+  <text x="34" y="62" fill="#1e40af" font-size="11" font-weight="bold">케이스 1 — DMS에 엔진진단툴 임베드</text>
+
+  <rect x="40" y="82" width="230" height="96" rx="8" fill="#faf5ff" stroke="#9333ea" stroke-width="1.6"/>
+  <text x="155" y="110" fill="#6b21a8" font-size="11" font-weight="bold" text-anchor="middle">DMS (진단 PC)</text>
+  <text x="155" y="132" fill="#334155" font-size="9.5" text-anchor="middle">엔진진단툴 임베드</text>
+  <text x="155" y="150" fill="#64748b" font-size="9.5" text-anchor="middle">(엔진진단프로그램 내장)</text>
+
+  <path d="M 270 130 L 328 130" stroke="#9333ea" stroke-width="2" marker-end="url(#c-ar-purple)"/>
+  <text x="299" y="122" fill="#6b21a8" font-size="8.5" text-anchor="middle">OBD-II</text>
+
+  <rect x="330" y="82" width="250" height="96" rx="8" fill="#f0fdfa" stroke="#0d9488" stroke-width="1.8"/>
+  <text x="455" y="108" fill="#0f766e" font-size="11" font-weight="bold" text-anchor="middle">SGW</text>
+  <text x="455" y="130" fill="#334155" font-size="9.5" text-anchor="middle">UDS 0x29 APCE 인증 (동일)</text>
+  <text x="455" y="150" fill="#64748b" font-size="9.5" text-anchor="middle">DMS 라이선스 검증 → CAN 개방</text>
+
+  <path d="M 580 130 L 638 130" stroke="#334155" stroke-width="2" marker-end="url(#c-ar)"/>
+  <text x="609" y="122" fill="#334155" font-size="8.5" text-anchor="middle">CAN(Role)</text>
+
+  <rect x="640" y="82" width="200" height="96" rx="8" fill="#f8fafc" stroke="#64748b" stroke-width="1.6"/>
+  <text x="740" y="110" fill="#334155" font-size="11" font-weight="bold" text-anchor="middle">ECU</text>
+  <text x="740" y="132" fill="#334155" font-size="9.5" text-anchor="middle">임베드 진단프로그램이</text>
+  <text x="740" y="150" fill="#334155" font-size="9.5" text-anchor="middle">진단·플래시 수행</text>
+
+  <text x="860" y="120" fill="#475569" font-size="9">게이트 인증 절차 =</text>
+  <text x="860" y="136" fill="#475569" font-size="9">EPOS 유선과 동일.</text>
+  <text x="860" y="152" fill="#475569" font-size="9">DMS가 호출 가능한</text>
+  <text x="860" y="168" fill="#475569" font-size="9">엔진진단프로그램 실행.</text>
+
+  <!-- ================= 케이스 2 ================= -->
+  <rect x="24" y="222" width="1032" height="22" rx="4" fill="#fef3c7"/>
+  <text x="34" y="238" fill="#b45309" font-size="11" font-weight="bold">케이스 2 — 벤더사가 엔진진단툴을 수정하지 못하는 경우 (진단전용 Private CAN 전제)</text>
+
+  <rect x="40" y="258" width="230" height="96" rx="8" fill="#f1f5f9" stroke="#94a3b8" stroke-width="1.6"/>
+  <text x="155" y="286" fill="#334155" font-size="11" font-weight="bold" text-anchor="middle">외부 진단툴</text>
+  <text x="155" y="308" fill="#334155" font-size="9.5" text-anchor="middle">(벤더사 · 수정 불가)</text>
+  <text x="155" y="326" fill="#b91c1c" font-size="9.5" text-anchor="middle">0x29 라이선스 인증 불가</text>
+
+  <path d="M 270 306 L 328 306" stroke="#9333ea" stroke-width="2" marker-end="url(#c-ar-purple)"/>
+  <text x="299" y="298" fill="#6b21a8" font-size="8.5" text-anchor="middle">OBD-II</text>
+
+  <rect x="330" y="258" width="250" height="96" rx="8" fill="#f0fdfa" stroke="#0d9488" stroke-width="1.8"/>
+  <text x="455" y="284" fill="#0f766e" font-size="11" font-weight="bold" text-anchor="middle">SGW — CAN ID 필터·라우팅</text>
+  <text x="455" y="306" fill="#334155" font-size="9.5" text-anchor="middle">ECU Flashing UDS CAN ID 등록</text>
+  <text x="455" y="326" fill="#64748b" font-size="9.5" text-anchor="middle">해당 CAN ID만 필터링해 라우팅</text>
+
+  <path d="M 580 306 L 638 306" stroke="#ea580c" stroke-width="2" stroke-dasharray="5,3" marker-end="url(#c-ar-org)"/>
+  <text x="609" y="298" fill="#c2410c" font-size="8" text-anchor="middle">Private CAN</text>
+
+  <rect x="640" y="258" width="200" height="96" rx="8" fill="#f8fafc" stroke="#64748b" stroke-width="1.6"/>
+  <text x="740" y="286" fill="#334155" font-size="11" font-weight="bold" text-anchor="middle">ECU</text>
+  <text x="740" y="308" fill="#334155" font-size="9.5" text-anchor="middle">진단전용 CAN으로</text>
+  <text x="740" y="326" fill="#334155" font-size="9.5" text-anchor="middle">라우팅되어 수신</text>
+
+  <text x="860" y="296" fill="#475569" font-size="9">SGW–ECU 간 진단전용</text>
+  <text x="860" y="312" fill="#475569" font-size="9">Private CAN 선로 전제.</text>
+  <text x="860" y="328" fill="#475569" font-size="9">외부 경계는 CAN ID</text>
+  <text x="860" y="344" fill="#475569" font-size="9">필터로 통제(40 §6.3).</text>
+
+  <!-- ================= 케이스 3 ================= -->
+  <rect x="24" y="398" width="1032" height="22" rx="4" fill="#dcfce7"/>
+  <text x="34" y="414" fill="#15803d" font-size="11" font-weight="bold">케이스 3 — HD건설기계용 엔진진단툴 (수정 가능)</text>
+
+  <rect x="40" y="434" width="230" height="96" rx="8" fill="#faf5ff" stroke="#9333ea" stroke-width="1.6"/>
+  <text x="155" y="462" fill="#6b21a8" font-size="10.5" font-weight="bold" text-anchor="middle">HD건설기계용 엔진진단툴</text>
+  <text x="155" y="484" fill="#334155" font-size="9.5" text-anchor="middle">(수정 가능)</text>
+  <text x="155" y="502" fill="#15803d" font-size="9.5" text-anchor="middle">DMS 동일 라이선스 발급</text>
+
+  <path d="M 270 482 L 328 482" stroke="#9333ea" stroke-width="2" marker-end="url(#c-ar-purple)"/>
+  <text x="299" y="474" fill="#6b21a8" font-size="8.5" text-anchor="middle">OBD-II</text>
+
+  <rect x="330" y="434" width="250" height="96" rx="8" fill="#f0fdfa" stroke="#0d9488" stroke-width="1.8"/>
+  <text x="455" y="460" fill="#0f766e" font-size="11" font-weight="bold" text-anchor="middle">SGW</text>
+  <text x="455" y="482" fill="#334155" font-size="9.5" text-anchor="middle">UDS 0x29 APCE 인증</text>
+  <text x="455" y="502" fill="#64748b" font-size="9.5" text-anchor="middle">DMS와 동일 절차 · Role</text>
+
+  <path d="M 580 482 L 638 482" stroke="#334155" stroke-width="2" marker-end="url(#c-ar)"/>
+  <text x="609" y="474" fill="#334155" font-size="8.5" text-anchor="middle">CAN(Role)</text>
+
+  <rect x="640" y="434" width="200" height="96" rx="8" fill="#f8fafc" stroke="#64748b" stroke-width="1.6"/>
+  <text x="740" y="462" fill="#334155" font-size="11" font-weight="bold" text-anchor="middle">ECU</text>
+  <text x="740" y="484" fill="#334155" font-size="9.5" text-anchor="middle">진단·플래시 수행</text>
+
+  <text x="860" y="472" fill="#475569" font-size="9">엔진진단툴에 DMS와</text>
+  <text x="860" y="488" fill="#475569" font-size="9">동일 라이선스.</text>
+  <text x="860" y="504" fill="#475569" font-size="9">SGW 인증 절차가</text>
+  <text x="860" y="520" fill="#475569" font-size="9">DMS와 완전히 동일.</text>
+
+  <defs>
+    <marker id="c-ar" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L8,3 z" fill="#334155"/></marker>
+    <marker id="c-ar-purple" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L8,3 z" fill="#9333ea"/></marker>
+    <marker id="c-ar-org" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L8,3 z" fill="#ea580c"/></marker>
+  </defs>
+</svg>

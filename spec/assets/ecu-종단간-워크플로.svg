@@ -1,0 +1,123 @@
+<svg viewBox="0 0 1440 772" width="1440" height="772" xmlns="http://www.w3.org/2000/svg" font-family="Inter, sans-serif">
+
+  <text x="20" y="28" fill="#1e3a8a" font-size="14" font-weight="bold">ECU 종단간 워크플로 — 주체(누가) × 단계(언제): 개발·경계 유입 → 발행 → 배포 → 설치</text>
+
+  <!-- 레인 배경 -->
+  <rect x="10" y="74" width="1420" height="96" fill="#ffffff"/>
+  <rect x="10" y="170" width="1420" height="96" fill="#f8fafc"/>
+  <rect x="10" y="266" width="1420" height="96" fill="#ffffff"/>
+  <rect x="10" y="362" width="1420" height="96" fill="#f8fafc"/>
+  <rect x="10" y="458" width="1420" height="96" fill="#ffffff"/>
+  <rect x="10" y="554" width="1420" height="96" fill="#f8fafc"/>
+  <rect x="10" y="650" width="1420" height="96" fill="#ffffff"/>
+
+  <!-- 단계 헤더 -->
+  <rect x="10" y="44" width="1420" height="30" fill="#1e293b"/>
+  <text x="359" y="64" fill="#ffffff" font-size="11.5" font-weight="bold" text-anchor="middle">① 개발·경계 유입 (조직 경계)</text>
+  <text x="715" y="64" fill="#ffffff" font-size="11.5" font-weight="bold" text-anchor="middle">② 발행 (릴리스마다)</text>
+  <text x="1010" y="64" fill="#ffffff" font-size="11.5" font-weight="bold" text-anchor="middle">③ 배포·전송</text>
+  <text x="1290" y="64" fill="#ffffff" font-size="11.5" font-weight="bold" text-anchor="middle">④ 설치 (HSM 유무 분기)</text>
+
+  <!-- 레인 라벨 -->
+  <rect x="10" y="74" width="148" height="96" fill="#fff7ed" stroke="#cbd5e1"/>
+  <text x="84" y="118" fill="#9a3412" font-size="11" font-weight="bold" text-anchor="middle">엔진사업부</text>
+  <text x="84" y="134" fill="#9a3412" font-size="11" font-weight="bold" text-anchor="middle">벤더</text>
+  <rect x="10" y="170" width="148" height="96" fill="#ffedd5" stroke="#cbd5e1"/>
+  <text x="84" y="210" fill="#c2410c" font-size="11" font-weight="bold" text-anchor="middle">파워트레인</text>
+  <text x="84" y="226" fill="#c2410c" font-size="11" font-weight="bold" text-anchor="middle">개발팀</text>
+  <text x="84" y="242" fill="#ea580c" font-size="9" text-anchor="middle">(설계주관)</text>
+  <rect x="10" y="266" width="148" height="96" fill="#f1f5f9" stroke="#cbd5e1"/>
+  <text x="84" y="306" fill="#334155" font-size="10.5" font-weight="bold" text-anchor="middle">건설기계부문</text>
+  <text x="84" y="322" fill="#334155" font-size="10.5" font-weight="bold" text-anchor="middle">GPDM</text>
+  <rect x="10" y="362" width="148" height="96" fill="#eef2ff" stroke="#cbd5e1"/>
+  <text x="84" y="414" fill="#1e3a8a" font-size="11" font-weight="bold" text-anchor="middle">OEM PKI · KMS</text>
+  <rect x="10" y="458" width="148" height="96" fill="#eff6ff" stroke="#cbd5e1"/>
+  <text x="84" y="510" fill="#1d4ed8" font-size="11" font-weight="bold" text-anchor="middle">eSync Server</text>
+  <rect x="10" y="554" width="148" height="96" fill="#e0f2fe" stroke="#cbd5e1"/>
+  <text x="84" y="598" fill="#0369a1" font-size="11" font-weight="bold" text-anchor="middle">TGU</text>
+  <text x="84" y="614" fill="#0369a1" font-size="9.5" text-anchor="middle">(Client·Agent)</text>
+  <rect x="10" y="650" width="148" height="96" fill="#f1f5f9" stroke="#cbd5e1"/>
+  <text x="84" y="694" fill="#334155" font-size="11" font-weight="bold" text-anchor="middle">ECU</text>
+  <text x="84" y="710" fill="#64748b" font-size="9" text-anchor="middle">(HSM 유무 혼재)</text>
+
+  <!-- 단계 구분선 -->
+  <line x1="158" y1="44" x2="158" y2="746" stroke="#94a3b8" stroke-width="1.5"/>
+  <line x1="560" y1="44" x2="560" y2="746" stroke="#cbd5e1" stroke-dasharray="4,4"/>
+  <line x1="870" y1="44" x2="870" y2="746" stroke="#cbd5e1" stroke-dasharray="4,4"/>
+  <line x1="1150" y1="44" x2="1150" y2="746" stroke="#cbd5e1" stroke-dasharray="4,4"/>
+  <rect x="10" y="44" width="1420" height="702" fill="none" stroke="#94a3b8" stroke-width="1.5"/>
+
+  <!-- ===== ① 개발·경계 유입 ===== -->
+  <rect x="170" y="88" width="376" height="68" rx="6" fill="#fff7ed" stroke="#ea580c"/>
+  <text x="358" y="116" fill="#334155" font-size="9.5" text-anchor="middle">ECU SW 개발 (엔진사업부 GPDM 경계)</text>
+  <text x="358" y="136" fill="#64748b" font-size="9.5" text-anchor="middle">산출물 + Manifest 제작 정보</text>
+
+  <rect x="170" y="184" width="376" height="68" rx="6" fill="#ffedd5" stroke="#ea580c"/>
+  <text x="358" y="212" fill="#334155" font-size="9.5" text-anchor="middle">Manifest 정보 취합 · 설계주관</text>
+  <text x="358" y="232" fill="#64748b" font-size="9.5" text-anchor="middle">건설기계부문 GPDM 연동 등록</text>
+
+  <rect x="170" y="280" width="376" height="68" rx="6" fill="#f1f5f9" stroke="#94a3b8"/>
+  <text x="358" y="308" fill="#334155" font-size="9.5" text-anchor="middle">Component 소스 원장 (SSOT)</text>
+  <text x="358" y="328" fill="#64748b" font-size="9.5" text-anchor="middle">이후 eSync에는 GPDM 단일 원천으로 취급</text>
+
+  <path d="M 358 156 L 358 182" stroke="#ea580c" stroke-width="1.8" marker-end="url(#e-ar-org)"/>
+  <text x="368" y="174" fill="#c2410c" font-size="8.5">조직 경계 유입</text>
+  <path d="M 358 252 L 358 278" stroke="#ea580c" stroke-width="1.8" marker-end="url(#e-ar-org)"/>
+  <text x="368" y="270" fill="#c2410c" font-size="8.5">GPDM 등록</text>
+
+  <!-- ===== ② 발행 ===== -->
+  <rect x="572" y="376" width="286" height="68" rx="6" fill="#eef2ff" stroke="#6366f1"/>
+  <text x="715" y="404" fill="#334155" font-size="9.5" text-anchor="middle">코드서명키 보관 (KMS)</text>
+  <text x="715" y="424" fill="#64748b" font-size="9.5" text-anchor="middle">CS Cert 서명 발행</text>
+
+  <rect x="572" y="472" width="286" height="68" rx="6" fill="#eff6ff" stroke="#3b82f6"/>
+  <text x="715" y="496" fill="#1d4ed8" font-size="9.5" font-weight="bold" text-anchor="middle">[외부 계층]</text>
+  <text x="715" y="514" fill="#334155" font-size="9.5" text-anchor="middle">Component 래핑 (바이너리 + manifest)</text>
+  <text x="715" y="530" fill="#334155" font-size="9.5" text-anchor="middle">CS Cert 서명(KMS 요청) → 저장</text>
+
+  <!-- GPDM → eSync (Component 소스) -->
+  <path d="M 546 314 L 660 314 L 660 470" fill="none" stroke="#475569" stroke-width="1.8" marker-end="url(#e-ar)"/>
+  <text x="650" y="410" fill="#475569" font-size="8.5" transform="rotate(90 650 410)">Component 소스</text>
+  <!-- KMS → eSync (서명) -->
+  <path d="M 760 444 L 760 470" stroke="#6366f1" stroke-width="1.6" marker-end="url(#e-ar-indigo)"/>
+  <text x="770" y="462" fill="#4338ca" font-size="8.5">CS Cert 서명</text>
+
+  <!-- ===== ③ 배포·전송 ===== -->
+  <rect x="882" y="472" width="256" height="68" rx="6" fill="#eff6ff" stroke="#3b82f6"/>
+  <text x="1010" y="500" fill="#334155" font-size="9.5" text-anchor="middle">Campaign · 타겟팅 (VLM)</text>
+  <text x="1010" y="520" fill="#64748b" font-size="9.5" text-anchor="middle">다운로드 메타 배포</text>
+
+  <rect x="882" y="568" width="256" height="68" rx="6" fill="#e0f2fe" stroke="#0ea5e9"/>
+  <text x="1010" y="596" fill="#334155" font-size="9.5" text-anchor="middle">mTLS 접속(AWS IoT Core)</text>
+  <text x="1010" y="616" fill="#64748b" font-size="9.5" text-anchor="middle">펌웨어 HTTPS 다운로드</text>
+
+  <path d="M 858 506 L 880 506" stroke="#475569" stroke-width="1.8" marker-end="url(#e-ar)"/>
+  <path d="M 1010 540 L 1010 566" stroke="#475569" stroke-width="1.8" marker-end="url(#e-ar)"/>
+
+  <!-- ===== ④ 설치 ===== -->
+  <rect x="1162" y="476" width="256" height="56" rx="6" fill="#eff6ff" stroke="#3b82f6"/>
+  <text x="1290" y="509" fill="#334155" font-size="9.5" text-anchor="middle">설치 상태 수신 · 감사</text>
+
+  <rect x="1162" y="566" width="256" height="72" rx="6" fill="#e0f2fe" stroke="#0ea5e9" stroke-width="1.6"/>
+  <text x="1290" y="590" fill="#b91c1c" font-size="9" font-weight="bold" text-anchor="middle">[미보유] 대행 검증 · 0x27 · 평문 플래시</text>
+  <text x="1290" y="610" fill="#334155" font-size="9" text-anchor="middle">[보유] ECU 0x29 인증 트리거 →</text>
+  <text x="1290" y="626" fill="#334155" font-size="9" text-anchor="middle">Secure Flash 위임</text>
+
+  <rect x="1162" y="660" width="256" height="76" rx="6" fill="#f1f5f9" stroke="#94a3b8"/>
+  <text x="1290" y="684" fill="#334155" font-size="9" text-anchor="middle">[미보유] 평문 이미지 수신 · 원자적 커밋</text>
+  <text x="1290" y="704" fill="#334155" font-size="9" text-anchor="middle">[보유] Secure Flash 자체 복호 · ECDSA</text>
+  <text x="1290" y="720" fill="#64748b" font-size="9" text-anchor="middle">검증 · A/B 스왑</text>
+
+  <path d="M 1138 602 L 1160 602" stroke="#475569" stroke-width="1.8" marker-end="url(#e-ar)"/>
+  <path d="M 1290 638 L 1290 658" stroke="#475569" stroke-width="1.8" marker-end="url(#e-ar)"/>
+  <text x="1300" y="652" fill="#475569" font-size="8.5">UDS 0x27 / 0x29</text>
+  <path d="M 1162 690 L 1156 690 L 1156 505 L 1160 505" fill="none" stroke="#059669" stroke-width="1.5" stroke-dasharray="5,4" marker-end="url(#e-ar-green)"/>
+  <text x="1146" y="600" fill="#059669" font-size="8.5" transform="rotate(90 1146 600)">상태·감사</text>
+
+  <defs>
+    <marker id="e-ar" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L8,3 z" fill="#475569"/></marker>
+    <marker id="e-ar-org" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L8,3 z" fill="#ea580c"/></marker>
+    <marker id="e-ar-indigo" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L8,3 z" fill="#6366f1"/></marker>
+    <marker id="e-ar-green" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L8,3 z" fill="#059669"/></marker>
+  </defs>
+</svg>
