@@ -20,7 +20,7 @@
 
   <text x="265" y="92" fill="#334155" font-size="10" font-weight="bold" text-anchor="middle">1. 라이선스 요청 (사용자 인증 + PC ID)</text>
   <path d="M 398 100 L 132 100" stroke="#334155" stroke-width="1.8" marker-end="url(#s-ar)"/>
-  <text x="265" y="122" fill="#334155" font-size="10" font-weight="bold" text-anchor="middle">2. DMS 라이선스 발급</text>
+  <text x="265" y="122" fill="#334155" font-size="10" font-weight="bold" text-anchor="middle">2. DMS License 발급</text>
   <path d="M 132 130 L 398 130" stroke="#334155" stroke-width="1.8" marker-end="url(#s-ar)"/>
   <text x="265" y="152" fill="#334155" font-size="10" font-weight="bold" text-anchor="middle">3. 서명 Component 다운로드 (RBAC)</text>
   <path d="M 398 160 L 132 160" stroke="#334155" stroke-width="1.8" marker-end="url(#s-ar)"/>

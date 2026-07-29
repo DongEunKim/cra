@@ -6,14 +6,14 @@
   <text x="260" y="88" fill="#64748b" font-size="10.5" text-anchor="middle">Signed Component / Package</text>
 
   <rect x="560" y="36" width="300" height="76" rx="8" fill="#faf5ff" stroke="#9333ea" stroke-width="1.8"/>
-  <text x="710" y="64" fill="#6b21a8" font-size="13" font-weight="bold" text-anchor="middle">진단 라이선스 CA</text>
-  <text x="710" y="88" fill="#64748b" font-size="10.5" text-anchor="middle">DMS 라이선스 발급</text>
+  <text x="710" y="64" fill="#6b21a8" font-size="13" font-weight="bold" text-anchor="middle">Diagnostic License CA</text>
+  <text x="710" y="88" fill="#64748b" font-size="10.5" text-anchor="middle">DMS License 발급</text>
 
   <!-- DMS -->
   <rect x="330" y="168" width="340" height="90" rx="8" fill="#f3e8ff" stroke="#9333ea" stroke-width="2"/>
   <text x="500" y="196" fill="#6b21a8" font-size="13" font-weight="bold" text-anchor="middle">DMS (윈도우 PC 진단툴)</text>
   <text x="500" y="219" fill="#334155" font-size="10.5" text-anchor="middle">서명·호환성 대행 검증</text>
-  <text x="500" y="239" fill="#334155" font-size="10.5" text-anchor="middle">DMS 라이선스 보유</text>
+  <text x="500" y="239" fill="#334155" font-size="10.5" text-anchor="middle">DMS License 보유</text>
 
   <path d="M 270 112 C 300 150, 360 158, 412 166" stroke="#334155" stroke-width="1.8" fill="none" marker-end="url(#u-ar)"/>
   <text x="300" y="145" fill="#334155" font-size="10" font-weight="bold">① 서명 Component 다운로드 (RBAC)</text>

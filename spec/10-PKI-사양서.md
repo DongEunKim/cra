@@ -22,17 +22,17 @@ OTA에 쓰이는 인증기관 계층, 인증서 프로파일, 신뢰 체인, 키
 - **OEM Root CA** — 최상위 인증기관. 개인키(서명키)는 오프라인 보관하며, 하위 인증기관 발급에만 쓴다.
 - **Device CA** — 디바이스 인증서를 발급하는 인증기관. 개인키는 KMS에 보관한다.
 - **Code Sign CA** — 코드서명 인증서를 발급하는 인증기관. 개인키는 KMS에 보관한다.
-- **진단 라이선스 CA** — DMS 라이선스를 발급하는 인증기관. 개인키는 KMS에 보관한다.
+- **Diagnostic License CA** — DMS License를 발급하는 인증기관. 개인키는 KMS에 보관한다.
 
 ### 1.2 3단계 대칭 구조
 
-계층은 `Root CA → { Device CA, Code Sign CA, 진단 라이선스 CA } → 리프 인증서`의 3단계다. 세 갈래(디바이스 신원, 코드 서명, 진단 라이선스)가 대칭이다.
+계층은 `Root CA → { Device CA, Code Sign CA, Diagnostic License CA } → 리프 인증서`의 3단계다. 세 갈래(디바이스 신원, 코드 서명, 진단 라이선스)가 대칭이다.
 
 이 구조는 **디바이스 관점의 일관성**을 목표로 한다.
 
 - 자체 PKI 검증의 신뢰앵커는 **OEM Root CA 인증서 하나**다(전송용 Amazon Root CA는 별개, §3.1).
 - 디바이스는 서명 검증이든 상대 신원 검증이든 **"Root → 목적별 CA → 리프"라는 같은 규칙**으로 체인을 구성한다.
-- Device CA는 다수의 디바이스 인증서를 발급하므로 Root를 오프라인으로 두려면 중간 인증기관이어야 한다. Code Sign CA·진단 라이선스 CA를 대칭으로 두면 세 갈래의 검증 규칙과 보유 자산이 일치한다.
+- Device CA는 다수의 디바이스 인증서를 발급하므로 Root를 오프라인으로 두려면 중간 인증기관이어야 한다. Code Sign CA·Diagnostic License CA를 대칭으로 두면 세 갈래의 검증 규칙과 보유 자산이 일치한다.
 
 ### 1.3 암호 스위트
 
@@ -63,11 +63,11 @@ OTA에 쓰이는 인증기관 계층, 인증서 프로파일, 신뢰 체인, 키
 | 용도 | Component 서명. 개인키는 KMS에 보관 |
 | 배포 | 검증을 위해 Component에 동봉 |
 
-### 2.3 DMS 라이선스 인증서
+### 2.3 DMS License 인증서
 
 | 항목 | 값 |
 |------|-----|
-| 발급기관 | 진단 라이선스 CA |
+| 발급기관 | Diagnostic License CA |
 | Subject | `CN=<PC 고유 ID>, O=<OEM>, OU=Diagnostics` |
 | 공개키·서명 | ECDSA P-256 · `ecdsa-with-SHA256` |
 | Key Usage | `digitalSignature` |
@@ -105,11 +105,11 @@ Certificate:
   Signature Algorithm: ecdsa-with-SHA256
 ```
 
-DMS 라이선스는 하나의 인증서를 두 게이트웨이가 각자의 방식으로 검증한다([40 §5](40-유선업데이트-사양서.md)). `<PEN>`(Private Enterprise Number)은 TODO(§7).
+DMS License는 하나의 인증서를 두 게이트웨이가 각자의 방식으로 검증한다([40 §5](40-유선업데이트-사양서.md)). `<PEN>`(Private Enterprise Number)은 TODO(§7).
 
 ### 2.4 인증기관 인증서
 
-Root CA·Device CA·Code Sign CA·진단 라이선스 CA 인증서는 `basicConstraints: cA=TRUE`, `Key Usage: keyCertSign`을 가진다. Root는 자기서명(self-signed)이다.
+Root CA·Device CA·Code Sign CA·Diagnostic License CA 인증서는 `basicConstraints: cA=TRUE`, `Key Usage: keyCertSign`을 가진다. Root는 자기서명(self-signed)이다.
 
 ### 2.5 EPOS 이미지 서명 검증 공개키 (HSM 제어기)
 
@@ -180,7 +180,7 @@ HSM 보유 제어기(EPOS-30i)는 코드서명이 **두 계층**으로 나뉜다
 |--------|-----------|
 | 디바이스 인증서 | TBD (§7) |
 | CS Cert (코드서명 리프) | 단수명 · 주기 회전 |
-| DMS 라이선스 | 단수명. 만료 강제는 절대시각이 아닌 방식(→ [40 §9](40-유선업데이트-사양서.md)) |
+| DMS License | 단수명. 만료 강제는 절대시각이 아닌 방식(→ [40 §9](40-유선업데이트-사양서.md)) |
 | 중간 CA | 장수명 |
 | Root CA | 장수명 |
 

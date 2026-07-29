@@ -17,7 +17,7 @@
   <rect x="330" y="82" width="250" height="96" rx="8" fill="#f0fdfa" stroke="#0d9488" stroke-width="1.8"/>
   <text x="455" y="108" fill="#0f766e" font-size="11" font-weight="bold" text-anchor="middle">SGW</text>
   <text x="455" y="130" fill="#334155" font-size="9.5" text-anchor="middle">UDS 0x29 APCE 인증 (동일)</text>
-  <text x="455" y="150" fill="#64748b" font-size="9.5" text-anchor="middle">DMS 라이선스 검증 → CAN 개방</text>
+  <text x="455" y="150" fill="#64748b" font-size="9.5" text-anchor="middle">DMS License 검증 → CAN 개방</text>
 
   <path d="M 580 130 L 638 130" stroke="#334155" stroke-width="2" marker-end="url(#c-ar)"/>
   <text x="609" y="122" fill="#334155" font-size="8.5" text-anchor="middle">CAN(Role)</text>
