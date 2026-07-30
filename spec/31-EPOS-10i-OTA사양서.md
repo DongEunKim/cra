@@ -83,7 +83,7 @@ EPOS-10i는 서명을 검증하지 못하므로 **TGU의 eSync Agent가 대행 �
 
 *[그림 4] 서명 검증 상세*
 
-1. **체인 구성** — 동봉된 CS Cert·Code Sign CA 인증서로 `Root → Code Sign CA → CS Cert` 체인을 만든다.
+1. **체인 구성** — 동봉된 CS Cert로 `Root → CS Cert` 체인을 만든다(코드서명은 중간 CA 없이 OEM Root CA 직접 발급, [10 §1](10-PKI-사양서.md)).
 2. **서명 검증** — CS Cert 공개키로 서명을 검증한다(ECDSA P-256).
 3. **재해시** — 수신 Component를 SHA-256으로 다시 해시해 서명값과 대조한다.
 4. **판정** — 모두 통과해야 진행한다. 하나라도 실패하면 폐기한다.

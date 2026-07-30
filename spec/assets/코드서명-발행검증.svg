@@ -1,0 +1,66 @@
+<svg viewBox="0 0 1100 620" width="1100" height="620" xmlns="http://www.w3.org/2000/svg" font-family="Inter, sans-serif">
+
+  <text x="30" y="30" fill="#1e3a8a" font-size="15" font-weight="bold">코드서명 발급 · 서명 · 검증</text>
+
+  <!-- ================= ① 발급 ================= -->
+  <rect x="30" y="50" width="150" height="26" rx="6" fill="#dbeafe"/>
+  <text x="105" y="68" fill="#1e40af" font-size="12" font-weight="bold" text-anchor="middle">① 발급</text>
+
+  <rect x="210" y="88" width="300" height="64" rx="8" fill="#ffffff" stroke="#1e3a8a" stroke-width="2"/>
+  <text x="360" y="116" fill="#1e3a8a" font-size="13" font-weight="bold" text-anchor="middle">OEM Root CA</text>
+  <text x="360" y="137" fill="#64748b" font-size="10" text-anchor="middle">회사 보안팀 · 오프라인 (중간 CA 없음)</text>
+
+  <path d="M 510 120 L 596 120" stroke="#334155" stroke-width="2" marker-end="url(#s-ar)"/>
+  <text x="553" y="112" fill="#64748b" font-size="10" text-anchor="middle">발급</text>
+
+  <rect x="598" y="88" width="392" height="64" rx="8" fill="#fffbeb" stroke="#f59e0b" stroke-width="2"/>
+  <text x="794" y="114" fill="#b45309" font-size="13" font-weight="bold" text-anchor="middle">CS Cert (코드서명 인증서)</text>
+  <text x="794" y="136" fill="#334155" font-size="10" text-anchor="middle">cs-pub 보증 · EKU=codeSigning · Subject=eSync Server 서명 신원</text>
+
+  <!-- ================= ② 서명 ================= -->
+  <rect x="30" y="184" width="220" height="26" rx="6" fill="#dcfce7"/>
+  <text x="140" y="202" fill="#15803d" font-size="12" font-weight="bold" text-anchor="middle">② 서명 (KMS 위탁)</text>
+
+  <rect x="210" y="224" width="210" height="60" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.8"/>
+  <text x="315" y="250" fill="#1d4ed8" font-size="12" font-weight="bold" text-anchor="middle">eSync Server</text>
+  <text x="315" y="270" fill="#64748b" font-size="10" text-anchor="middle">(Code Sign 기능)</text>
+
+  <rect x="470" y="224" width="210" height="60" rx="8" fill="#f0fdfa" stroke="#0d9488" stroke-width="1.8"/>
+  <text x="575" y="250" fill="#0f766e" font-size="12" font-weight="bold" text-anchor="middle">서명 게이트웨이</text>
+  <text x="575" y="270" fill="#64748b" font-size="10" text-anchor="middle">해시 in / 서명값 out</text>
+
+  <rect x="730" y="224" width="260" height="60" rx="8" fill="#faf5ff" stroke="#9333ea" stroke-width="1.8"/>
+  <text x="860" y="250" fill="#6b21a8" font-size="12" font-weight="bold" text-anchor="middle">온프렘 KMS / HSM</text>
+  <text x="860" y="270" fill="#64748b" font-size="10" text-anchor="middle">cs-pri로 서명 (키 불출)</text>
+
+  <path d="M 420 246 L 468 246" stroke="#334155" stroke-width="2" marker-end="url(#s-ar)"/>
+  <text x="444" y="239" fill="#64748b" font-size="9" text-anchor="middle">①해시</text>
+  <path d="M 680 246 L 728 246" stroke="#334155" stroke-width="2" marker-end="url(#s-ar)"/>
+  <text x="704" y="239" fill="#64748b" font-size="9" text-anchor="middle">②요청</text>
+  <path d="M 860 284 L 860 300 L 315 300 L 315 286" stroke="#059669" stroke-width="1.8" fill="none" marker-end="url(#s-ar-green)"/>
+  <text x="590" y="314" fill="#059669" font-size="9.5" text-anchor="middle">③ 서명값 반환</text>
+
+  <rect x="210" y="330" width="500" height="52" rx="8" fill="#f1f5f9" stroke="#94a3b8" stroke-width="1.6"/>
+  <text x="460" y="353" fill="#334155" font-size="11" font-weight="bold" text-anchor="middle">④ Component 조립</text>
+  <text x="460" y="371" fill="#334155" font-size="10" text-anchor="middle">FW 바이너리 + 메타데이터 + 서명값 + CS Cert</text>
+  <path d="M 315 330 L 315 320 L 360 320" fill="none" stroke="#334155" stroke-width="1.6" marker-end="url(#s-ar)"/>
+
+  <!-- ================= ③ 검증 ================= -->
+  <rect x="30" y="404" width="180" height="26" rx="6" fill="#fee2e2"/>
+  <text x="120" y="422" fill="#b91c1c" font-size="12" font-weight="bold" text-anchor="middle">③ 검증 (기기)</text>
+
+  <rect x="210" y="444" width="780" height="150" rx="8" fill="#ffffff" stroke="#334155" stroke-width="1.6"/>
+  <text x="230" y="472" fill="#334155" font-size="12" font-weight="bold">기기(제어기 또는 TGU 대행)가 수신한 Component를 검증</text>
+  <text x="230" y="500" fill="#334155" font-size="11">① 미리 보유한 신뢰앵커(OEM Root CA 인증서 = root-cert)로 CS Cert 체인 검증 (Root → CS Cert)</text>
+  <text x="230" y="524" fill="#334155" font-size="11">② CS Cert에서 코드서명 공개키(cs-pub)를 꺼낸다</text>
+  <text x="230" y="548" fill="#334155" font-size="11">③ 수신 Component의 해시(SHA-256)를 다시 계산해 서명값과 대조 (ECDSA P-256)</text>
+  <text x="230" y="574" fill="#15803d" font-size="11" font-weight="bold">→ 모두 통과하면 정품·무변조 FW로 인정하고 설치</text>
+
+  <path d="M 460 382 L 460 414 L 560 414 L 560 442" fill="none" stroke="#334155" stroke-width="1.6" marker-end="url(#s-ar)"/>
+  <text x="600" y="430" fill="#64748b" font-size="9.5">Component 전달(무선/유선)</text>
+
+  <defs>
+    <marker id="s-ar" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L8,3 z" fill="#334155"/></marker>
+    <marker id="s-ar-green" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L8,3 z" fill="#059669"/></marker>
+  </defs>
+</svg>

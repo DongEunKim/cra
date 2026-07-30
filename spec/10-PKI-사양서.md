@@ -19,25 +19,20 @@ OTA에 쓰이는 인증기관 계층, 인증서 프로파일, 신뢰 체인, 키
 
 ### 1.1 인증기관 계층
 
-- **OEM Root CA** — 최상위 인증기관. 개인키(서명키)는 오프라인 보관하며, 하위 인증기관 발급에만 쓴다.
-- **Device CA** — 디바이스 인증서를 발급하는 인증기관. 개인키는 KMS에 보관한다.
-- **Code Sign CA** — 코드서명 인증서를 발급하는 인증기관. 개인키는 KMS에 보관한다.
-- **Diagnostic License CA** — DMS License를 발급하는 인증기관. 개인키는 KMS에 보관한다.
+- **OEM Root CA** — 회사 보안팀이 관리하는 최상위(발급) 인증기관. 개인키는 오프라인 보관한다. 사내 시스템·서버 인증서를 발급하는 신뢰의 뿌리이며, 각 제어기가 보유하는 신뢰앵커(Root CA 인증서)의 출처다. (자기서명 여부·하위 발급 CA 위임 정책은 보안팀 확인 대상 → §7.)
+- **코드서명(FW 서명)** — 코드서명 인증서(CS Cert)는 **별도 중간 CA 없이 OEM Root CA가 직접 발급**한다(중간 CA는 필요 시 이후 도입). 상세는 §2.2·§4.
+- **Device CA / Diagnostic License CA** — 디바이스 인증서·DMS License를 발급하는 인증기관(개인키 KMS). 이 두 갈래의 CA 구조는 **이후 단계에서 재검토**한다(이번 개정 범위 밖).
 
-### 1.2 3단계 대칭 구조
-
-계층은 `Root CA → { Device CA, Code Sign CA, Diagnostic License CA } → 리프 인증서`의 3단계다. 세 갈래(디바이스 신원, 코드 서명, 진단 라이선스)가 대칭이다.
-
-이 구조는 **디바이스 관점의 일관성**을 목표로 한다.
+### 1.2 신뢰 구조
 
 - 자체 PKI 검증의 신뢰앵커는 **OEM Root CA 인증서 하나**다(전송용 Amazon Root CA는 별개, §3.1).
-- 디바이스는 서명 검증이든 상대 신원 검증이든 **"Root → 목적별 CA → 리프"라는 같은 규칙**으로 체인을 구성한다.
-- Device CA는 다수의 디바이스 인증서를 발급하므로 Root를 오프라인으로 두려면 중간 인증기관이어야 한다. Code Sign CA·Diagnostic License CA를 대칭으로 두면 세 갈래의 검증 규칙과 보유 자산이 일치한다.
+- 디바이스는 **"Root → (필요 시 중간 CA) → 최종 인증서"** 규칙으로 체인을 구성해 검증한다.
+- **코드서명**은 중간 CA 없이 `OEM Root CA → CS Cert`로 단순화한다(§2.2). 디바이스 신원·진단 라이선스 갈래는 각각 Device CA·Diagnostic License CA를 두며, 이 구조는 이후 재검토한다(§1.1).
 
 ### 1.3 암호 스위트
 
 - 서명: **ECDSA**, 곡선 `secp256r1(P-256)`, 해시 `SHA-256`.
-- 전 계층(Root·Device CA·Code Sign CA·리프)에 동일 스위트를 적용한다.
+- 전 계층(Root CA·중간 CA·최종 인증서)에 동일 스위트를 적용한다.
 
 ---
 
@@ -55,13 +50,19 @@ OTA에 쓰이는 인증기관 계층, 인증서 프로파일, 신뢰 체인, 키
 
 ### 2.2 코드서명 인증서 (CS Cert)
 
+코드서명 인증서(CS Cert, Code Signing Certificate)는 "이 공개키(cs-pub)로 검증되는 서명은 정품 FW다"를 보증하는 최종 인증서다. 짝이 되는 개인키(cs-pri, KMS 보관)로 eSync Server가 Component에 서명하고, 이 인증서를 Component에 동봉해 기기가 검증하게 한다.
+
 | 항목 | 값 |
 |------|-----|
-| 발급기관 | Code Sign CA |
+| 발급기관 | OEM Root CA (보안팀 CA) — 별도 중간 CA 없음 |
+| Subject CN | eSync Server 서명 신원(예: `eSync Release Signing`) |
+| 보증 대상 | 코드서명 공개키(cs-pub) |
 | Key Usage | `digitalSignature` (keyCertSign 없음) |
 | Extended Key Usage | `codeSigning (1.3.6.1.5.5.7.3.3)` |
-| 용도 | Component 서명. 개인키는 KMS에 보관 |
+| 용도 | Component 서명. 개인키(cs-pri)는 온프렘 KMS 보관 |
 | 배포 | 검증을 위해 Component에 동봉 |
+
+> `codeSigning` EKU가 이 인증서를 **코드서명 전용**으로 못박는다 — 같은 OEM Root CA가 발급하더라도 eSync Server의 전송용 인증서(mTLS, `serverAuth`)와 용도가 갈린다(§4의 "cs 키 ≠ mTLS 키" 참고).
 
 ### 2.3 DMS License 인증서
 
@@ -109,7 +110,7 @@ DMS License는 하나의 인증서를 두 게이트웨이가 각자의 방식으
 
 ### 2.4 인증기관 인증서
 
-Root CA·Device CA·Code Sign CA·Diagnostic License CA 인증서는 `basicConstraints: cA=TRUE`, `Key Usage: keyCertSign`을 가진다. Root는 자기서명(self-signed)이다.
+Root CA·Device CA·Diagnostic License CA 인증서는 `basicConstraints: cA=TRUE`, `Key Usage: keyCertSign`을 가진다. Root는 자기서명(self-signed)이다(자기서명 여부는 보안팀 확인 대상, §7). 코드서명은 중간 CA를 두지 않으므로 이 목록에 없다.
 
 ### 2.5 EPOS 이미지 서명 검증 공개키 (HSM 제어기)
 
@@ -117,7 +118,7 @@ HSM 보유 제어기(EPOS-30i)는 코드서명이 **두 계층**으로 나뉜다
 
 | 계층 | 서명 주체 | 검증 주체 | 검증 자산 |
 |------|----------|----------|-----------|
-| eSync CS Cert (외부) | KMS(Code Sign CA 리프) | TGU eSync Agent | **인증서 체인**(Root → Code Sign CA → CS Cert) |
+| eSync CS Cert (외부) | KMS(cs-pri) | TGU eSync Agent | **인증서 체인**(Root → CS Cert) |
 | EPOS 이미지 서명 (내부) | KMS(이미지 서명 개인키) | EPOS-30i HSM | **raw 공개키 앵커**(HSM 슬롯) |
 
 - 외부 계층은 §2.2·§3의 인증서 체인 검증을 따른다.
@@ -138,7 +139,7 @@ HSM 보유 제어기(EPOS-30i)는 코드서명이 **두 계층**으로 나뉜다
 
 ### 3.2 체인 구성
 
-- 코드 서명 검증: Component에 **CS Cert와 Code Sign CA 인증서를 동봉**한다. 디바이스는 `Root → Code Sign CA → CS Cert` 체인을 구성해 검증한다.
+- 코드 서명 검증: Component에 **CS Cert를 동봉**한다. 디바이스는 `Root → CS Cert` 체인을 구성해 검증한다(중간 CA를 이후 도입하면 그 인증서도 함께 동봉).
 - 디바이스 신원(mTLS) 검증: 상대가 제시한 리프와 중간 CA로 `Root → Device CA → 디바이스 인증서` 체인을 구성해 검증한다.
 - 인터넷 없이도 신뢰앵커(Root)만으로 체인을 수학적으로 검증할 수 있다. (폐기 확인은 §5.2.)
 
@@ -160,15 +161,24 @@ HSM 보유 제어기(EPOS-30i)는 코드서명이 **두 계층**으로 나뉜다
 
 ## 4. 키 보관·서명 서비스
 
-### 4.1 KMS 키 격리
+### 4.1 키 보관 (KMS)
 
-- Device CA·Code Sign CA·리프의 서명 개인키는 **KMS 안에만** 존재하며 밖으로 나오지 않는다.
-- OEM Root CA 개인키는 오프라인(에어갭)에 보관한다.
+- 코드서명 개인키(cs-pri)는 **온프렘 KMS/HSM 안에만** 존재하며 밖으로 나오지 않는다.
+- OEM Root CA 개인키는 보안팀이 오프라인(에어갭)에 보관한다.
+- (Device CA·Diagnostic License CA 개인키 보관은 이후 재검토 — §1.1.)
 
-### 4.2 서명 서비스
+### 4.2 서명 서비스(Code Sign)와 서명 게이트웨이
 
-- 개발자·벤더는 서명 키를 갖지 않는다.
-- Component 서명은 eSync Server가 KMS에 **서명을 요청**하고, KMS가 CS Cert의 개인키로 서명한다.
+- **Code Sign**은 FW에 서명해 Component를 만드는 eSync Server의 *기능*이며, 실제 서명은 KMS에 위탁한다. (인증서를 발급하는 CA가 아니다.)
+- 개발자·벤더는 서명 키를 갖지 않는다(중앙 KMS 서명).
+- 클라우드의 OTA Platform(eSync Server)과 온프렘 KMS는 **서명 게이트웨이**로 잇는다. eSync Server가 Component의 **해시**를 게이트웨이로 보내면 KMS가 cs-pri로 서명해 **서명값**만 돌려준다 — 개인키(cs-pri)는 KMS 밖으로 나오지 않는다. 공개키(cs-pub) 추출도 이 경로를 쓴다.
+- **cs 키 ≠ mTLS 키:** 코드서명 키(cs-pri, KMS·릴리스마다 드물게 사용)와 eSync Server의 전송 신원 키(서버 로컬·연결마다 사용)는 **별개**다. 한 키로 겸하지 않는다.
+
+발급→서명→검증의 전체 흐름은 [그림 · 코드서명 발급·서명·검증](assets/코드서명-발행검증.svg)과 같다.
+
+![그림 · 코드서명 발급·서명·검증](assets/코드서명-발행검증.svg)
+
+*[그림] 코드서명 발급·서명·검증*
 
 ---
 
@@ -201,7 +211,7 @@ HSM 보유 제어기(EPOS-30i)는 코드서명이 **두 계층**으로 나뉜다
 ### 5.3 갱신·교체·회전
 
 - **디바이스 인증서:** 만료 전 갱신한다. 폐기 시 새 인증서를 발급해 Campaign으로 내려보내고, 검증 성공 후 교체한다(실패 시 이전 인증서로 복귀).
-- **CS Cert:** Code Sign CA가 새 리프를 발급해 회전한다. 신뢰앵커(Root)는 고정되므로 디바이스 재프로비저닝이 필요 없다. 회전·만료는 **이미 서명된 Component의 유효성에 영향을 주지 않는다**(서명 시점 검증, §3.3).
+- **CS Cert:** OEM Root CA가 새 CS Cert를 발급해 회전한다. 신뢰앵커(Root)는 고정되므로 디바이스 재프로비저닝이 필요 없다. 회전·만료는 **이미 서명된 Component의 유효성에 영향을 주지 않는다**(서명 시점 검증, §3.3).
 
 ---
 
@@ -216,6 +226,8 @@ HSM 보유 제어기(EPOS-30i)는 코드서명이 **두 계층**으로 나뉜다
 
 ## 7. 미정 (TBD)
 
+- OEM Root CA 자기서명 여부·하위 발급 CA 위임·코드서명 EKU 발급 정책(보안팀 확인).
+- 코드서명 중간 CA 도입 여부(현재 미도입 — OEM Root CA 직접 발급).
 - 디바이스 인증서 유효기간 값.
 - CS Cert 회전 주기.
 - OCSP 설정값(DISABLED/NONE/REQUIRED/ENFORCED) 확정.
