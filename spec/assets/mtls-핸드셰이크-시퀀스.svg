@@ -7,7 +7,7 @@
   <text x="610" y="47" fill="#ffffff" font-size="12" font-weight="bold" text-anchor="middle">eSync Server</text>
 
   <text x="170" y="80" fill="#64748b" font-size="8.5" text-anchor="middle">자기 인증서(CN=Serial)·개인키 · 앵커: OEM Root CA 인증서(서버 검증)</text>
-  <text x="610" y="80" fill="#64748b" font-size="8.5" text-anchor="middle">자기 인증서(OEM Root 발급)·개인키 · 앵커: Device CA 인증서(TGU 검증)</text>
+  <text x="610" y="80" fill="#64748b" font-size="8.5" text-anchor="middle">자기 인증서(OEM Root 발급 · EKU serverAuth)·개인키 · 앵커: Device CA 인증서(TGU 검증)</text>
 
   <!-- 레인 -->
   <line x1="170" y1="90" x2="170" y2="392" stroke="#94a3b8" stroke-dasharray="5,5" stroke-width="1.5"/>
@@ -23,7 +23,7 @@
 
   <!-- 3: Client verifies server cert -->
   <rect x="110" y="174" width="410" height="42" rx="5" fill="#e0f2fe" stroke="#0ea5e9"/>
-  <text x="315" y="199" fill="#0369a1" font-size="10.5" font-weight="bold" text-anchor="middle">3. eSync Server 인증서 검증 — OEM Root CA 앵커로 체인·유효기간·CN·OCSP</text>
+  <text x="315" y="199" fill="#0369a1" font-size="10.5" font-weight="bold" text-anchor="middle">3. eSync Server 인증서 검증 — OEM Root CA 앵커로 체인·유효기간·SAN·EKU·OCSP</text>
 
   <!-- 4 -->
   <text x="390" y="248" fill="#334155" font-size="10.5" font-weight="bold" text-anchor="middle">4. 클라이언트 인증서 제시 (CN=Serial)</text>

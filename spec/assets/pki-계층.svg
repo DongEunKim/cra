@@ -6,49 +6,66 @@
   <text x="560" y="80" fill="#64748b" font-size="10.5" text-anchor="middle">HD건설기계 보안팀 · 개인키 오프라인 보관</text>
 
   <!-- 발급 화살표 (3분기) -->
-  <path d="M 560 100 L 560 130 L 200 130 L 200 184" stroke="#334155" stroke-width="2" fill="none" marker-end="url(#p-ar)"/>
+  <path d="M 560 100 L 560 130 L 165 130 L 165 184" stroke="#334155" stroke-width="2" fill="none" marker-end="url(#p-ar)"/>
   <path d="M 560 130 L 560 184" stroke="#334155" stroke-width="2" fill="none" marker-end="url(#p-ar)"/>
-  <path d="M 560 130 L 920 130 L 920 184" stroke="#334155" stroke-width="2" fill="none" marker-end="url(#p-ar)"/>
-  <text x="360" y="124" fill="#64748b" font-size="10" text-anchor="middle">발급</text>
-  <text x="620" y="124" fill="#b45309" font-size="10" text-anchor="middle" font-weight="bold">직접 발급(중간 CA 없음)</text>
-  <text x="760" y="124" fill="#64748b" font-size="10" text-anchor="middle">발급</text>
+  <path d="M 560 130 L 955 130 L 955 184" stroke="#334155" stroke-width="2" fill="none" marker-end="url(#p-ar)"/>
+  <text x="345" y="124" fill="#64748b" font-size="10" text-anchor="middle">발급</text>
+  <text x="606" y="124" fill="#b45309" font-size="10" text-anchor="middle" font-weight="bold">직접 발급</text>
+  <text x="775" y="124" fill="#64748b" font-size="10" text-anchor="middle">발급</text>
 
   <!-- Device CA (이후 재검토) -->
-  <rect x="30" y="186" width="340" height="212" rx="8" fill="#f0fdfa" stroke="#0d9488" stroke-width="2"/>
-  <text x="200" y="214" fill="#0f766e" font-size="14" font-weight="bold" text-anchor="middle">Device CA</text>
-  <text x="200" y="234" fill="#94a3b8" font-size="10" text-anchor="middle">디바이스 인증서 발급기관 · 개인키 KMS · (이후 재검토)</text>
-  <rect x="48" y="254" width="304" height="124" rx="6" fill="#ffffff" stroke="#0d9488"/>
-  <text x="200" y="290" fill="#0f766e" font-size="12.5" font-weight="bold" text-anchor="middle">Dev Cert — 디바이스 인증서</text>
-  <text x="200" y="312" fill="#334155" font-size="10.5" text-anchor="middle">CN = Serial · EKU clientAuth</text>
-  <text x="200" y="333" fill="#334155" font-size="10.5" text-anchor="middle">Tier-1 발급 · mTLS 신원</text>
-  <text x="200" y="360" fill="#64748b" font-size="10" text-anchor="middle">TGU 신원 (개인키는 제어기 보관)</text>
+  <rect x="30" y="186" width="270" height="226" rx="8" fill="#f0fdfa" stroke="#0d9488" stroke-width="2"/>
+  <text x="165" y="213" fill="#0f766e" font-size="14" font-weight="bold" text-anchor="middle">Device CA</text>
+  <text x="165" y="232" fill="#94a3b8" font-size="10" text-anchor="middle">디바이스 인증서 발급기관 · 개인키 KMS</text>
+  <text x="165" y="247" fill="#94a3b8" font-size="10" text-anchor="middle">(이후 재검토)</text>
+  <rect x="46" y="262" width="238" height="134" rx="6" fill="#ffffff" stroke="#0d9488"/>
+  <text x="165" y="292" fill="#0f766e" font-size="12" font-weight="bold" text-anchor="middle">Dev Cert — 디바이스 인증서</text>
+  <text x="165" y="316" fill="#0d9488" font-size="10.5" text-anchor="middle" font-weight="bold">EKU clientAuth</text>
+  <text x="165" y="338" fill="#334155" font-size="9.5" text-anchor="middle">증명 대상: 접속 장비가 정품</text>
+  <text x="165" y="357" fill="#334155" font-size="9.5" text-anchor="middle">CN = Serial · Tier-1 발급</text>
+  <text x="165" y="379" fill="#64748b" font-size="9.5" text-anchor="middle">개인키는 제어기 안에만</text>
 
-  <!-- 코드서명 인증서 (Root 직접 발급 · 중간 CA 없음) -->
-  <rect x="390" y="186" width="340" height="212" rx="8" fill="#fffbeb" stroke="#f59e0b" stroke-width="2.2"/>
-  <text x="560" y="214" fill="#b45309" font-size="14" font-weight="bold" text-anchor="middle">CS Cert — 코드서명 인증서</text>
-  <text x="560" y="234" fill="#b45309" font-size="10" text-anchor="middle" font-weight="bold">OEM Root CA 직접 발급 (중간 CA 없음)</text>
-  <rect x="408" y="254" width="304" height="124" rx="6" fill="#ffffff" stroke="#f59e0b"/>
-  <text x="560" y="284" fill="#334155" font-size="10.5" text-anchor="middle">cs-pub 보증 · EKU codeSigning</text>
-  <text x="560" y="306" fill="#334155" font-size="10.5" text-anchor="middle">Subject = eSync Server 서명 신원</text>
-  <text x="560" y="328" fill="#334155" font-size="10.5" text-anchor="middle">개인키(cs-pri)는 온프렘 KMS 보관</text>
-  <text x="560" y="352" fill="#64748b" font-size="10" text-anchor="middle">단수명 · Component에 동봉</text>
+  <!-- Root 직접 발급 — CS Cert와 eSync Server 인증서 (별개) -->
+  <rect x="316" y="186" width="488" height="226" rx="8" fill="#fffbeb" stroke="#f59e0b" stroke-width="2.2"/>
+  <text x="560" y="212" fill="#b45309" font-size="14" font-weight="bold" text-anchor="middle">OEM Root CA 직접 발급 (중간 CA 없음)</text>
+  <text x="560" y="231" fill="#b45309" font-size="10" text-anchor="middle">같은 Root에서 나오지만 EKU로 용도가 구분되는 별개 인증서</text>
+
+  <rect x="332" y="248" width="228" height="148" rx="6" fill="#ffffff" stroke="#f59e0b"/>
+  <text x="446" y="274" fill="#b45309" font-size="11.5" font-weight="bold" text-anchor="middle">CS Cert — 코드서명</text>
+  <text x="446" y="297" fill="#b45309" font-size="10.5" text-anchor="middle" font-weight="bold">EKU codeSigning</text>
+  <text x="446" y="319" fill="#334155" font-size="9.5" text-anchor="middle">증명 대상: 소프트웨어가 정품</text>
+  <text x="446" y="338" fill="#334155" font-size="9.5" text-anchor="middle">개인키: 온프렘 KMS (서버 밖)</text>
+  <text x="446" y="357" fill="#334155" font-size="9.5" text-anchor="middle">전달: Component에 동봉</text>
+  <text x="446" y="379" fill="#64748b" font-size="9.5" text-anchor="middle">검증 기준: 서명 시점</text>
+
+  <rect x="576" y="248" width="228" height="148" rx="6" fill="#ffffff" stroke="#2563eb"/>
+  <text x="690" y="274" fill="#1d4ed8" font-size="11.5" font-weight="bold" text-anchor="middle">eSync Server 인증서</text>
+  <text x="690" y="297" fill="#1d4ed8" font-size="10.5" text-anchor="middle" font-weight="bold">EKU serverAuth</text>
+  <text x="690" y="319" fill="#334155" font-size="9.5" text-anchor="middle">증명 대상: 상대가 정품 서버</text>
+  <text x="690" y="338" fill="#334155" font-size="9.5" text-anchor="middle">개인키: eSync Server 로컬</text>
+  <text x="690" y="357" fill="#334155" font-size="9.5" text-anchor="middle">전달: TLS 핸드셰이크에서 제시</text>
+  <text x="690" y="379" fill="#64748b" font-size="9.5" text-anchor="middle">검증 기준: 접속 현재 · 발급 경로 확정 전</text>
 
   <!-- Diagnostic License CA (이후 재검토) -->
-  <rect x="750" y="186" width="340" height="212" rx="8" fill="#faf5ff" stroke="#9333ea" stroke-width="2"/>
-  <text x="920" y="214" fill="#6b21a8" font-size="14" font-weight="bold" text-anchor="middle">Diagnostic License CA</text>
-  <text x="920" y="234" fill="#94a3b8" font-size="10" text-anchor="middle">DMS License 발급기관 · 개인키 KMS · (이후 재검토)</text>
-  <rect x="768" y="254" width="304" height="124" rx="6" fill="#ffffff" stroke="#9333ea"/>
-  <text x="920" y="290" fill="#6b21a8" font-size="12.5" font-weight="bold" text-anchor="middle">DMS License</text>
-  <text x="920" y="312" fill="#334155" font-size="10.5" text-anchor="middle">Role OID · 단수명</text>
-  <text x="920" y="333" fill="#334155" font-size="10.5" text-anchor="middle">이중용도: UDS 0x29 APCE + mTLS</text>
-  <text x="920" y="360" fill="#64748b" font-size="10" text-anchor="middle">PC 고유 ID + 사용자 인증 후 발급</text>
+  <rect x="820" y="186" width="270" height="226" rx="8" fill="#faf5ff" stroke="#9333ea" stroke-width="2"/>
+  <text x="955" y="213" fill="#6b21a8" font-size="14" font-weight="bold" text-anchor="middle">Diagnostic License CA</text>
+  <text x="955" y="232" fill="#94a3b8" font-size="10" text-anchor="middle">DMS License 발급기관 · 개인키 KMS</text>
+  <text x="955" y="247" fill="#94a3b8" font-size="10" text-anchor="middle">(이후 재검토)</text>
+  <rect x="836" y="262" width="238" height="134" rx="6" fill="#ffffff" stroke="#9333ea"/>
+  <text x="955" y="292" fill="#6b21a8" font-size="12" font-weight="bold" text-anchor="middle">DMS License</text>
+  <text x="955" y="316" fill="#9333ea" font-size="10.5" text-anchor="middle" font-weight="bold">EKU clientAuth · Role OID</text>
+  <text x="955" y="338" fill="#334155" font-size="9.5" text-anchor="middle">증명 대상: 진단툴의 작업 권한</text>
+  <text x="955" y="357" fill="#334155" font-size="9.5" text-anchor="middle">UDS 0x29 APCE + mTLS · 단수명</text>
+  <text x="955" y="379" fill="#64748b" font-size="9.5" text-anchor="middle">PC 고유 ID + 사용자 인증 후 발급</text>
 
   <!-- 주석 -->
-  <rect x="30" y="424" width="1060" height="110" rx="8" fill="#eff6ff" stroke="#cbd5e1"/>
-  <text x="46" y="448" fill="#1e3a8a" font-size="12" font-weight="bold">신뢰앵커·역할</text>
-  <text x="46" y="470" fill="#334155" font-size="11">• 디바이스는 OEM Root CA 인증서를 신뢰앵커로 보유하고, "Root → 최종 인증서" 규칙으로 체인을 검증한다.</text>
-  <text x="46" y="491" fill="#334155" font-size="11">• 코드서명 인증서(CS Cert)는 중간 CA 없이 OEM Root CA가 직접 발급한다. eSync Server가 개인키(cs-pri, KMS)로 Component에 서명(서명 게이트웨이 경유).</text>
-  <text x="46" y="512" fill="#64748b" font-size="10">• Device CA·Diagnostic License CA(디바이스 신원·진단 라이선스) 갈래의 CA 구조는 이후 단계에서 재검토한다.</text>
+  <rect x="30" y="436" width="1060" height="146" rx="8" fill="#eff6ff" stroke="#cbd5e1"/>
+  <text x="46" y="460" fill="#1e3a8a" font-size="12" font-weight="bold">신뢰앵커·역할</text>
+  <text x="46" y="482" fill="#334155" font-size="11">• 디바이스는 OEM Root CA 인증서를 신뢰앵커로 보유하고, "Root → 최종 인증서" 규칙으로 체인을 검증한다.</text>
+  <text x="46" y="503" fill="#334155" font-size="11">• CS Cert와 eSync Server 인증서는 같은 Root에서 나오지만 서로 다른 인증서다. EKU는 용도만 한정하므로, 검증자는 서명자 신원(Subject·SAN)까지 함께 대조한다.</text>
+  <text x="46" y="524" fill="#334155" font-size="11">• 코드서명 개인키(cs-pri)는 온프렘 KMS 안에만 있고 eSync Server는 그 키에 접근할 수 없다. 서명이 필요하면 해시만 서명 게이트웨이로 보낸다.</text>
+  <text x="46" y="545" fill="#64748b" font-size="10">• 전송 계층에서 만나는 AWS IoT Core 엔드포인트 인증서는 Amazon Root CA로 따로 검증한다(이 그림 밖).</text>
+  <text x="46" y="565" fill="#64748b" font-size="10">• OEM Root CA는 사내 시스템·서버 인증서도 발급하는 전사 루트다. 같은 루트의 다른 인증서를 걸러내는 것은 신원 대조이며, 중간 CA가 없어 가지 단위 폐기는 불가능하다.</text>
 
   <defs>
     <marker id="p-ar" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L8,3 z" fill="#334155"/></marker>

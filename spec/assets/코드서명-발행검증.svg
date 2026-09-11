@@ -13,9 +13,10 @@
   <path d="M 510 120 L 596 120" stroke="#334155" stroke-width="2" marker-end="url(#s-ar)"/>
   <text x="553" y="112" fill="#64748b" font-size="10" text-anchor="middle">발급</text>
 
-  <rect x="598" y="88" width="392" height="64" rx="8" fill="#fffbeb" stroke="#f59e0b" stroke-width="2"/>
-  <text x="794" y="114" fill="#b45309" font-size="13" font-weight="bold" text-anchor="middle">CS Cert (코드서명 인증서)</text>
-  <text x="794" y="136" fill="#334155" font-size="10" text-anchor="middle">cs-pub 보증 · EKU=codeSigning · Subject=eSync Server 서명 신원</text>
+  <rect x="598" y="88" width="392" height="82" rx="8" fill="#fffbeb" stroke="#f59e0b" stroke-width="2"/>
+  <text x="794" y="112" fill="#b45309" font-size="13" font-weight="bold" text-anchor="middle">CS Cert (코드서명 인증서)</text>
+  <text x="794" y="133" fill="#334155" font-size="10" text-anchor="middle">cs-pub 보증 · EKU=codeSigning · Subject=eSync Server 서명 신원</text>
+  <text x="794" y="155" fill="#64748b" font-size="10" text-anchor="middle">같은 Root가 발급하는 eSync Server 인증서(serverAuth)와는 별개</text>
 
   <!-- ================= ② 서명 ================= -->
   <rect x="30" y="184" width="220" height="26" rx="6" fill="#dcfce7"/>
