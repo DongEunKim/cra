@@ -23,3 +23,6 @@ Thumbs.db
 # 프로젝트 로컬 도구·가이드 (git 제외)
 /.claude/
 /CLAUDE.md
+
+# 단, 한글 번역본 PDF는 커밋 대상 (원문이 아니라 *_KO.md에서 파생한 배포본)
+!/eSync/*_KO.pdf
